@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+	<changeSet id="inital-1-configuration" author="msc"
+		context="default">
+		<createTable tableName="configuration">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="code" type="TEXT">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="entry" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated_at" type="FLOAT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<insert tableName="configuration">
+			<column name="code">project.revision</column>
+			<column name="entry">@findra-version@</column>
+			<column name="updated_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+
+
+</databaseChangeLog>
