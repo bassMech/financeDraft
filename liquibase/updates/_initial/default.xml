@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-	<changeSet id="inital-1-configuration" author="msc"
-		context="default">
+	<changeSet id="inital-0-pragma" author="msc" context="default">
+		<sql>PRAGMA foreign_keys = ON;</sql>
+	</changeSet>
+	<changeSet id="inital-1-configuration" author="msc" context="default">
 		<createTable tableName="configuration">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -21,7 +21,7 @@
 			<column name="entry" type="TEXT">
 				<constraints nullable="false" />
 			</column>
-			<column name="updated_at" type="FLOAT">
+			<column name="updated_at" type="INTEGER">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -32,5 +32,41 @@
 		</insert>
 	</changeSet>
 
+	<changeSet id="inital-2-account" author="msc" context="default">
+		<createTable tableName="account">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="title" type="TEXT">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="description" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="inital-3-allocation" author="msc" context="default">
+		<createTable tableName="allocation">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="accountId" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_allocation_account" references="account(id)"/>
+			</column>
+			<column name="title" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="TEXT">
+				<constraints nullable="true" />
+			</column>
+			<column name="value" type="REAL">
+				<constraints nullable="false" />
+			</column>
+			<column name="executed_at" type="INTEGER">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 
 </databaseChangeLog>

@@ -1,49 +1,59 @@
 package de.bassmech.findra.web.handler;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.faces.FacesException;
+import jakarta.faces.application.NavigationHandler;
 import jakarta.faces.context.ExceptionHandler;
 import jakarta.faces.context.ExceptionHandlerWrapper;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ExceptionQueuedEvent;
+import jakarta.faces.event.ExceptionQueuedEventContext;
 
 public class BaseExceptionHandler extends ExceptionHandlerWrapper {
 
 	private Logger logger = LoggerFactory.getLogger(BaseExceptionHandler.class);
-	
-    private ExceptionHandler wrapped;
 
-    public BaseExceptionHandler(ExceptionHandler wrapped) {
-        this.wrapped = wrapped;
-    }
+	private ExceptionHandler exceptionHandler;
 
-    @Override
-    public void handle() throws FacesException {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+	public BaseExceptionHandler(ExceptionHandler wrapped) {
+		exceptionHandler = wrapped;
+	}
 
-        for (Iterator<ExceptionQueuedEvent> iter = getUnhandledExceptionQueuedEvents().iterator(); iter.hasNext();) {
-            Throwable exception = iter.next().getContext().getException(); // There it is!
+	@Override
+	public ExceptionHandler getWrapped() {
+		return exceptionHandler;
+	}
 
-            // Now do your thing with it. This example implementation merely prints the stack trace.
-            exception.printStackTrace();
-            logger.error("Error to handle", exception);
-            // You could redirect to an error page (bad practice).
-            // Or you could render a full error page (as OmniFaces does).
-            // Or you could show a FATAL faces message.
-            // Or you could trigger an oncomplete script.
-            // etc..
-        }
+	@Override
+	public void handle() throws FacesException {
+		final Iterator<ExceptionQueuedEvent> queue = getUnhandledExceptionQueuedEvents().iterator();
 
-        getWrapped().handle();
-    }
+		while (queue.hasNext()) {
+			ExceptionQueuedEvent item = queue.next();
+			ExceptionQueuedEventContext exceptionQueuedEventContext = (ExceptionQueuedEventContext) item.getSource();
 
-    @Override
-    public ExceptionHandler getWrapped() {
-        return wrapped;
-    }
+			try {
+				Throwable throwable = exceptionQueuedEventContext.getException();
+				//System.err.println("Exception: " + throwable.getMessage());
+				logger.error("Exception: " + throwable.getMessage());
 
+				FacesContext context = FacesContext.getCurrentInstance();
+				Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+				NavigationHandler nav = context.getApplication().getNavigationHandler();
+
+				requestMap.put("error-message", throwable.getMessage());
+				requestMap.put("error-stack", throwable.getStackTrace());
+				nav.handleNavigation(context, null, "/error");
+				context.renderResponse();
+
+			} finally {
+				queue.remove();
+			}
+		}
+	}
 }
