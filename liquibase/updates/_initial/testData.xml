@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+
+	<changeSet id="first-account" author="msc" context="test-data">
+		<insert tableName="account">
+			<column name="title">Konto</column>
+			<column name="description">Allgemeines Konto</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="first-account-2024" author="msc" context="test-data">
+		<insert tableName="accounting_year">
+			<column name="account_id">1</column>
+			<column name="year">2024</column>
+			<column name="start_value">0</column>
+			<column name="allocation_sum">0</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="first-account-2024-01" author="msc" context="test-data">
+		<insert tableName="accounting_month">
+			<column name="accounting_year_id">1</column>
+			<column name="month">0</column>
+			<column name="start_value">0</column>
+			<column name="allocation_sum">0</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="first-account-2024-01-allocations" author="msc" context="test-data">
+		<insert tableName="allocation">
+			<column name="accounting_month_id">1</column>
+			<column name="title">Miete</column>
+			<column name="description">Die Miete</column>
+			<column name="value">500</column>
+			<column name="expected_day">31</column>
+			<column name="executed_at">NULL</column>
+		</insert>
+	</changeSet>
+
+
+</databaseChangeLog>

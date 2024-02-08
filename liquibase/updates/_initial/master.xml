@@ -12,6 +12,7 @@
 	<!-- <property name="revision"		value="project.revision" /> -->
 
 	<include file="default.xml" relativeToChangelogFile="true" />
+	<include file="testData.xml" relativeToChangelogFile="true" context="test-data"/>
 	
 	
 
