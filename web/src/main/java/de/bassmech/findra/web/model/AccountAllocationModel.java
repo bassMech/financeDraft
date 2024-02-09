@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-public class AccountAllocationViewModel implements Serializable {
+public class AccountAllocationModel implements Serializable {
 	private int id;
 	private String title;
 	private String description;

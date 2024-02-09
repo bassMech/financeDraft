@@ -43,6 +43,9 @@
 			<column name="description" type="TEXT">
 				<constraints nullable="false" />
 			</column>
+			<column name="deleted_at" type="INTEGER">
+				<constraints nullable="true"/>
+			</column>
 		</createTable>
 	</changeSet>
 

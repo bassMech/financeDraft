@@ -1,9 +1,12 @@
 package de.bassmech.findra.model.entity;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bassmech.findra.model.converter.NumberToInstantConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +27,10 @@ public class Account {
 
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
+	
+	@Column(name = "deleted_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
+	private Instant deletedAt;
 	
 	public Integer getId() {
 		return id;
@@ -47,6 +54,14 @@ public class Account {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Instant getDeletedAt() {
+		return deletedAt;
+	}
+
+	public void setDeletedAt(Instant deletedAt) {
+		this.deletedAt = deletedAt;
 	}
 
 }
