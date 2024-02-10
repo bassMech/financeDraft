@@ -27,7 +27,7 @@
 	<changeSet id="first-account-2024-01" author="msc" context="test-data">
 		<insert tableName="accounting_month">
 			<column name="accounting_year_id">1</column>
-			<column name="month">0</column>
+			<column name="month">1</column>
 			<column name="start_value">0</column>
 			<column name="allocation_sum">0</column>
 		</insert>

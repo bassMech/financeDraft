@@ -40,8 +40,8 @@ public class BaseExceptionHandler extends ExceptionHandlerWrapper {
 			try {
 				Throwable throwable = exceptionQueuedEventContext.getException();
 				//System.err.println("Exception: " + throwable.getMessage());
-				logger.error("Exception: " + throwable.getMessage());
-
+				logger.error("Exception: " + throwable.getMessage(), throwable);
+	
 				FacesContext context = FacesContext.getCurrentInstance();
 				Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
 				NavigationHandler nav = context.getApplication().getNavigationHandler();

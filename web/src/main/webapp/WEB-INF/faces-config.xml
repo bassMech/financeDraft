@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faces-config version="2.2"
-              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
-    <application>
-        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
-        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
-        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
-        
-        <locale-config>
-            <default-locale>en</default-locale>
-            <supported-locale>de</supported-locale>
-        </locale-config>
-        
-        <resource-bundle>
+	<application>
+		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
+		<navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+		<view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+
+		<locale-config>
+			<default-locale>en</default-locale>
+			<supported-locale>de</supported-locale>
+		</locale-config>
+
+		<resource-bundle>
 			<base-name>strings.tags</base-name>
 			<var>tags</var>
 		</resource-bundle>
@@ -22,17 +20,18 @@
 			<base-name>strings.messages</base-name>
 			<var>messages</var>
 		</resource-bundle>
-		
+
 		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
 		<navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
 		<view-handler>org.primefaces.application.DialogViewHandler</view-handler>
-        <el-resolver>org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>
-        
-    </application>
+		<el-resolver>org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>
 
-    <lifecycle>
-        <phase-listener>org.primefaces.component.lifecycle.LifecyclePhaseListener</phase-listener>
-    </lifecycle>
+	</application>
+
+
+	<lifecycle>
+		<phase-listener>org.primefaces.component.lifecycle.LifecyclePhaseListener</phase-listener>
+	</lifecycle>
 	<factory>
 		<exception-handler-factory>de.bassmech.findra.web.handler.BaseExceptionHandlerFactory</exception-handler-factory>
 	</factory>

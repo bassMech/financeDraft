@@ -1,0 +1,14 @@
+@charset "UTF-8";
+#footer {
+	background-color: #a9eaa9 !important;
+	width: 100%;
+	bottom: 0;
+	position: fixed;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+}
+
+#footer-entries > div {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}

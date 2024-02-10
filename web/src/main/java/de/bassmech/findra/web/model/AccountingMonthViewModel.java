@@ -6,12 +6,12 @@ import java.util.List;
 
 import de.bassmech.findra.web.view.AccountMonthAllocationView;
 
-public class AccountingMonthModel implements Serializable {
+public class AccountingMonthViewModel implements Serializable {
 	private int id;
 	private int accountYearId;
 	private int year;
 	private int month;
-	private List<AccountMonthAllocationView> allocations = new ArrayList<>();
+	private List<AllocationViewModel> allocations = new ArrayList<>();
 
 	public int getId() {
 		return id;
@@ -45,11 +45,11 @@ public class AccountingMonthModel implements Serializable {
 		this.month = month;
 	}
 
-	public List<AccountMonthAllocationView> getAllocations() {
+	public List<AllocationViewModel> getAllocations() {
 		return allocations;
 	}
 
-	public void setAllocations(List<AccountMonthAllocationView> allocations) {
+	public void setAllocations(List<AllocationViewModel> allocations) {
 		this.allocations = allocations;
 	}
 

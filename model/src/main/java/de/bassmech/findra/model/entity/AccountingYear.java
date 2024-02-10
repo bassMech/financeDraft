@@ -30,7 +30,7 @@ public class AccountingYear {
 	private Account account;
 
 	@OneToMany(mappedBy = "accountingYear")
-	private List<AccountingMonth> month = new ArrayList<>();
+	private List<AccountingMonth> months = new ArrayList<>();
 	
 	@Column(name = "allocation_sum", columnDefinition = "FLOAT")
 	private BigDecimal allocationSum;
@@ -43,8 +43,8 @@ public class AccountingYear {
 		this.id = id;
 	}
 
-	public void setMonth(List<AccountingMonth> month) {
-		this.month = month;
+	public void setMonths(List<AccountingMonth> month) {
+		this.months = month;
 	}
 
 	public Account getAccount() {
@@ -71,8 +71,8 @@ public class AccountingYear {
 		this.allocationSum = allocationSum;
 	}
 
-	public List<AccountingMonth> getMonth() {
-		return month;
+	public List<AccountingMonth> getMonths() {
+		return months;
 	}
 
 }

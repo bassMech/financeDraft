@@ -7,5 +7,7 @@ import de.bassmech.findra.model.entity.Configuration;
 
 @Repository
 public interface ConfigurationRepository extends JpaRepository<Configuration, Long> {
-
+	
+	public Configuration findByCode(String code);
+		
 }

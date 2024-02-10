@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+body {
+	margin: 0px;
+}
+
+#header {
+	background-color: #a9eaa9 !important;
+	width: 100%;
+	top: 0;
+	position: fixed;
+	padding-top: 0.5em;
+}
+
+#header-language-column {
+	padding-right: 1.5em;
+}
+
+#language-label {
+	margin-right: 0.5em;
+	font-size: 1.2em;
+}
+
+#header-login {
+	padding-right: 0.5em;
+	font-size: 1.2em;
+}
+
+.header-nav {
+	font-size: 1.2em;
+	padding-right: 1em;
+}

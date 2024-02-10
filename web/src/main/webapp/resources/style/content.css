@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+#content {
+	padding-top: 5em;
+	padding-bottom: 6em;
+}
+
+.no-side-margin {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
