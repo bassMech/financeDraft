@@ -7,7 +7,10 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Allocation;
-import de.bassmech.findra.web.model.*;
+import de.bassmech.findra.web.model.AccountViewModel;
+import de.bassmech.findra.web.model.AccountingMonthViewModel;
+import de.bassmech.findra.web.model.AccountingYearViewModel;
+import de.bassmech.findra.web.model.AllocationViewModel;
 
 
 public class ToViewModelUtil {

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
@@ -15,11 +16,10 @@ import de.bassmech.findra.web.model.AccountingYearViewModel;
 import de.bassmech.findra.web.model.AllocationViewModel;
 import de.bassmech.findra.web.service.AccountService;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.bean.SessionScoped;
-import jakarta.inject.Named;
+import jakarta.faces.view.ViewScoped;
 
-@Named
-@SessionScoped
+@Component
+@ViewScoped
 public class AccountView extends ViewBase {
 
 	@Autowired
@@ -78,10 +78,12 @@ public class AccountView extends ViewBase {
 
 	public void onMonthChanged() {
 		logger.debug("onMonthChanged");
+		logger.debug("Month was changed to: " + selectedMonth);
 	}
 
 	public void onYearChanged() {
 		logger.debug("onYearChanged");
+		logger.debug("Year was changed to: " + selectedYear);
 	}
 
 	public void onNextMonthClick() {
@@ -91,6 +93,7 @@ public class AccountView extends ViewBase {
 		} else {
 			selectedMonth++;
 		}
+		logger.debug("Month was changed to: " + selectedMonth);
 	}
 
 	public void onPreviousMonthClick() {
@@ -100,7 +103,7 @@ public class AccountView extends ViewBase {
 		} else {
 			selectedMonth--;
 		}
-		logger.debug("value is:" + selectedMonth);
+		logger.debug("Month was changed to: " + selectedMonth);
 	}
 
 	public void onDeleteAllocationClick() {

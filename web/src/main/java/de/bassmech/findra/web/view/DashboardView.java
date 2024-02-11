@@ -1,7 +1,6 @@
 package de.bassmech.findra.web.view;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.DashboardReorderEvent;
@@ -10,17 +9,15 @@ import org.primefaces.model.dashboard.DashboardModel;
 import org.primefaces.model.dashboard.DashboardWidget;
 import org.primefaces.model.dashboard.DefaultDashboardModel;
 import org.primefaces.model.dashboard.DefaultDashboardWidget;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Named;
 
-@Named
-@SessionScoped
+@Component
+@ViewScoped
 public class DashboardView implements Serializable {
 
     private static final long serialVersionUID = 1L;

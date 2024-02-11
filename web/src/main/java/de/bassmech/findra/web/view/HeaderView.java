@@ -1,16 +1,14 @@
 package de.bassmech.findra.web.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.annotation.SessionScope;
+import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.web.service.ConfigurationHolder;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Named;
 
-@Named(value = "headerView")
-@SessionScoped
+@Component
+@ViewScoped
 public class HeaderView extends ViewBase {
 //	@Inject
 //	LanguageService languageService;

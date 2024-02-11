@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bassmech.findra.web.view.AccountMonthAllocationView;
-
 public class AccountingMonthViewModel implements Serializable {
 	private int id;
 	private int accountYearId;

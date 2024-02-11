@@ -4,20 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.bassmech.findra.core.repository.ConfigurationRepository;
 import de.bassmech.findra.model.entity.Configuration;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 @Service
 public class ConfigurationHolder {
 	private Map<ConfigurationCode, String> configurationMap;
 	
-	@Inject
+	@Autowired
 	private ConfigurationRepository configurationRepository;
 	
 	@PostConstruct

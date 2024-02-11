@@ -2,8 +2,6 @@ package de.bassmech.findra.web.service;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 @Service
 public class LanguageService {
 //	private List<Language> languages;

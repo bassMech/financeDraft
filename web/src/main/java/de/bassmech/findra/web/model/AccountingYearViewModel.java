@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bassmech.findra.web.view.AccountMonthAllocationView;
-
 public class AccountingYearViewModel implements Serializable {
 	private int id;
 	private int accountId;

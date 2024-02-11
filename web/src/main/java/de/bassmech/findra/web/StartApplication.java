@@ -1,12 +1,9 @@
 package de.bassmech.findra.web;
 
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -16,9 +13,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import de.bassmech.findra.core.repository.ConfigurationRepository;
-import de.bassmech.findra.model.entity.Configuration;
-import jakarta.annotation.PostConstruct;
 import jakarta.faces.webapp.FacesServlet;
 
 

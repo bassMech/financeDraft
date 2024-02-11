@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import de.bassmech.findra.core.repository.SettingRepository;
 import de.bassmech.findra.model.entity.Setting;
 import de.bassmech.findra.model.statics.SettingCode;
-import de.bassmech.findra.web.view.ViewBase;
 
 @Service
 public class SettingsService {
