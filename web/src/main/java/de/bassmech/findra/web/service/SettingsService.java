@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import de.bassmech.findra.core.repository.SettingRepository;
 import de.bassmech.findra.model.entity.Setting;
 import de.bassmech.findra.model.statics.SettingCode;
+import jakarta.annotation.PostConstruct;
+import jakarta.faces.context.FacesContext;
 
 @Service
 public class SettingsService {
@@ -28,6 +30,12 @@ public class SettingsService {
 
 	private Locale dbLocale;
 	private Currency dbCurrency;
+	
+	@PostConstruct
+	public void init() {
+		getDbLocale();
+		getDbCurrency();
+	}
 
 	public Locale getDbLocale() {
 		if (dbLocale == null) {
@@ -47,6 +55,11 @@ public class SettingsService {
 
 	public void saveDbLocale(Locale locale) {
 		logger.debug("Saving locale: " + locale.getLanguage());
+		if (locale.equals(dbLocale)) {
+			logger.debug("Locale already set. Skip saving");
+			return;
+		}
+		
 		Setting localeSetting = settingRespoRepository.findByCode(SettingCode.LOCALE);
 		if (localeSetting == null) {
 			localeSetting = new Setting();
@@ -57,6 +70,11 @@ public class SettingsService {
 		
 		localeSetting = settingRespoRepository.save(localeSetting);
 		dbLocale = Locale.forLanguageTag(localeSetting.getEntry());
+		
+		FacesContext.getCurrentInstance().getViewRoot().setLocale(dbLocale);
+		Locale.setDefault(dbLocale);
+		logger.info("language updated to: " + FacesContext.getCurrentInstance()
+		.getViewRoot().getLocale().getISO3Language());
 	}
 	
 	public Currency getDbCurrency() {
@@ -77,6 +95,10 @@ public class SettingsService {
 	
 	public void saveDbCurrency(Currency currency) {
 		logger.debug("Saving currency: " + currency.getCurrencyCode());
+		if (currency.equals(dbCurrency)) {
+			logger.debug("Currency already set. Skip saving");
+			return;
+		}
 		Setting currencySetting = settingRespoRepository.findByCode(SettingCode.CURRENCY);
 		if (currencySetting == null) {
 			currencySetting = new Setting();
@@ -87,5 +109,6 @@ public class SettingsService {
 		
 		currencySetting = settingRespoRepository.save(currencySetting);
 		dbCurrency = Currency.getInstance(currencySetting.getEntry());
+		
 	}
 }

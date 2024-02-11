@@ -17,9 +17,9 @@
 				<h:outputLabel class="flex align-items-center" value="#{tags['language']}" />
 			</div>
 			<div class="col-2 flex justify-content-start align-content-center">
-				<p:selectOneMenu id="languageSelect" value="#{settingsView.selectedLanguage}" style="width:150px">
-					<p:ajax listener="#{settingsView.onLanguageChange}" />
-					<f:selectItems value="#{settingsView.selectableLanguages}" var="account" itemLabel="#{account.getLanguage()}" itemValue="#{account}" />
+				<p:selectOneMenu id="languageSelect" value="#{settingsView.selectedLanguage}">
+					<f:selectItems value="#{settingsView.selectableLanguages.entrySet()}" var="language" 
+						itemLabel="#{language.value}" itemValue="#{language.key}" />
 				</p:selectOneMenu>
 			</div>
 		</div>
@@ -31,14 +31,15 @@
 			<div class="col-2 flex justify-content-start align-content-center">
 				<p:selectOneMenu id="currencySelection" value="#{settingsView.selectedCurrency}">
 					<p:ajax listener="#{settingsView.onCurrencyChange}" />
-					<f:selectItems value="#{settingsView.getSelectableCurrencies()}" var="currency" itemValue="#{currency}" itemLabel="#{currency.getSymbol()}" />
+					<f:selectItems value="#{settingsView.selectableCurrencies.entrySet()}" var="currency" itemLabel="#{currency.value}"  
+					itemValue="#{currency.key}"/>
 				</p:selectOneMenu>
 			</div>
 		</div>
 
 		<div class="grid">
 			<div class="col-2 col-offset-6 flex justify-content-start">
-				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@this"></p:commandButton>
+				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@form" update="@form"></p:commandButton>
 			</div>
 		</div>
 
