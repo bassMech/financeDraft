@@ -1,54 +1,27 @@
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 	<div class="grid">
-		<div
-			class="col-7 col-offset-1 flex justify-content-start align-items-center">
+		<div class="col-7 col-offset-1 flex justify-content-start align-items-center">
 			<div class="header-nav">
 				<p:link outcome="/template/dashboard.xhtml" value="#{tags['dashboard']}">
 
 				</p:link>
 			</div>
 			<div class="header-nav">
-				<p:link outcome="/template/account.xhtml"
-					value="#{tags['accounts']}">
+				<p:link outcome="/template/account.xhtml" value="#{tags['accounts']}">
 					<f:param name="productId" value="10" />
 				</p:link>
 			</div>
 		</div>
 
-		<div
-			class="col-3 grid-nogutter flex justify-content-end align-items-center">
-			<div id="header-language-column" class="flex align-items-center">
-				<p:outputLabel value="#{tags['language']}" id="language-label" />
-				<p:selectOneMenu id="langugageSelection"
-					value="#{header.selectedLanguage}" immediate="true"
-					panelStyle="width:200px" var="selectedLanguage">
-
-					<p:ajax immediate="true" update="@form language-label"
-						process="@form" oncomplete="submit()" />
-
-					<!-- <f:selectItems value="#{header.languages}" var="language"
-						itemLabel="#{language.nativeName}" itemValue="#{language}" />
-					<f:converter converterId="LanguageViewModelConverter"></f:converter> -->
-					<p:column>
-						<f:facet name="header">
-							<h:outputText value="Name" />
-						</f:facet>
-						<h:outputText value="#{selectedLanguage.combinedNames}" />
-					</p:column>
-
-					<f:facet name="footer">
-						<h:outputText
-							value="#{header.languages.size()} languges"
-							style="font-weight:bold;" styleClass="py-1 block" />
-					</f:facet>
-				</p:selectOneMenu>
-
+		<div class="col-3 grid-nogutter flex justify-content-end align-items-center">
+			<div id="header-language-column" class="flex align-items-center">				
+				<div class="header-nav">
+					<p:linkButton outcome="/template/settings.xhtml" icon="pi pi-cog">
+					</p:linkButton>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,5 +1,6 @@
 package de.bassmech.findra.web.view;
 
+import java.math.BigDecimal;
 import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class AccountView extends ViewBase {
 
 	private List<AccountViewModel> selectableAccounts = new ArrayList<>();
 	private AccountViewModel selectedAccount;
-	
+
 	private List<AccountingYearViewModel> accountingYears = new ArrayList<>();
 	private AccountingMonthViewModel currentAccountingMonth = null;
 	private AllocationViewModel selectedAllocation;
@@ -51,7 +52,8 @@ public class AccountView extends ViewBase {
 
 		if (selectableAccounts.size() > 0) {
 			accountingYears.add(accountService.getAccountMonthsForYear(selectableAccounts.get(0).getId(), startYear));
-			currentAccountingMonth = accountingYears.get(0).getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
+			currentAccountingMonth = accountingYears.get(0).getMonths().stream()
+					.filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
 		}
 
 		for (int i = 1; i <= 12; i++) {
@@ -59,6 +61,17 @@ public class AccountView extends ViewBase {
 			selectableYears.add(startYear);
 			startYear++;
 		}
+	}
+
+	public String getAllocationRowColorString(AllocationViewModel vm) {
+		if (BigDecimal.ZERO.compareTo(vm.getValue()) > 0) {
+			return vm.getExecutedAt() == null ? "allocation-negative-expected" : "allocation-negative-executed";
+		} else if (BigDecimal.ZERO.compareTo(vm.getValue()) < 0) {	
+			return vm.getExecutedAt() == null ? "allocation-positive-expected" : "allocation-positive-executed" ;
+		} else {
+			return null;
+		}
+		
 	}
 
 	private void updateAllocations() {
@@ -90,6 +103,10 @@ public class AccountView extends ViewBase {
 			selectedMonth--;
 		}
 		logger.debug("value is:" + selectedMonth);
+	}
+
+	public void onDeleteAllocationClick() {
+		logger.debug("onDeleteAllocationClick: " + selectedAllocation.getId());
 	}
 
 	public AccountViewModel getSelectedAccount() {
@@ -151,7 +168,5 @@ public class AccountView extends ViewBase {
 	public void setCurrentAccountingMonth(AccountingMonthViewModel currentAccountingMonth) {
 		this.currentAccountingMonth = currentAccountingMonth;
 	}
-
-
 
 }

@@ -38,9 +38,33 @@
 			<column name="accounting_month_id">1</column>
 			<column name="title">Miete</column>
 			<column name="description">Die Miete</column>
-			<column name="value">500</column>
+			<column name="value">-500</column>
 			<column name="expected_day">31</column>
 			<column name="executed_at">NULL</column>
+		</insert>
+		<insert tableName="allocation">
+			<column name="accounting_month_id">1</column>
+			<column name="title">Gehalt</column>
+			<column name="description">Da Money</column>
+			<column name="value">1000</column>
+			<column name="expected_day">30</column>
+			<column name="executed_at">NULL</column>
+		</insert>
+		<insert tableName="allocation">
+			<column name="accounting_month_id">1</column>
+			<column name="title">Strom</column>
+			<column name="description">Blitz</column>
+			<column name="value">-50</column>
+			<column name="expected_day">11</column>
+			<column name="executed_at" valueComputed="unixepoch()"></column>
+		</insert>
+		<insert tableName="allocation">
+			<column name="accounting_month_id">1</column>
+			<column name="title">Pacht</column>
+			<column name="description">Da Pacht</column>
+			<column name="value">500</column>
+			<column name="expected_day">25</column>
+			<column name="executed_at" valueComputed="unixepoch()"></column>
 		</insert>
 	</changeSet>
 

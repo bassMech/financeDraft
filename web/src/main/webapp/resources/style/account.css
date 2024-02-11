@@ -1,1 +1,17 @@
 @charset "UTF-8";
+
+.allocation-negative-expected {
+	background-color: #ffe5e5!important;
+}
+
+.allocation-negative-executed {
+	background-color: #ea9999!important;
+}
+
+.allocation-positive-expected {
+	background-color: #eaffe5!important;
+}
+
+.allocation-positive-executed {
+	background-color: palegreen!important;
+}
