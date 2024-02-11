@@ -8,14 +8,14 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
 
-	<changeSet id="first-account" author="msc" context="test-data">
+	<changeSet id="first-account" author="bassmech" context="test-data">
 		<insert tableName="account">
 			<column name="title">Konto</column>
 			<column name="description">Allgemeines Konto</column>
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024" author="msc" context="test-data">
+	<changeSet id="first-account-2024" author="bassmech" context="test-data">
 		<insert tableName="accounting_year">
 			<column name="account_id">1</column>
 			<column name="year">2024</column>
@@ -24,7 +24,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024-01" author="msc" context="test-data">
+	<changeSet id="first-account-2024-01" author="bassmech" context="test-data">
 		<insert tableName="accounting_month">
 			<column name="accounting_year_id">1</column>
 			<column name="month">1</column>
@@ -33,7 +33,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024-01-allocations" author="msc" context="test-data">
+	<changeSet id="first-account-2024-01-allocations" author="bassmech" context="test-data">
 		<insert tableName="allocation">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Miete</column>

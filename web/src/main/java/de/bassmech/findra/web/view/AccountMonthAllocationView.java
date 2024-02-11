@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.annotation.SessionScope;
 
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountingMonthRepository;
@@ -15,11 +16,12 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.Configuration;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class AccountMonthAllocationView implements Serializable {
 
 	private Logger logger = LoggerFactory.getLogger(AccountMonthAllocationView.class);

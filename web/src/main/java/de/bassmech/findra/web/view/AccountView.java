@@ -5,23 +5,21 @@ import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.bassmech.findra.model.entity.AccountingMonth;
-import de.bassmech.findra.web.model.AllocationViewModel;
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
+import de.bassmech.findra.web.model.AllocationViewModel;
 import de.bassmech.findra.web.service.AccountService;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.view.ViewScoped;
+import jakarta.faces.bean.SessionScoped;
 import jakarta.inject.Named;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class AccountView extends ViewBase {
 
 	@Autowired

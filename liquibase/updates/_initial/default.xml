@@ -7,10 +7,10 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-	<changeSet id="inital-pragma" author="msc" context="default">
+	<changeSet id="inital-pragma" author="bassmech" context="default">
 		<sql>PRAGMA foreign_keys = ON;</sql>
 	</changeSet>
-	<changeSet id="inital-configuration" author="msc" context="default">
+	<changeSet id="inital-configuration" author="bassmech" context="default">
 		<createTable tableName="configuration">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -32,7 +32,34 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="inital-account" author="msc" context="default">
+	<changeSet id="inital-setting" author="bassmech" context="default">
+		<createTable tableName="setting">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="code" type="TEXT">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="entry" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated_at" type="INTEGER">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<insert tableName="setting">
+			<column name="code">locale</column>
+			<column name="entry">en</column>
+			<column name="updated_at" valueComputed="unixepoch()"></column>
+		</insert>
+		<insert tableName="setting">
+			<column name="code">currency</column>
+			<column name="entry">EUR</column>
+			<column name="updated_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="inital-account" author="bassmech" context="default">
 		<createTable tableName="account">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -44,12 +71,12 @@
 				<constraints nullable="false" />
 			</column>
 			<column name="deleted_at" type="INTEGER">
-				<constraints nullable="true"/>
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-accounting_year" author="msc" context="default">
+	<changeSet id="inital-accounting_year" author="bassmech" context="default">
 		<createTable tableName="accounting_year">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -69,7 +96,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-accounting_month" author="msc" context="default">
+	<changeSet id="inital-accounting_month" author="bassmech" context="default">
 		<createTable tableName="accounting_month">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -89,7 +116,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-allocation" author="msc" context="default">
+	<changeSet id="inital-allocation" author="bassmech" context="default">
 		<createTable tableName="allocation">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -115,7 +142,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-clearing_accounts" author="msc" context="default">
+	<changeSet id="inital-clearing_accounts" author="bassmech" context="default">
 		<createTable tableName="clearing_account">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />

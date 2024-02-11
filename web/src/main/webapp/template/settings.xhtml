@@ -11,33 +11,34 @@
 	<ui:define name="content">
 		<h:outputStylesheet name="settings.css" library="style" />
 		<h1 class="flex justify-content-center">#{tags['settings']}</h1>
-		
+
 		<div class="grid">
 			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
 				<h:outputLabel class="flex align-items-center" value="#{tags['language']}" />
 			</div>
 			<div class="col-2 flex justify-content-start align-content-center">
-				<p:selectOneMenu id="languageSelection" value="#{settingsView.selectedLanguage}">
+				<p:selectOneMenu id="languageSelection" value="#{settingsView.selectedLanguage}" immediate="true">
 					<f:selectItems value="#{settingsView.getLanguages()}" var="language" itemLabel="#{language.getDisplayLanguage(language)}"
 						itemValue="#{language}" />
 				</p:selectOneMenu>
 			</div>
 		</div>
-		
+
 		<div class="grid">
 			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
 				<h:outputLabel class="flex align-items-center" value="#{tags['currency']}" />
 			</div>
 			<div class="col-2 flex justify-content-start align-content-center">
 				<p:selectOneMenu id="currencySelection" value="#{settingsView.selectedCurrency}">
-					<f:selectItems value="#{settingsView.getCurrencies()}" />
+					<p:ajax event="change" process="@this" />
+					<f:selectItems value="#{settingsView.getCurrencies()}" var="currency" itemValue="#{currency}" itemLabel="#{currency.getSymbol()}" />
 				</p:selectOneMenu>
 			</div>
 		</div>
-		
+
 		<div class="grid">
 			<div class="col-2 col-offset-6 flex justify-content-start">
-				<p:commandButton value="Save"></p:commandButton>
+				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@this"></p:commandButton>
 			</div>
 		</div>
 
