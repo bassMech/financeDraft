@@ -15,4 +15,7 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
+	<listener>
+		<listener-class>de.bassmech.findra.web.ApplicationContextListener</listener-class>
+	</listener>
 </web-app>

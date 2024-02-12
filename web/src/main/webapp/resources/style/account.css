@@ -1,17 +1,22 @@
 @charset "UTF-8";
 
-.allocation-negative-expected {
+.transaction-negative-expected {
 	background-color: #ffe5e5!important;
 }
 
-.allocation-negative-executed {
+.transaction-negative-executed {
 	background-color: #ea9999!important;
 }
 
-.allocation-positive-expected {
+.transaction-positive-expected {
 	background-color: #eaffe5!important;
 }
 
-.allocation-positive-executed {
+.transaction-positive-executed {
 	background-color: palegreen!important;
+}
+
+.transaction-header-side-padding {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }

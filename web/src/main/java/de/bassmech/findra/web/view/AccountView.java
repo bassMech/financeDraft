@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
-import de.bassmech.findra.web.model.AllocationViewModel;
+import de.bassmech.findra.web.model.TransactionViewModel;
 import de.bassmech.findra.web.service.AccountService;
+import de.bassmech.findra.web.service.SettingService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 
@@ -24,13 +25,16 @@ public class AccountView extends ViewBase {
 
 	@Autowired
 	private AccountService accountService;
-
+	
+	@Autowired
+	private SettingService settingService;
+	
 	private List<AccountViewModel> selectableAccounts = new ArrayList<>();
 	private AccountViewModel selectedAccount;
 
 	private List<AccountingYearViewModel> accountingYears = new ArrayList<>();
 	private AccountingMonthViewModel currentAccountingMonth = null;
-	private AllocationViewModel selectedAllocation;
+	private TransactionViewModel selectedTransaction;
 
 	private TreeMap<Integer, String> selectableMonths = new TreeMap<>();
 	private int selectedMonth;
@@ -61,19 +65,15 @@ public class AccountView extends ViewBase {
 		}
 	}
 
-	public String getAllocationRowColorString(AllocationViewModel vm) {
+	public String getTransactionRowColorString(TransactionViewModel vm) {
 		if (BigDecimal.ZERO.compareTo(vm.getValue()) > 0) {
-			return vm.getExecutedAt() == null ? "allocation-negative-expected" : "allocation-negative-executed";
+			return vm.getExecutedAt() == null ? "transaction-negative-expected" : "transaction-negative-executed";
 		} else if (BigDecimal.ZERO.compareTo(vm.getValue()) < 0) {	
-			return vm.getExecutedAt() == null ? "allocation-positive-expected" : "allocation-positive-executed" ;
+			return vm.getExecutedAt() == null ? "transaction-positive-expected" : "transaction-positive-executed" ;
 		} else {
 			return null;
 		}
 		
-	}
-
-	private void updateAllocations() {
-
 	}
 
 	public void onMonthChanged() {
@@ -106,8 +106,8 @@ public class AccountView extends ViewBase {
 		logger.debug("Month was changed to: " + selectedMonth);
 	}
 
-	public void onDeleteAllocationClick() {
-		logger.debug("onDeleteAllocationClick: " + selectedAllocation.getId());
+	public void onDeleteTransactionClick() {
+		logger.debug("onDeleteTransactionClick: " + selectedTransaction.getId());
 	}
 
 	public AccountViewModel getSelectedAccount() {
@@ -154,12 +154,12 @@ public class AccountView extends ViewBase {
 		this.accountingYears = accountingYears;
 	}
 
-	public AllocationViewModel getSelectedAllocation() {
-		return selectedAllocation;
+	public TransactionViewModel getSelectedTransaction() {
+		return selectedTransaction;
 	}
 
-	public void setSelectedAllocation(AllocationViewModel selectedAllocation) {
-		this.selectedAllocation = selectedAllocation;
+	public void setSelectedTransaction(TransactionViewModel selectedTransaction) {
+		this.selectedTransaction = selectedTransaction;
 	}
 
 	public AccountingMonthViewModel getCurrentAccountingMonth() {
@@ -168,6 +168,10 @@ public class AccountView extends ViewBase {
 
 	public void setCurrentAccountingMonth(AccountingMonthViewModel currentAccountingMonth) {
 		this.currentAccountingMonth = currentAccountingMonth;
+	}
+
+	public SettingService getSettingService() {
+		return settingService;
 	}
 
 }

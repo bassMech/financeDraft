@@ -30,10 +30,13 @@ public class AccountingMonth {
 	private AccountingYear accountingYear;
 
 	@OneToMany(mappedBy = "accountingMonth")
-	private List<Allocation> allocations = new ArrayList<>();
+	private List<AccountTransaction> transactions = new ArrayList<>();
 	
-	@Column(name = "allocation_sum", columnDefinition = "FLOAT")
-	private BigDecimal allocationSum;
+	@Column(name = "startValue", columnDefinition = "FLOAT")
+	private BigDecimal startValue;
+	
+	@Column(name = "transaction_sum", columnDefinition = "FLOAT")
+	private BigDecimal transactionSum;
 
 	public Integer getId() {
 		return id;
@@ -43,12 +46,12 @@ public class AccountingMonth {
 		this.id = id;
 	}
 
-	public List<Allocation> getAllocations() {
-		return allocations;
+	public List<AccountTransaction> getTransactions() {
+		return transactions;
 	}
 
-	public void setAllocations(List<Allocation> allocations) {
-		this.allocations = allocations;
+	public void setTransactions(List<AccountTransaction> transactions) {
+		this.transactions = transactions;
 	}
 
 	public int getMonth() {
@@ -67,12 +70,20 @@ public class AccountingMonth {
 		this.accountingYear = accountingYear;
 	}
 
-	public BigDecimal getAllocationSum() {
-		return allocationSum;
+	public BigDecimal getTransactionSum() {
+		return transactionSum;
 	}
 
-	public void setAllocationSum(BigDecimal allocationSum) {
-		this.allocationSum = allocationSum;
+	public void setTransactionSum(BigDecimal transactionSum) {
+		this.transactionSum = transactionSum;
+	}
+
+	public BigDecimal getStartValue() {
+		return startValue;
+	}
+
+	public void setStartValue(BigDecimal startValue) {
+		this.startValue = startValue;
 	}
 
 }

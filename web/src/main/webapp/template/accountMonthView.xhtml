@@ -8,8 +8,8 @@
 
 <h:body>
   <h:form id="form">
-        <p:dataTable id="products" var="product" value="#{accountMonthAllocationView.products}" rowKey="#{product.id}"
-                     selection="#{accountMonthAllocationView.selectedProduct}" selectionMode="single">
+        <p:dataTable id="products" var="product" value="#{accountMonthTransactionView.products}" rowKey="#{product.id}"
+                     selection="#{accountMonthTransactionView.selectedProduct}" selectionMode="single">
             <f:facet name="header">
                 RightClick to View Options
             </f:facet>
@@ -30,33 +30,33 @@
 
         <p:contextMenu for="products">
             <p:menuitem value="View" update="productDetail" icon="pi pi-search"
-                        oncomplete="PF('productDialog').show()" actionListener="#{accountMonthAllocationView.viewProduct}"/>
+                        oncomplete="PF('productDialog').show()" actionListener="#{accountMonthTransactionView.viewProduct}"/>
             <p:menuitem value="Delete" update="products" icon="pi pi-times"
-                        action="#{accountMonthAllocationView.deleteProduct}"/>
+                        action="#{accountMonthTransactionView.deleteProduct}"/>
         </p:contextMenu>
 
         <p:dialog header="Product Info" widgetVar="productDialog" modal="true" showEffect="fade"
                   hideEffect="fade" resizable="false">
             <p:outputPanel id="productDetail" style="text-align:center;">
-                <p:column rendered="#{not empty accountMonthAllocationView.selectedProduct}">
+                <p:column rendered="#{not empty accountMonthTransactionView.selectedProduct}">
                     <div class="product">
                         <div class="product-grid-item border-0" style="margin-bottom: 0">
                             <div class="product-grid-item-top">
                                 <div>
                                     <i class="pi pi-tag product-category-icon"/>
-                                    <span class="product-category">#{accountMonthAllocationView.selectedProduct.category}</span>
+                                    <span class="product-category">#{accountMonthTransactionView.selectedProduct.category}</span>
                                 </div>
-                                <span class="product-badge status-#{accountMonthAllocationView.selectedProduct.inventoryStatus.name().toLowerCase()}">#{accountMonthAllocationView.selectedProduct.inventoryStatus.text}</span>
+                                <span class="product-badge status-#{accountMonthTransactionView.selectedProduct.inventoryStatus.name().toLowerCase()}">#{accountMonthTransactionView.selectedProduct.inventoryStatus.text}</span>
                             </div>
                             <div class="product-grid-item-content">
                                 <p:graphicImage
-                                        name="demo/images/product/#{accountMonthAllocationView.selectedProduct.image}"/>
-                                <div class="product-name">#{accountMonthAllocationView.selectedProduct.name}</div>
-                                <div class="product-description">#{accountMonthAllocationView.selectedProduct.description}</div>
-                                <p:rating readonly="true" value="#{accountMonthAllocationView.selectedProduct.rating}"/>
+                                        name="demo/images/product/#{accountMonthTransactionView.selectedProduct.image}"/>
+                                <div class="product-name">#{accountMonthTransactionView.selectedProduct.name}</div>
+                                <div class="product-description">#{accountMonthTransactionView.selectedProduct.description}</div>
+                                <p:rating readonly="true" value="#{accountMonthTransactionView.selectedProduct.rating}"/>
                             </div>
                             <div class="product-grid-item-bottom">
-                                <h:outputText value="#{accountMonthAllocationView.selectedProduct.price}"
+                                <h:outputText value="#{accountMonthTransactionView.selectedProduct.price}"
                                               styleClass="product-price">
                                     <f:convertNumber currencySymbol="$" type="currency"/>
                                 </h:outputText>

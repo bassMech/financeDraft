@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.web.service.SettingsService;
+import de.bassmech.findra.web.service.SettingService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 
@@ -30,14 +30,14 @@ public class SettingsView extends ViewBase {
 	private int selectedYear;
 
 	@Autowired
-	private SettingsService settingsService;
+	private SettingService settingsService;
 
 	@PostConstruct
 	public void init() {
-		for (Locale lang : SettingsService.LANGUAGES) {
+		for (Locale lang : SettingService.LANGUAGES) {
 			selectableLanguages.put(lang.getLanguage(), lang.getDisplayLanguage(lang));
 		}
-		for (Currency currency : SettingsService.CURRENCIES) {
+		for (Currency currency : SettingService.CURRENCIES) {
 			selectableCurrencies.put(currency.getCurrencyCode(), currency.getSymbol());
 		}
 

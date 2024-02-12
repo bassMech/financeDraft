@@ -20,7 +20,7 @@
 			<column name="account_id">1</column>
 			<column name="year">2024</column>
 			<column name="start_value">0</column>
-			<column name="allocation_sum">0</column>
+			<column name="transaction_sum">0</column>
 		</insert>
 	</changeSet>
 
@@ -29,12 +29,12 @@
 			<column name="accounting_year_id">1</column>
 			<column name="month">1</column>
 			<column name="start_value">0</column>
-			<column name="allocation_sum">0</column>
+			<column name="transaction_sum">0</column>
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024-01-allocations" author="bassmech" context="test-data">
-		<insert tableName="allocation">
+	<changeSet id="first-account-2024-01-transactions" author="bassmech" context="test-data">
+		<insert tableName="account_transaction">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Miete</column>
 			<column name="description">Die Miete</column>
@@ -42,7 +42,7 @@
 			<column name="expected_day">31</column>
 			<column name="executed_at">NULL</column>
 		</insert>
-		<insert tableName="allocation">
+		<insert tableName="account_transaction">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Gehalt</column>
 			<column name="description">Da Money</column>
@@ -50,7 +50,7 @@
 			<column name="expected_day">30</column>
 			<column name="executed_at">NULL</column>
 		</insert>
-		<insert tableName="allocation">
+		<insert tableName="account_transaction">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Strom</column>
 			<column name="description">Blitz</column>
@@ -58,7 +58,7 @@
 			<column name="expected_day">11</column>
 			<column name="executed_at" valueComputed="unixepoch()"></column>
 		</insert>
-		<insert tableName="allocation">
+		<insert tableName="account_transaction">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Pacht</column>
 			<column name="description">Da Pacht</column>

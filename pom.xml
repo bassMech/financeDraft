@@ -8,7 +8,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<!-- <version>${spring-boot-starter-version}</version>-->
-		<version>3.2.2</version>
+		<version>3.1.5</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<!--remove-->
@@ -23,7 +23,7 @@
 		<maven.compiler.release>17</maven.compiler.release>
 		<java.version>17</java.version>
 		<findra-version>2024.1</findra-version>
-		<spring-boot-starter-version>3.2.2</spring-boot-starter-version>
+		<spring-boot-starter-version>3.1.5</spring-boot-starter-version>
 	</properties>
 
 	<dependencies>

@@ -9,7 +9,7 @@ public class AccountingYearViewModel implements Serializable {
 	private int id;
 	private int accountId;
 	private int year;
-	private BigDecimal allocationSum;
+	private BigDecimal transactionSum;
 	private List<AccountingMonthViewModel> months = new ArrayList<>();
 
 	public int getId() {
@@ -36,12 +36,12 @@ public class AccountingYearViewModel implements Serializable {
 		this.year = year;
 	}
 
-	public BigDecimal getAllocationSum() {
-		return allocationSum;
+	public BigDecimal getTransactionSum() {
+		return transactionSum;
 	}
 
-	public void setAllocationSum(BigDecimal allocationSum) {
-		this.allocationSum = allocationSum;
+	public void setTransactionSum(BigDecimal transactionSum) {
+		this.transactionSum = transactionSum;
 	}
 
 	public List<AccountingMonthViewModel> getMonths() {

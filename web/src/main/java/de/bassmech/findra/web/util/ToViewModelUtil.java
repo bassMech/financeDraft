@@ -6,11 +6,11 @@ import java.util.List;
 import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
-import de.bassmech.findra.model.entity.Allocation;
+import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
-import de.bassmech.findra.web.model.AllocationViewModel;
+import de.bassmech.findra.web.model.TransactionViewModel;
 
 
 public class ToViewModelUtil {
@@ -26,16 +26,16 @@ public class ToViewModelUtil {
 		return vm;
 	}
 	
-	public static List<AllocationViewModel> toViewModeList(List<Allocation> entities) {
-		List<AllocationViewModel> resultList = new ArrayList<>();
-		for (Allocation month : entities) {
+	public static List<TransactionViewModel> toViewModeList(List<AccountTransaction> entities) {
+		List<TransactionViewModel> resultList = new ArrayList<>();
+		for (AccountTransaction month : entities) {
 			resultList.add(toViewModel(month));
 		}
 		return resultList;
 	}
 	
-	public static AllocationViewModel toViewModel(Allocation entity) {
-		AllocationViewModel vm = new AllocationViewModel();
+	public static TransactionViewModel toViewModel(AccountTransaction entity) {
+		TransactionViewModel vm = new TransactionViewModel();
 		vm.setId(entity.getId());
 		vm.setTitle(entity.getTitle());
 		vm.setDescription(entity.getDescription());
@@ -52,7 +52,7 @@ public class ToViewModelUtil {
 		AccountingYearViewModel vm = new AccountingYearViewModel();
 		vm.setId(entity.getId());
 		vm.setYear(entity.getYear());
-		vm.setAllocationSum(entity.getAllocationSum());
+		vm.setTransactionSum(entity.getTransactionSum());
 		vm.setAccountId(entity.getAccount().getId());
 		
 		for (AccountingMonth month : entity.getMonths()) {
@@ -68,11 +68,13 @@ public class ToViewModelUtil {
 		vm.setAccountYearId(entity.getAccountingYear().getId());
 		vm.setMonth(entity.getMonth());
 		vm.setYear(entity.getAccountingYear().getId());
+		vm.setStartValue(entity.getStartValue());
 		
-		for (Allocation allocation : entity.getAllocations()) {
-			vm.getAllocations().add(toViewModel(allocation));
+		for (AccountTransaction transaction : entity.getTransactions()) {
+			vm.getTransactions().add(toViewModel(transaction));
 		}
 		
+		vm.recalculateTransactions();
 		return vm;
 	}
 }

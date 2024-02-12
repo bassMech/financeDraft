@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.core.repository.SettingRepository;
 import de.bassmech.findra.model.entity.Setting;
@@ -17,9 +17,9 @@ import de.bassmech.findra.model.statics.SettingCode;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.FacesContext;
 
-@Service
-public class SettingsService {
-	private Logger logger = LoggerFactory.getLogger(SettingsService.class);
+@Component
+public class SettingService {
+	private Logger logger = LoggerFactory.getLogger(SettingService.class);
 	
 	public static final List<Locale> LANGUAGES = Arrays.asList(Locale.GERMAN, Locale.ENGLISH);
 	public static final List<Currency> CURRENCIES = Arrays.asList(Currency.getInstance("EUR"),
@@ -35,6 +35,8 @@ public class SettingsService {
 	public void init() {
 		getDbLocale();
 		getDbCurrency();
+		
+		Locale.setDefault(dbLocale);
 	}
 
 	public Locale getDbLocale() {
