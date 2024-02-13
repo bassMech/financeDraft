@@ -11,7 +11,22 @@
 	<ui:define name="content">
 		<h:outputStylesheet name="account.css" library="style" />
 		<div class="grid">
-			<div class="col-4 col-offset-4 flex justify-content-evenly">
+			<div class="col-4">
+				<div class="flex justify-content-start">
+					<div>
+						<div>
+							<p:tag value="#{tags['account']}" />
+						</div>
+						<div>
+							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccount}" style="width:150px">
+								<p:ajax listener="#{accountView.onAccountChange}" />
+								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account}" />
+							</p:selectOneMenu>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-4 flex justify-content-evenly">
 				<div>
 					<div>
 						<p:tag value="#{tags['month']}" />
@@ -39,78 +54,67 @@
 			</div>
 			<div class="col-4">
 				<div class="flex justify-content-end">
-					<div>
-						<div>
-							<p:tag value="#{tags['account']}" />
+					<p:fieldset legend="#{tags['transactions']}">
+						<div class="grid">
+							<div class="col">
+								<div class="flex justify-content-end">
+									<h:outputText value="#{tags['executed']}: " />
+								</div>
+								<div class="flex justify-content-end">
+									<h:outputText value="#{tags['expected']}: " />
+								</div>
+
+							</div>
+							<div class="col">
+								<div class="flex justify-content-end">
+									<h:outputText value="#{accountView.currentAccountingMonth.transactionCountExpected}" />
+								</div>
+								<div class="flex justify-content-end">
+									<h:outputText value="#{accountView.currentAccountingMonth.transactionCountExecuted}" />
+								</div>
+							</div>
 						</div>
-						<div>
-							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccount}" style="width:150px">
-								<p:ajax listener="#{accountView.onAccountChange}" />
-								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account}" />
-							</p:selectOneMenu>
+					</p:fieldset>
+					<p:fieldset legend="#{tags['sum']}">
+						<div class="grid">
+							<div class="col">
+								<div class="flex justify-content-end">
+									<h:outputText value="#{tags['current']}: " />
+								</div>
+								<div class="flex justify-content-end">
+									<h:outputText value="#{tags['closing']}: " />
+								</div>
+							</div>
+							<div class="col">
+								<div class="flex justify-content-end">
+									<h:outputText value="#{accountView.currentAccountingMonth.getCurrentValue()}">
+										<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
+									</h:outputText>
+								</div>
+								<div class="flex justify-content-end">
+									<h:outputText value="#{accountView.currentAccountingMonth.getClosingValue()}">
+										<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
+									</h:outputText>
+								</div>
+							</div>
 						</div>
-					</div>
+					</p:fieldset>
 				</div>
 			</div>
 		</div>
+
+
 
 		<div class="card flex justify-content-start flex-wrap">
 			<p:dataTable id="transactions" var="transaction" value="#{accountView.currentAccountingMonth.transactions}" rowKey="#{transaction.id}"
 				rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}" allowUnsorting="true" sortMode="single" size="small">
 
+
+
 				<f:facet name="header">
 					<div class="flex justify-content-end">
-						<div>
-							<div class="flex justify-content-end transaction-header-side-padding bold">
-								<h:outputText value="#{tags['transactions']}: " />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{tags['executed']}: " />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{tags['expected']}: " />
-							</div>
-						</div>
-						<div>
-							<div>
-								<p:spacer width="1" height="1" />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								&#9;
-								<h:outputText value="#{accountView.currentAccountingMonth.transactionCountExecuted}" />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{accountView.currentAccountingMonth.transactionCountExpected}" />
-							</div>
-						</div>
 
-						<div>
-							<div class="flex justify-content-end transaction-header-side-padding bold">
-								<h:outputText value="#{tags['sum']}: " />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{tags['current']}: " />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{tags['closing']}: " />
-							</div>
-						</div>
-						<div>
-							<div>
-								<p:spacer width="1" height="1" />
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								&#9;
-								<h:outputText value="#{accountView.currentAccountingMonth.getCurrentValue()}">
-									<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
-								</h:outputText>
-							</div>
-							<div class="flex justify-content-end transaction-header-side-padding">
-								<h:outputText value="#{accountView.currentAccountingMonth.getClosingValue()}">
-									<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
-								</h:outputText>
-							</div>
-						</div>
+						<p:button icon="pi pi-plus"></p:button>
 
 					</div>
 				</f:facet>
