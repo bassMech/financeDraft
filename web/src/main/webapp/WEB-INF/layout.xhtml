@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
 
 <f:view locale="#{headerView.getCurrentLocale()}">
 	<ui:insert name="metadata" />
@@ -18,17 +19,18 @@
 	</h:head>
 
 
-	<h:form>
+	<h:form id ="mainForm">
+		<p:growl id="growlMessage" showDetail="true" />
 		<div id="wrapper">
 			<div id="header">
 				<ui:insert name="header">
-					<ui:include src="/template/header.xhtml" />
+					<ui:include src="/WEB-INF/header.xhtml" />
 				</ui:insert>
 			</div>
 
 			<div id="content">
 				<ui:insert name="content">
-					<ui:include src="/template/content.xhtml" />
+					<ui:include src="/WEB-INF/content.xhtml" />
 				</ui:insert>
 			</div>
 

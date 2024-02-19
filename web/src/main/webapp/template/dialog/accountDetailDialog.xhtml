@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:dialog id="accountDetailDialog" header="#{tags['account']}" width="1000" widgetVar="accountDetailDialog" showEffect="fade">
+		<p:panel>
+			<div class="grid">
+				<div class="col-6">
+					<div class="grid">
+						<div class="col-6">
+							<div>
+								<div>
+									<p:tag value="#{tags['title']}"></p:tag>
+								</div>
+								<div>
+									<p:inputText id="title" value="#{accountView.accountDialog.title}">
+										<p:ajax></p:ajax>
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div>
+								<div>
+									<p:tag value="#{tags['account.type']}"></p:tag>
+								</div>
+								<div>
+									<p:selectOneMenu id="accountTypeSelection" value="#{accountView.accountDialog.type}">
+										<f:selectItems value="#{accountView.accountTypes.entrySet()}" var="accountType" itemLabel="#{accountType.value}"
+											itemValue="#{accountType.key}" />
+										<p:ajax></p:ajax>
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="grid">
+						<div class="col-12">
+							<div>
+								<p:tag value="#{tags['description']}"></p:tag>
+							</div>
+							<div>
+								<p:inputText id="description" value="#{accountView.accountDialog.description}" style="width: 100% !important">
+									<p:ajax></p:ajax>
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-6">TAGS</div>
+			</div>
+		</p:panel>
+		<f:facet name="footer">
+			<div class="grid">
+				<div class="col-12">
+					<p:commandButton icon="pi pi-times" value="#{tags['dismiss']}" onclick="PF('accountDetailDialog').hide()" process="@this"
+						styleClass="ui-button-danger"></p:commandButton>
+					<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{accountView.closeAndSaveAccountDialog}" process="@this"></p:commandButton>
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:composition>

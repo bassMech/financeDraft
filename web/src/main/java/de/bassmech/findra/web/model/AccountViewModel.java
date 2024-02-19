@@ -2,19 +2,20 @@ package de.bassmech.findra.web.model;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 
 public class AccountViewModel implements Serializable {
 
-	private int id;
+	private Integer id;
 	private String title;
 	private String description;
 	private Instant deletedAt;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -40,6 +41,23 @@ public class AccountViewModel implements Serializable {
 
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, title);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AccountViewModel other = (AccountViewModel) obj;
+		return id == other.id && Objects.equals(title, other.title);
 	}
 
 }

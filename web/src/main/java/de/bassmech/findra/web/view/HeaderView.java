@@ -1,10 +1,13 @@
 package de.bassmech.findra.web.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.web.service.ConfigurationHolder;
+import de.bassmech.findra.web.service.SettingService;
+import jakarta.annotation.PostConstruct;
 import jakarta.faces.view.ViewScoped;
 
 @Component
@@ -16,14 +19,17 @@ public class HeaderView extends ViewBase {
 	@Autowired
 	private ConfigurationHolder configurationHolder;
 	
+	@Autowired
+	private SettingService settingService;
 	
 //	private List<LanguageViewModel> languages;
 //
 //	protected LanguageViewModel selectedLanguage;
 
-//	@PostConstruct
-//	public void init() {
-//		
+	@PostConstruct
+	@DependsOn("SettingService")
+	public void init() {
+		currentLocale = settingService.getDbLocale();
 ////		Locale browserLocale = FacesContext.getCurrentInstance()
 ////				.getViewRoot().getLocale();
 ////		Optional<LanguageViewModel> language= languages.stream().filter(x -> x.getAlphaCode().equals(browserLocale.getLanguage())).findFirst();
@@ -37,7 +43,7 @@ public class HeaderView extends ViewBase {
 //		
 //				
 //		logger.debug("init called");
-//	}
+	}
 
 //	public LanguageViewModel getSelectedLanguage() {
 //		//logger.debug("getSelectedLanguage called" + selectedLanguage.getLocale().getISO3Language());

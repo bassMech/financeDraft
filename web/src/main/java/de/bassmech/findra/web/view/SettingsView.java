@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.web.service.SettingService;
@@ -33,6 +34,7 @@ public class SettingsView extends ViewBase {
 	private SettingService settingsService;
 
 	@PostConstruct
+	@DependsOn("SettingService")
 	public void init() {
 		for (Locale lang : SettingService.LANGUAGES) {
 			selectableLanguages.put(lang.getLanguage(), lang.getDisplayLanguage(lang));

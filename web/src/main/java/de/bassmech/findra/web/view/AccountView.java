@@ -5,18 +5,28 @@ import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
+import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.RequestContext;
 
+import de.bassmech.findra.web.handler.FacesMessageHandler;
+import de.bassmech.findra.web.model.AccountDialogViewModel;
+import de.bassmech.findra.web.model.AccountType;
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
 import de.bassmech.findra.web.model.TransactionViewModel;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.SettingService;
+import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 
 @Component
@@ -41,11 +51,13 @@ public class AccountView extends ViewBase {
 
 	private List<Integer> selectableYears = new ArrayList<>();
 	private int selectedYear;
-
+	
+	private AccountDialogViewModel accountDialog = new AccountDialogViewModel();
+	
 	@PostConstruct
 	public void init() {
 		checkLanguageChange();
-		selectableAccounts = accountService.getAccountList();
+		reloadSelectableAccounts();
 
 		selectedMonth = 1;
 
@@ -56,13 +68,20 @@ public class AccountView extends ViewBase {
 			accountingYears.add(accountService.getAccountMonthsForYear(selectableAccounts.get(0).getId(), startYear));
 			currentAccountingMonth = accountingYears.get(0).getMonths().stream()
 					.filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
+			selectedAccount = selectableAccounts.get(0);
 		}
+		
+
 
 		for (int i = 1; i <= 12; i++) {
 			selectableMonths.put(i, java.time.Month.of(i).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale));
 			selectableYears.add(startYear);
 			startYear++;
 		}
+	}
+	
+	private void reloadSelectableAccounts() {
+		selectableAccounts = accountService.getAccountList();
 	}
 
 	public String getTransactionRowColorString(TransactionViewModel vm) {
@@ -108,6 +127,60 @@ public class AccountView extends ViewBase {
 
 	public void onDeleteTransactionClick() {
 		logger.debug("onDeleteTransactionClick: " + selectedTransaction.getId());
+	}
+	
+	public void openAccountDetailDialogNew() {
+		accountDialog = new AccountDialogViewModel();	
+		
+		PrimeFaces.current().ajax().update("@form");
+		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");
+	}
+	
+	public void openAccountDetailDialogEdit() {
+		accountDialog = new AccountDialogViewModel();	
+		accountDialog.setId(selectedAccount.getId());
+		accountDialog.setTitle(selectedAccount.getTitle());
+		accountDialog.setDescription(selectedAccount.getDescription());
+		accountDialog.setType(AccountType.METAL.getDbValue());
+		
+		PrimeFaces.current().ajax().update("@form");
+		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");
+	}
+	
+	public boolean isAccountDialogValid() {
+		boolean isValid = true;
+		if (accountDialog.getTitle() == null || accountDialog.getTitle().isBlank()) {
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", currentLocale)
+					, LocalizedMessageUtil.getMessage("error.title.must.not.be.empty", currentLocale));
+			isValid = false;
+		}
+//		if (accountDialog.getDescription() == null || accountDialog.getDescription().isBlank()) {
+//			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_INFO, "Info Message", "Message Content");
+//			isValid = false;
+//		}
+		return isValid;
+	}
+	
+	public void closeAndSaveAccountDialog() {
+		logger.debug("Saving account");
+		
+		if (isAccountDialogValid()) {
+			accountService.save(accountDialog);
+			reloadSelectableAccounts();
+			PrimeFaces.current().ajax().update("@form");
+		}
+	}
+	
+	public Map<Integer, String> getAccountTypes() {
+		return accountService.getAccountTypes(currentLocale);
+	}
+
+	public AccountDialogViewModel getAccountDialog() {
+		return accountDialog;
+	}
+
+	public void setAccountDialog(AccountDialogViewModel accountDialog) {
+		this.accountDialog = accountDialog;
 	}
 
 	public AccountViewModel getSelectedAccount() {
