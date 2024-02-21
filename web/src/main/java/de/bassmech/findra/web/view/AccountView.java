@@ -165,10 +165,17 @@ public class AccountView extends ViewBase {
 		logger.debug("Saving account");
 		
 		if (isAccountDialogValid()) {
-			accountService.save(accountDialog);
+			accountService.saveAccount(accountDialog);
 			reloadSelectableAccounts();
 			PrimeFaces.current().ajax().update("@form");
 		}
+	}
+	
+	public void deleteAccount() {
+		logger.debug("Deleting account with id: " + accountDialog.getId());
+		accountService.deleteAccount(accountDialog.getId());
+		reloadSelectableAccounts();
+		PrimeFaces.current().ajax().update("@form");
 	}
 	
 	public Map<Integer, String> getAccountTypes() {

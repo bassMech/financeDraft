@@ -1,5 +1,6 @@
 package de.bassmech.findra.web.service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,32 +27,33 @@ import de.bassmech.findra.web.view.ViewBase;
 @Service
 public class AccountService {
 	protected Logger logger = LoggerFactory.getLogger(AccountService.class);
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
-	
+
 	@Autowired
 	private AccountingYearRepository accountingYearRepository;
-	
+
 	private List<AccountViewModel> loadedAccounts = new ArrayList<>();
 	private Map<Integer, List<AccountingYearViewModel>> loadedAccountingYearsByAccountId = new HashMap<>();
 	private Map<Locale, Map<Integer, String>> accountTypesByLocale = new HashMap<>();
-	
+
 	public List<AccountViewModel> getAccountList() {
 		if (loadedAccounts.size() == 0) {
-			List<Account> accounts =accountRepository.findAllByDeletedAtIsNull();
+			List<Account> accounts = accountRepository.findAllByDeletedAtIsNull();
 			for (Account account : accounts) {
 				loadedAccounts.add(ToViewModelUtil.toViewModel(account));
 			}
 		}
-		
+
 		return loadedAccounts;
 	}
 
 	public AccountingYearViewModel getAccountMonthsForYear(int accountId, int year) {
-		AccountingYearViewModel yearModel = null; 
+		AccountingYearViewModel yearModel = null;
 		if (loadedAccountingYearsByAccountId.containsKey(accountId)) {
-			yearModel = loadedAccountingYearsByAccountId.get(accountId).stream().filter(entry -> entry.getYear() == year).findFirst().orElse(null);
+			yearModel = loadedAccountingYearsByAccountId.get(accountId).stream()
+					.filter(entry -> entry.getYear() == year).findFirst().orElse(null);
 		}
 		if (yearModel == null) {
 			AccountingYear entity = accountingYearRepository.findByAccountIdAndYear(accountId, year);
@@ -66,7 +68,7 @@ public class AccountService {
 		// what to do if non found?
 		return yearModel;
 	}
-	
+
 	public Map<Integer, String> getAccountTypes(Locale locale) {
 		Map<Integer, String> result = accountTypesByLocale.get(locale);
 		if (result == null) {
@@ -79,7 +81,7 @@ public class AccountService {
 		return result;
 	}
 
-	public void save(AccountDialogViewModel accountDialog) {
+	public void saveAccount(AccountDialogViewModel accountDialog) {
 		Account account;
 		if (accountDialog.getId() == null) {
 			account = new Account();
@@ -89,13 +91,27 @@ public class AccountService {
 		account.setTitle(accountDialog.getTitle());
 		account.setDescription(accountDialog.getDescription());
 		account = accountRepository.save(account);
-		
-		AccountViewModel accountVm = loadedAccounts.stream().filter(acc -> acc.getId().equals(accountDialog.getId())).findFirst().orElse(null);
+
+		AccountViewModel accountVm = loadedAccounts.stream().filter(acc -> acc.getId().equals(accountDialog.getId()))
+				.findFirst().orElse(null);
 		if (accountVm == null) {
 			loadedAccounts.add(ToViewModelUtil.toViewModel(account));
 		} else {
 			int accountIndex = loadedAccounts.indexOf(accountVm);
 			loadedAccounts.set(accountIndex, ToViewModelUtil.toViewModel(account));
 		}
+	}
+
+	public void deleteAccount(Integer accountId) {
+		logger.debug(String.format("Deleting account with id: %d" ,accountId));
+		Account account = accountRepository.findById(accountId.longValue()).orElseGet(null);
+		if (account == null) {
+			logger.error(String.format("account to delete with id %d not found", accountId));
+			return;
+		}
+		account.setDeletedAt(Instant.now());
+		accountRepository.save(account);
+		
+		loadedAccounts.removeIf(acc -> acc.getId().equals(account));
 	}
 }

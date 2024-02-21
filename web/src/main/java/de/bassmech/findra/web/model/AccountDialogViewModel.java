@@ -9,6 +9,11 @@ public class AccountDialogViewModel implements Serializable {
 	private String title;
 	private String description;
 	private int type;
+	
+	
+	public boolean isDeleteButtonRendered() {
+		return id != null;
+	}
 
 	public Integer getId() {
 		return id;
