@@ -23,6 +23,7 @@ import de.bassmech.findra.web.model.TransactionViewModel;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
+import de.bassmech.findra.web.util.statics.FormIds;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.bean.SessionScoped;
@@ -71,8 +72,6 @@ public class AccountView extends ViewBase {
 			selectedAccount = selectableAccounts.get(0);
 		}
 		
-
-
 		for (int i = 1; i <= 12; i++) {
 			selectableMonths.put(i, java.time.Month.of(i).getDisplayName(TextStyle.FULL_STANDALONE, currentLocale));
 			selectableYears.add(startYear);
@@ -143,7 +142,7 @@ public class AccountView extends ViewBase {
 		accountDialog.setDescription(selectedAccount.getDescription());
 		accountDialog.setType(AccountType.METAL.getDbValue());
 		
-		PrimeFaces.current().ajax().update("@form");
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");
 	}
 	
@@ -167,7 +166,7 @@ public class AccountView extends ViewBase {
 		if (isAccountDialogValid()) {
 			accountService.saveAccount(accountDialog);
 			reloadSelectableAccounts();
-			PrimeFaces.current().ajax().update("@form");
+			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		}
 	}
 	
@@ -175,7 +174,8 @@ public class AccountView extends ViewBase {
 		logger.debug("Deleting account with id: " + accountDialog.getId());
 		accountService.deleteAccount(accountDialog.getId());
 		reloadSelectableAccounts();
-		PrimeFaces.current().ajax().update("@form");
+		PrimeFaces.current().executeScript("PF('accountDetailDialog').hide()");
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 	
 	public Map<Integer, String> getAccountTypes() {

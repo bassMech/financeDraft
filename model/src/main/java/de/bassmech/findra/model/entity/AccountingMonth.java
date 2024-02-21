@@ -33,10 +33,10 @@ public class AccountingMonth {
 	private List<AccountTransaction> transactions = new ArrayList<>();
 	
 	@Column(name = "startValue", columnDefinition = "FLOAT")
-	private BigDecimal startValue;
+	private BigDecimal startValue = BigDecimal.ZERO;
 	
 	@Column(name = "transaction_sum", columnDefinition = "FLOAT")
-	private BigDecimal transactionSum;
+	private BigDecimal transactionSum = BigDecimal.ZERO;
 
 	public Integer getId() {
 		return id;

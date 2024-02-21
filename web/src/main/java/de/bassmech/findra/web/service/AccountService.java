@@ -1,6 +1,9 @@
 package de.bassmech.findra.web.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountingYearRepository;
 import de.bassmech.findra.model.entity.Account;
+import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.web.model.AccountDialogViewModel;
 import de.bassmech.findra.web.model.AccountType;
@@ -91,6 +95,19 @@ public class AccountService {
 		account.setTitle(accountDialog.getTitle());
 		account.setDescription(accountDialog.getDescription());
 		account = accountRepository.save(account);
+		
+		if (accountDialog.getId() == null) {
+			AccountingYear ay = new AccountingYear();
+			ay.setAccount(account);
+			ay.setYear(Year.now().getValue());
+			//ay = accountingYearRepository.save(ay);
+			
+			AccountingMonth am = new AccountingMonth();
+			am.setAccountingYear(ay);
+			am.setMonth(LocalDate.now().getMonthValue());
+			ay.getMonths().add(am);
+			ay = accountingYearRepository.save(ay);
+		}
 
 		AccountViewModel accountVm = loadedAccounts.stream().filter(acc -> acc.getId().equals(accountDialog.getId()))
 				.findFirst().orElse(null);
@@ -112,6 +129,6 @@ public class AccountService {
 		account.setDeletedAt(Instant.now());
 		accountRepository.save(account);
 		
-		loadedAccounts.removeIf(acc -> acc.getId().equals(account));
+		loadedAccounts.removeIf(acc -> acc.getId().equals(accountId));
 	}
 }

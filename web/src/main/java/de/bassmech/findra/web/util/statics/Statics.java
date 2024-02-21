@@ -1,4 +1,4 @@
-package de.bassmech.findra.web.util;
+package de.bassmech.findra.web.util.statics;
 
 public class Statics {
 	public static final String TAGS_BUNDLE_PATH = "strings.tags";
