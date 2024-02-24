@@ -17,10 +17,10 @@ public class ToViewModelUtil {
 	
 	public static AccountViewModel toViewModel(Account entity) {
 		AccountViewModel vm = new AccountViewModel();
-		
 		vm.setId(entity.getId());
 		vm.setTitle(entity.getTitle());
 		vm.setDescription(entity.getDescription());
+		vm.setStartingYear(entity.getStartingYear());
 		vm.setDeletedAt(entity.getDeletedAt());
 		
 		return vm;
@@ -52,12 +52,14 @@ public class ToViewModelUtil {
 		AccountingYearViewModel vm = new AccountingYearViewModel();
 		vm.setId(entity.getId());
 		vm.setYear(entity.getYear());
+		vm.setStartValue(entity.getStartValue());
 		vm.setTransactionSum(entity.getTransactionSum());
 		vm.setAccountId(entity.getAccount().getId());
 		
 		for (AccountingMonth month : entity.getMonths()) {
 			vm.getMonths().add(toViewModel(month));
 		}
+		vm.addDraftMonths();
 		
 		return vm;
 	}

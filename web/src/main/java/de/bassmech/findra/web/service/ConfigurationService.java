@@ -13,7 +13,7 @@ import de.bassmech.findra.model.statics.ConfigurationCode;
 import jakarta.annotation.PostConstruct;
 
 @Service
-public class ConfigurationHolder {
+public class ConfigurationService {
 	private Map<ConfigurationCode, String> configurationMap;
 	
 	@Autowired

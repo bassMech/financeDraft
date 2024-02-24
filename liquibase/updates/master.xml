@@ -14,9 +14,9 @@
 	<!-- keep "version-update" changeSet as last entry -->
 	<changeSet id="version-update" author="bassmech" runAlways="true" context="default">
 		<update tableName="configuration">
-			<column name="code">project.version</column>
 			<column name="entry">${project.version}</column>
 			<column name="updated_at" valueComputed="unixepoch()"></column>
+			<where>code="project.version"</where>
 		</update>
 	</changeSet>
 	

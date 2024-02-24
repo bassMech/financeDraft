@@ -28,6 +28,9 @@ public class Account {
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 	
+	@Column(name = "starting_year", columnDefinition = "INTEGER")
+	private Integer startingYear;
+	
 	@Column(name = "deleted_at", columnDefinition = "Integer")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant deletedAt;
@@ -62,6 +65,14 @@ public class Account {
 
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+
+	public Integer getStartingYear() {
+		return startingYear;
+	}
+
+	public void setStartingYear(Integer startingYear) {
+		this.startingYear = startingYear;
 	}
 
 }

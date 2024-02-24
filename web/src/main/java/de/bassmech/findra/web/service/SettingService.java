@@ -6,14 +6,17 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import de.bassmech.findra.core.repository.ConfigurationRepository;
 import de.bassmech.findra.core.repository.SettingRepository;
 import de.bassmech.findra.model.entity.Setting;
 import de.bassmech.findra.model.statics.SettingCode;
+import de.bassmech.findra.web.util.statics.FormIds;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.context.FacesContext;
 
@@ -27,7 +30,7 @@ public class SettingService {
 
 	@Autowired
 	private SettingRepository settingRespoRepository;
-
+	
 	private Locale dbLocale;
 	private Currency dbCurrency;
 	
@@ -77,6 +80,7 @@ public class SettingService {
 		Locale.setDefault(dbLocale);
 		logger.info("language updated to: " + FacesContext.getCurrentInstance()
 		.getViewRoot().getLocale().getISO3Language());
+		//PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 	
 	public Currency getDbCurrency() {

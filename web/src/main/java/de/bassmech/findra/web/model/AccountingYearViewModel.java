@@ -3,28 +3,46 @@ package de.bassmech.findra.web.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AccountingYearViewModel implements Serializable {
-	private int id;
-	private int accountId;
+	private Integer id;
+	private Integer accountId;
 	private int year;
+	private BigDecimal startValue;
 	private BigDecimal transactionSum;
 	private List<AccountingMonthViewModel> months = new ArrayList<>();
 
-	public int getId() {
+	public void addDraftMonths() {
+		if (months.size() < 12) {
+			for (int iMonth = 1; iMonth <= 12; iMonth++) {
+				final int finalMonth = iMonth;
+				if (months.stream().noneMatch(month -> month.getMonth() == finalMonth)) {
+					AccountingMonthViewModel month = new AccountingMonthViewModel();
+					month.setAccountYearId(id);
+					// month.setStartValue(BigDecimal.ZERO); TODO add start and final values
+					month.setMonth(iMonth);
+					months.add(month);
+				}
+			}
+			months.sort(Comparator.comparing(AccountingMonthViewModel::getMonth));
+		}
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getAccountId() {
+	public Integer getAccountId() {
 		return accountId;
 	}
 
-	public void setAccountId(int accountId) {
+	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
 	}
 
@@ -50,6 +68,14 @@ public class AccountingYearViewModel implements Serializable {
 
 	public void setMonths(List<AccountingMonthViewModel> months) {
 		this.months = months;
+	}
+
+	public BigDecimal getStartValue() {
+		return startValue;
+	}
+
+	public void setStartValue(BigDecimal startValue) {
+		this.startValue = startValue;
 	}
 
 }

@@ -8,20 +8,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.web.service.SettingService;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.view.ViewScoped;
 
 @Component
-@ViewScoped
-public class SettingsView extends ViewBase {
+@SessionScoped
+public class SettingsView{
 
 	private static final long serialVersionUID = 1L;
-
+	private Logger logger = LoggerFactory.getLogger(SettingsView.class);
+	
 	private String selectedLanguage;
 	private String selectedCurrency;
 	private Map<String, String> selectableLanguages = new HashMap<>();

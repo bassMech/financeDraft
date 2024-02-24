@@ -16,7 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import de.bassmech.findra.web.view.ViewBase;
 import jakarta.faces.webapp.FacesServlet;
 
 
@@ -30,7 +29,7 @@ public class StartApplication {
 	@Autowired 
 	Environment env;
 	
-	protected Logger logger = LoggerFactory.getLogger(ViewBase.class);
+	protected Logger logger = LoggerFactory.getLogger(StartApplication.class);
 	
 	public static void main(String[] args) {
 		System.out.println("before");

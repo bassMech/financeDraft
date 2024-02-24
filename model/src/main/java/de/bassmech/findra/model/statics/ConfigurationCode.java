@@ -1,7 +1,9 @@
 package de.bassmech.findra.model.statics;
 
 public enum ConfigurationCode {
-	PROJECT_VERSION("project.version")
+	PROJECT_VERSION("project.version"),
+	YEAR_RANGE_MIN("year.range.min"),
+	YEAR_RANGE_MAX("year.range.max"),
 	;
 	
 	private String dbValue;

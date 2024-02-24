@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:dialog id="transactionDetailDialog" header="#{tags['transaction']}" width="auto" responsive="true" widgetVar="transactionDetailDialog"
+		showEffect="fade">
+		<p:panel>
+			<div class="flex align-content-end gap-2">
+				<p:fieldset legend="#{tags['data']}">
+					<div class="flex gap-2">
+						<div>
+							<div>
+								<p:tag value="#{tags['title']}"></p:tag>
+							</div>
+							<div>
+								<p:inputText id="title" value="#{accountView.transactionDialog.title}">
+									<p:ajax></p:ajax>
+								</p:inputText>
+							</div>
+						</div>
+						<div>
+							<div>
+								<p:tag value="#{tags['description']}"></p:tag>
+							</div>
+							<div>
+								<p:inputText id="description" value="#{accountView.transactionDialog.description}" style="width: 100% !important">
+									<p:ajax></p:ajax>
+								</p:inputText>
+							</div>
+						</div>
+						<div>
+							<div>
+								<p:tag value="#{tags['value']}"></p:tag>
+							</div>
+							<div>
+								<p:inputNumber id="value" value="#{accountView.transactionDialog.value}" decimalPlaces="2"
+									symbol="#{accountView.settingService.dbCurrency.symbol}" symbolPosition="s" emptyValue="zero">
+									<p:ajax></p:ajax>
+								</p:inputNumber>
+							</div>
+						</div>
+					</div>
+				</p:fieldset>
+				<p:fieldset legend="#{tags['date']}">
+					<div class="flex gap-2">
+						<div>
+							<div>
+								<p:tag value="#{tags['expected']}"></p:tag>
+							</div>
+							<div>
+								<p:selectOneMenu id="expectedDaySelect" value="#{accountView.selectedYear}">
+									<!-- <p:ajax listener="#{accountView.onYearChanged}" update="transactions" /> -->
+									<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+						<div>
+							<div>
+								<p:tag value="#{tags['executed']}"></p:tag>
+							</div>
+							<div>
+								<p:datePicker id="exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionDialog.executedAt}" monthNavigator="true"
+									yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}" locale="#{accountView.getCurrentLocale().getLanguage()}" />
+							</div>
+						</div>
+					</div>
+				</p:fieldset>
+			</div>
+
+		</p:panel>
+		<f:facet name="footer">
+			<div class="grid">
+				<div class="col-6 flex justify-content-start">
+					<p:commandButton icon="pi pi-times" value="#{tags['delete']}" actionListener="#{accountView.deleteTransaction}" process="@this"
+						styleClass="ui-button-danger" rendered="#{accountView.transactionDialog.isDeleteButtonRendered()}">
+						<p:confirm header="#{messages['please.confirm']}" message="#{messages['account.delete.confirm']}" icon="pi pi-info-circle" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+						<p:commandButton value="#{tags['cancel']}" type="button" styleClass="ui-confirmdialog-no ui-button-flat" />
+						<p:commandButton value="#{tags['confirm']}" type="button" styleClass="ui-confirmdialog-yes" />
+					</p:confirmDialog>
+				</div>
+				<div class="col-6 flex justify-content-end">
+					<p:commandButton icon="pi pi-undo" value="#{tags['dismiss']}" onclick="PF('transactionDetailDialog').hide()" process="@this"></p:commandButton>
+					<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{accountView.closeDialogAndSaveTransaction}"
+						process="@this" styleClass="ui-button-success"></p:commandButton>
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:composition>

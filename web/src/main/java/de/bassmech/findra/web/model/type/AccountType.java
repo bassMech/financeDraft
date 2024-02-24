@@ -1,9 +1,9 @@
-package de.bassmech.findra.web.model;
+package de.bassmech.findra.web.model.type;
 
 public enum AccountType {
 	TRANSCATION(0, "account.transaction"),
-	METAL(1, "account.metal"),
-	SECURITIES(2, "account.securities")
+	//METAL(1, "account.metal"),
+	//SECURITIES(2, "account.securities")
 	;
 			
 	private int dbValue;

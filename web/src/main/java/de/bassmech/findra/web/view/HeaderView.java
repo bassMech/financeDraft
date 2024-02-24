@@ -1,23 +1,29 @@
 package de.bassmech.findra.web.view;
 
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.statics.ConfigurationCode;
-import de.bassmech.findra.web.service.ConfigurationHolder;
+import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.view.ViewScoped;
 
 @Component
-@ViewScoped
-public class HeaderView extends ViewBase {
+@SessionScoped
+public class HeaderView {
+	private Logger logger = LoggerFactory.getLogger(HeaderView.class);
 //	@Inject
 //	LanguageService languageService;
 	
 	@Autowired
-	private ConfigurationHolder configurationHolder;
+	private ConfigurationService configurationHolder;
 	
 	@Autowired
 	private SettingService settingService;
@@ -29,7 +35,7 @@ public class HeaderView extends ViewBase {
 	@PostConstruct
 	@DependsOn("SettingService")
 	public void init() {
-		currentLocale = settingService.getDbLocale();
+//		currentLocale = settingService.getDbLocale();
 ////		Locale browserLocale = FacesContext.getCurrentInstance()
 ////				.getViewRoot().getLocale();
 ////		Optional<LanguageViewModel> language= languages.stream().filter(x -> x.getAlphaCode().equals(browserLocale.getLanguage())).findFirst();
@@ -65,6 +71,10 @@ public class HeaderView extends ViewBase {
 //		logger.info("language updated to: " + FacesContext.getCurrentInstance()
 //		.getViewRoot().getLocale().getISO3Language());
 //	}
+	
+	public Locale getCurrentLocale() {
+		return Locale.getDefault();
+	}
 	
 	public String getVersion() {
 		return configurationHolder.getByCode(ConfigurationCode.PROJECT_VERSION);

@@ -5,7 +5,7 @@
 			<div class="grid">
 				<div class="col-6">
 					<div class="grid">
-						<div class="col-6">
+						<div class="col-12">
 							<div>
 								<div>
 									<p:tag value="#{tags['title']}"></p:tag>
@@ -14,6 +14,19 @@
 									<p:inputText id="title" value="#{accountView.accountDialog.title}">
 										<p:ajax></p:ajax>
 									</p:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div>
+								<div>
+									<p:tag value="#{tags['year.starting']}"></p:tag>
+								</div>
+								<div>
+									<p:inputNumber id="startYear" value="#{accountView.accountDialog.startingYear}"
+										decimalPlaces="0" thousandSeparator="" >
+										<p:ajax></p:ajax>
+									</p:inputNumber>
 								</div>
 							</div>
 						</div>
@@ -62,7 +75,7 @@
 				</div>
 				<div class="col-6 flex justify-content-end">
 					<p:commandButton icon="pi pi-undo" value="#{tags['dismiss']}" onclick="PF('accountDetailDialog').hide()" process="@this"></p:commandButton>
-					<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{accountView.closeAndSaveAccountDialog}" process="@this"
+					<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{accountView.closeDialogAndSaveAccount}" process="@this"
 						styleClass="ui-button-success"></p:commandButton>
 				</div>
 			</div>

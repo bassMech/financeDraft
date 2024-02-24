@@ -2,7 +2,6 @@ package de.bassmech.findra.web.service;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,16 +16,19 @@ import org.springframework.stereotype.Service;
 
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountingYearRepository;
+import de.bassmech.findra.core.repository.TransactionRepository;
 import de.bassmech.findra.model.entity.Account;
+import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
-import de.bassmech.findra.web.model.AccountDialogViewModel;
-import de.bassmech.findra.web.model.AccountType;
+import de.bassmech.findra.web.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.model.AccountViewModel;
+import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
+import de.bassmech.findra.web.model.TransactionDetailDialogViewModel;
+import de.bassmech.findra.web.model.type.AccountType;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.ToViewModelUtil;
-import de.bassmech.findra.web.view.ViewBase;
 
 @Service
 public class AccountService {
@@ -37,6 +39,9 @@ public class AccountService {
 
 	@Autowired
 	private AccountingYearRepository accountingYearRepository;
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
 
 	private List<AccountViewModel> loadedAccounts = new ArrayList<>();
 	private Map<Integer, List<AccountingYearViewModel>> loadedAccountingYearsByAccountId = new HashMap<>();
@@ -53,7 +58,7 @@ public class AccountService {
 		return loadedAccounts;
 	}
 
-	public AccountingYearViewModel getAccountMonthsForYear(int accountId, int year) {
+	public AccountingYearViewModel getAccountYear(int accountId, int year) {
 		AccountingYearViewModel yearModel = null;
 		if (loadedAccountingYearsByAccountId.containsKey(accountId)) {
 			yearModel = loadedAccountingYearsByAccountId.get(accountId).stream()
@@ -85,7 +90,7 @@ public class AccountService {
 		return result;
 	}
 
-	public void saveAccount(AccountDialogViewModel accountDialog) {
+	public void saveAccount(AccountDetailDialogViewModel accountDialog) {
 		Account account;
 		if (accountDialog.getId() == null) {
 			account = new Account();
@@ -94,14 +99,14 @@ public class AccountService {
 		}
 		account.setTitle(accountDialog.getTitle());
 		account.setDescription(accountDialog.getDescription());
+		account.setStartingYear(accountDialog.getStartingYear());
 		account = accountRepository.save(account);
-		
+
 		if (accountDialog.getId() == null) {
 			AccountingYear ay = new AccountingYear();
 			ay.setAccount(account);
 			ay.setYear(Year.now().getValue());
-			//ay = accountingYearRepository.save(ay);
-			
+
 			AccountingMonth am = new AccountingMonth();
 			am.setAccountingYear(ay);
 			am.setMonth(LocalDate.now().getMonthValue());
@@ -120,7 +125,7 @@ public class AccountService {
 	}
 
 	public void deleteAccount(Integer accountId) {
-		logger.debug(String.format("Deleting account with id: %d" ,accountId));
+		logger.debug(String.format("Deleting account with id: %d", accountId));
 		Account account = accountRepository.findById(accountId.longValue()).orElseGet(null);
 		if (account == null) {
 			logger.error(String.format("account to delete with id %d not found", accountId));
@@ -128,7 +133,83 @@ public class AccountService {
 		}
 		account.setDeletedAt(Instant.now());
 		accountRepository.save(account);
-		
+
 		loadedAccounts.removeIf(acc -> acc.getId().equals(accountId));
 	}
+
+	public void saveTransaction(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
+		Integer accountId = transactionDialog.getAccountId();
+		// check loaded
+		AccountingYearViewModel yearVm = loadedAccountingYearsByAccountId.get(accountId).stream()
+				.filter(yearX -> yearX.getYear() == year).findFirst().orElse(null);
+		// check repo
+		AccountingYear accountingYear = null;
+		if (yearVm == null) {
+			accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
+			if (accountingYear == null) {
+				Account account = accountRepository.findById(accountId.longValue()).get();
+				accountingYear = new AccountingYear();
+				accountingYear.setAccount(account);
+				accountingYear.setYear(year);
+
+				accountingYear = accountingYearRepository.save(accountingYear);
+			}
+			yearVm = ToViewModelUtil.toViewModel(accountingYear);
+			loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+		}
+
+		AccountingMonthViewModel monthVm = yearVm.getMonths().stream().filter(monthX -> monthX.getMonth() == month)
+				.findFirst().orElse(null);
+		AccountingMonth newMonth = null;
+		if (accountingYear == null) {
+			accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId,
+					year);
+		}
+		if (monthVm == null || monthVm.getId() == null) {
+			newMonth = new AccountingMonth();
+			newMonth.setAccountingYear(accountingYear);
+			newMonth.setMonth(month);
+			accountingYear.getMonths().add(newMonth);
+
+			accountingYear = accountingYearRepository.save(accountingYear);
+			yearVm.getMonths().removeIf(x -> x.getMonth() == month);
+			newMonth = accountingYear.getMonths().stream().filter(monthX -> monthX.getMonth() == month).findFirst()
+					.orElse(null);
+
+			monthVm = ToViewModelUtil.toViewModel(newMonth);
+			yearVm.getMonths().add(monthVm);
+		}
+
+		AccountTransaction transaction;
+		if (newMonth == null) {
+			newMonth = accountingYear.getMonths().stream().filter(monthX -> monthX.getMonth() == month).findFirst()
+					.orElse(null);
+		}
+		if (transactionDialog.getId() != null) {
+			transaction = newMonth.getTransactions().stream().filter(tr -> tr.getId() == transactionDialog.getId()).findFirst().orElse(null);
+		} else {
+			transaction = new AccountTransaction();
+			transaction.setAccountingMonth(newMonth);
+		}
+		
+		transaction.setTitle(transactionDialog.getTitle());
+		transaction.setDescription(transaction.getDescription());
+		transaction.setValue(transactionDialog.getValue());
+		transaction.setExecutedAt(transactionDialog.getExecutedAt());
+		transaction.setExpectedDay(transaction.getExpectedDay());
+		
+		transaction = transactionRepository.save(transaction);
+
+		if (transactionDialog.getId() == null) {
+			
+			newMonth.getTransactions().add(transaction);
+		}		
+
+		accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
+		yearVm = ToViewModelUtil.toViewModel(accountingYear);
+				
+		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
+		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+	}
+
 }

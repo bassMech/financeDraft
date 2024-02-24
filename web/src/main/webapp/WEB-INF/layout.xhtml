@@ -1,25 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 <f:view locale="#{headerView.getCurrentLocale()}">
 	<ui:insert name="metadata" />
 
 	<h:head>
-		<h:outputStylesheet
-			name="primeflex/node_modules/primeflex/primeflex.css" library="style" />
+		<h:outputStylesheet name="primeflex/node_modules/primeflex/primeflex.css" library="style" />
 		<h:outputStylesheet name="header.css" library="style" />
 		<h:outputStylesheet name="content.css" library="style" />
 		<h:outputStylesheet name="footer.css" library="style" />
 	</h:head>
 
+	<script>
+		PrimeFaces.locales['de'] = {
+			closeText : 'Schließen',
+			prevText : 'Zurück',
+			nextText : 'Weiter',
+			monthNames : [ 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+					'Juli', 'August', 'September', 'Oktober', 'November',
+					'Dezember' ],
+			monthNamesShort : [ 'Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+					'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez' ],
+			dayNames : [ 'Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
+					'Donnerstag', 'Freitag', 'Samstag' ],
+			dayNamesShort : [ 'Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam' ],
+			dayNamesMin : [ 'S', 'M', 'D', 'M ', 'D', 'F ', 'S' ],
+			weekHeader : 'Woche',
+			firstDay : 1,
+			isRTL : false,
+			showMonthAfterYear : false,
+			yearSuffix : '',
+			timeOnlyTitle : 'Nur Zeit',
+			timeText : 'Zeit',
+			hourText : 'Stunde',
+			minuteText : 'Minute',
+			secondText : 'Sekunde',
+			millisecondText : 'Millisekunde',
+			currentText : 'Aktuelles Datum',
+			ampm : false,
+			month : 'Monat',
+			week : 'Woche',
+			day : 'Tag',
+			allDayText : 'Ganzer Tag',
+			today : 'Heute',
+			clear : 'Löschen'
+		};
+	</script>
 
-	<h:form id ="mainForm">
+	<h:form id="mainForm">
 		<p:growl id="growlMessage" showDetail="true" />
 		<div id="wrapper">
 			<div id="header">

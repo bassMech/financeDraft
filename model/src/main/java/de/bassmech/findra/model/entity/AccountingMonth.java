@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class AccountingMonth {
 	@JoinColumn(referencedColumnName = "id", name = "accounting_year_id")
 	private AccountingYear accountingYear;
 
-	@OneToMany(mappedBy = "accountingMonth")
+	@OneToMany(mappedBy = "accountingMonth", cascade = CascadeType.ALL)
 	private List<AccountTransaction> transactions = new ArrayList<>();
 	
 	@Column(name = "startValue", columnDefinition = "FLOAT")

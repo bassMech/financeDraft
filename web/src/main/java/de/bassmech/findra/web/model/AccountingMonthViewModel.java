@@ -6,23 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountingMonthViewModel implements Serializable {
-	private int id;
-	private int accountYearId;
+	private Integer id;
+	private Integer accountYearId;
 	private int year;
 	private int month;
-	private BigDecimal startValue;
-	private BigDecimal transactionValueExpected;
-	private BigDecimal transactionValueExecuted;
-	private int transactionCountExpected;
-	private int transactionCountExecuted;
+	private BigDecimal startValue = BigDecimal.ZERO;
+	private BigDecimal transactionValueExpected = BigDecimal.ZERO;
+	private BigDecimal transactionValueExecuted = BigDecimal.ZERO;
+	private int transactionCountExpected = 0;
+	private int transactionCountExecuted = 0;
 	private List<TransactionViewModel> transactions = new ArrayList<>();
-	
+
 	public void recalculateTransactions() {
+		startValue = BigDecimal.ZERO;
 		transactionValueExpected = BigDecimal.ZERO;
 		transactionValueExecuted = BigDecimal.ZERO;
 		transactionCountExpected = 0;
 		transactionCountExecuted = 0;
-		
+
 		for (TransactionViewModel transaction : transactions) {
 			if (transaction.getExecutedAt() == null) {
 				transactionValueExpected = transactionValueExecuted.add(transaction.getValue());
@@ -33,28 +34,28 @@ public class AccountingMonthViewModel implements Serializable {
 			}
 		}
 	}
-	
+
 	public BigDecimal getCurrentValue() {
 		return startValue.add(transactionValueExecuted);
 	}
-	
+
 	public BigDecimal getClosingValue() {
 		return startValue.add(transactionValueExecuted).add(transactionValueExpected);
 	}
-	
-	public int getId() {
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getAccountYearId() {
+	public Integer getAccountYearId() {
 		return accountYearId;
 	}
 
-	public void setAccountYearId(int accountYearId) {
+	public void setAccountYearId(Integer accountYearId) {
 		this.accountYearId = accountYearId;
 	}
 

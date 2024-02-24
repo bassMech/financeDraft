@@ -1,16 +1,21 @@
 package de.bassmech.findra.web.model;
 
 import java.io.Serializable;
+import java.time.Year;
 
-public class AccountDialogViewModel implements Serializable {
+public class AccountDetailDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String title;
 	private String description;
-	private int type;
-	
-	
+	private int startingYear;
+	private int type;	
+		
+	public AccountDetailDialogViewModel() {
+		startingYear = Year.now().getValue();
+	}
+
 	public boolean isDeleteButtonRendered() {
 		return id != null;
 	}
@@ -45,6 +50,14 @@ public class AccountDialogViewModel implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public int getStartingYear() {
+		return startingYear;
+	}
+
+	public void setStartingYear(int startYear) {
+		this.startingYear = startYear;
 	}
 
 }

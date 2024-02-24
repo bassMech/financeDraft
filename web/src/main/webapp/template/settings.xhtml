@@ -4,7 +4,6 @@
 	<ui:define name="metadata">
 		<title>#{tags['settings']}</title>
 		<f:metadata>
-			<f:event type="preRenderView" listener="#{accountView.checkLanguageChange()}" />
 		</f:metadata>
 	</ui:define>
 
@@ -18,6 +17,7 @@
 			</div>
 			<div class="col-2 flex justify-content-start align-content-center">
 				<p:selectOneMenu id="languageSelect" value="#{settingsView.selectedLanguage}">
+					<p:ajax></p:ajax>
 					<f:selectItems value="#{settingsView.selectableLanguages.entrySet()}" var="language" 
 						itemLabel="#{language.value}" itemValue="#{language.key}" />
 				</p:selectOneMenu>
@@ -39,7 +39,7 @@
 
 		<div class="grid">
 			<div class="col-2 col-offset-6 flex justify-content-start">
-				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@form" update="@form"></p:commandButton>
+				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@this" update=":mainForm"></p:commandButton>
 			</div>
 		</div>
 

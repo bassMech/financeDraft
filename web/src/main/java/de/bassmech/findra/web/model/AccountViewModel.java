@@ -9,6 +9,7 @@ public class AccountViewModel implements Serializable {
 	private Integer id;
 	private String title;
 	private String description;
+	private int startingYear;
 	private Instant deletedAt;
 
 	public Integer getId() {
@@ -41,6 +42,14 @@ public class AccountViewModel implements Serializable {
 
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+	
+	public int getStartingYear() {
+		return startingYear;
+	}
+
+	public void setStartingYear(int startingYear) {
+		this.startingYear = startingYear;
 	}
 
 	@Override

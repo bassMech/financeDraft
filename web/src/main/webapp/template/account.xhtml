@@ -4,7 +4,7 @@
 	<ui:define name="metadata">
 		<title>#{tags['accounts']}</title>
 		<f:metadata>
-			<f:event type="preRenderView" listener="#{accountView.checkLanguageChange()}" />
+			
 		</f:metadata>
 	</ui:define>
 
@@ -16,9 +16,9 @@
 				<div class="flex justify-content-start">
 					<p:fieldset legend="#{tags['account']}">
 						<div class="flex align-content-center gap-1">
-							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccount}" style="width:150px">
-								<p:ajax listener="#{accountView.onAccountChange}" />
-								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account}" />
+							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccountId}" style="width:150px">
+								<p:ajax listener="#{accountView.onAccountChanged}" update="transactions" />
+								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account.id}" />
 							</p:selectOneMenu>
 							<p:commandButton icon="pi pi-plus" action="#{accountView.openAccountDetailDialogNew}" process="@this" update="accountDetailDialog"></p:commandButton>
 							<p:commandButton icon="pi pi-pencil" action="#{accountView.openAccountDetailDialogEdit}" process="@this" update="accountDetailDialog"></p:commandButton>
@@ -30,19 +30,21 @@
 
 				<p:fieldset legend="#{tags['month']}">
 					<div class="flex align-content-center gap-1">
-						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousMonthClick}" process="@this" update="monthSelect" />
+						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousMonthClick}" process="@this"
+							update="monthSelect, yearSelect, transactions" />
 						<p:selectOneMenu id="monthSelect" value="#{accountView.selectedMonth}" style="width:150px">
-							<p:ajax listener="#{accountView.onMonthChanged}" />
+							<p:ajax listener="#{accountView.onMonthChanged}" update="transactions" />
 							<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
 						</p:selectOneMenu>
-						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextMonthClick}" process="@this" update="monthSelect" />
+						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextMonthClick}" process="@this"
+							update="monthSelect, yearSelect, transactions" />
 					</div>
 				</p:fieldset>
 
 				<p:fieldset legend="#{tags['year']}">
 					<div>
 						<p:selectOneMenu id="yearSelect" value="#{accountView.selectedYear}" style="width:150px">
-							<p:ajax listener="#{accountView.onYearChanged}" />
+							<p:ajax listener="#{accountView.onYearChanged}" update="transactions" />
 							<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
 						</p:selectOneMenu>
 					</div>
@@ -99,20 +101,17 @@
 			</div>
 		</div>
 
-
-
 		<div class="card flex justify-content-start flex-wrap">
 			<p:dataTable id="transactions" var="transaction" value="#{accountView.currentAccountingMonth.transactions}" rowKey="#{transaction.id}"
 				rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}" allowUnsorting="true" sortMode="single" size="small">
 
-
-
 				<f:facet name="header">
 					<div class="flex justify-content-end">
-
-						<p:button icon="pi pi-plus"></p:button>
-
+						<p:commandButton icon="pi pi-plus" action="#{accountView.openTransactionDetailDialogNew}" process="@this"
+							update="transactionDetailDialog"></p:commandButton>
 					</div>
+					<ui:include src="/template/dialog/transactionDetailDialog.xhtml">
+					</ui:include>
 				</f:facet>
 				<p:column style="width:2rem">
 					<p:rowToggler />
