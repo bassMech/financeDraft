@@ -12,37 +12,25 @@ public class LocalizedMessageUtil {
 	private static Logger logger = LoggerFactory.getLogger(LocalizedMessageUtil.class);
 
 	public static String getMessage(String key, Locale locale) {
-		ResourceBundle bundle = ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale);
-		String value = null;
-		try {
-			value = bundle.getString(key);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		return value;
+		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, null);
 	}
 	
 	public static String getMessage(String key, Locale locale, Object... params) {
-		ResourceBundle bundle = ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale);
-		String value = null;
-		try {
-			value = bundle.getString(key);
-			value = value.formatted(params);
-			
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		return value;
+		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, params);
 	}
 
 	public static String getTag(String key, Locale locale) {
-		ResourceBundle bundle = ResourceBundle.getBundle(Statics.TAGS_BUNDLE_PATH, locale);
-
+		return getFromBundle( ResourceBundle.getBundle(Statics.TAGS_BUNDLE_PATH, locale), key, locale, null);
+	}
+	
+	private static String getFromBundle(ResourceBundle bundle, String key, Locale locale, Object... params) {
 		String value = null;
 		try {
 			value = bundle.getString(key);
+			if (params != null) {
+				value = value.formatted(params);
+			}
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

@@ -15,25 +15,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.core.repository.ConfigurationRepository;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
-import de.bassmech.findra.web.model.AccountDetailDialogViewModel;
-import de.bassmech.findra.web.model.AccountViewModel;
-import de.bassmech.findra.web.model.AccountingMonthViewModel;
-import de.bassmech.findra.web.model.AccountingYearViewModel;
-import de.bassmech.findra.web.model.TransactionDetailDialogViewModel;
-import de.bassmech.findra.web.model.TransactionViewModel;
-import de.bassmech.findra.web.model.type.AccountType;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.ConfigurationService;
-import de.bassmech.findra.web.service.LanguageService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.statics.FormIds;
+import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountViewModel;
+import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
+import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.TransactionViewModel;
+import de.bassmech.findra.web.view.model.type.AccountType;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.application.FacesMessage.Severity;
 import jakarta.faces.view.ViewScoped;
 
 @Component

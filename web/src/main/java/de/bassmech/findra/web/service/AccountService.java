@@ -21,14 +21,14 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
-import de.bassmech.findra.web.model.AccountDetailDialogViewModel;
-import de.bassmech.findra.web.model.AccountViewModel;
-import de.bassmech.findra.web.model.AccountingMonthViewModel;
-import de.bassmech.findra.web.model.AccountingYearViewModel;
-import de.bassmech.findra.web.model.TransactionDetailDialogViewModel;
-import de.bassmech.findra.web.model.type.AccountType;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.ToViewModelUtil;
+import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountViewModel;
+import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
+import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.type.AccountType;
 
 @Service
 public class AccountService {

@@ -1,7 +1,6 @@
 # financeDraft
 
 ToDo
-- tag edit not working
 - Converter
 - same naming for xhtml called methods
 - TagDialog
@@ -12,3 +11,5 @@ ToDo
 - setting start values based on month before and after
 - create tags
 - create new transaction
+
+- table filter

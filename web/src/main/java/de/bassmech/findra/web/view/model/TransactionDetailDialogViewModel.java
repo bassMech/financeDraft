@@ -1,4 +1,4 @@
-package de.bassmech.findra.web.model;
+package de.bassmech.findra.web.view.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

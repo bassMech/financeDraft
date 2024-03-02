@@ -19,3 +19,7 @@
 .margin-top-1em {
 	margin-top: 1em;
 }
+
+.no-header-table > div.ui-datatable-tablewrapper > table > thead > tr{
+	display: none;
+}

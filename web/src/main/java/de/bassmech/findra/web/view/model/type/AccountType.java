@@ -1,4 +1,4 @@
-package de.bassmech.findra.web.model.type;
+package de.bassmech.findra.web.view.model.type;
 
 public enum AccountType {
 	TRANSCATION(0, "account.transaction"),

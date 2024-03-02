@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:dialog id="tagDetailDialog" header="#{tags['tag']}" width="1000" widgetVar="tagDetailDialog" showEffect="fade">
+		<p:panel>
+			<div class="grid">
+				<div class="col-6">
+					<div class="grid">
+						<div class="col-12">
+							<div>
+								<div>
+									<p:tag value="#{tags['title']}"></p:tag>
+								</div>
+								<div>
+									<p:inputText id="title" value="#{tagView.tagDialog.title}">
+										<p:ajax></p:ajax>
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div>
+								<div>
+									<p:tag value="#{tags['year.starting']}"></p:tag>
+								</div>
+								<div>
+									
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div>
+								<div>
+									<p:tag value="#{tags['account.type']}"></p:tag>
+								</div>
+								<div>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="grid">
+						<div class="col-12">
+							<div>
+								<p:tag value="#{tags['description']}"></p:tag>
+							</div>
+							<div>
+								<p:inputText id="description" value="#{tagView.tagDialog.description}" style="width: 100% !important">
+									<p:ajax></p:ajax>
+								</p:inputText>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-6">TAGS</div>
+			</div>
+		</p:panel>
+		<f:facet name="footer">
+			<div class="grid">
+				<div class="col-6 flex justify-content-start">
+					<p:commandButton icon="pi pi-times" value="#{tags['delete']}" actionListener="#{tagView.deleteTag}" process="@this"
+						styleClass="ui-button-danger" rendered="#{tagView.tagDialog.isDeleteButtonRendered()}">
+						<p:confirm header="#{messages['please.confirm']}" message="#{messages['account.delete.confirm']}" icon="pi pi-info-circle" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+						<p:commandButton value="#{tags['cancel']}" type="button" styleClass="ui-confirmdialog-no ui-button-flat" />
+						<p:commandButton value="#{tags['confirm']}" type="button" styleClass="ui-confirmdialog-yes" />
+					</p:confirmDialog>
+				</div>
+				<div class="col-6 flex justify-content-end">
+					<p:commandButton icon="pi pi-undo" value="#{tags['dismiss']}" onclick="PF('tagDetailDialog').hide()" process="@this"></p:commandButton>
+					<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{tagView.closeDialogAndSaveTag}" process="@this"
+						styleClass="ui-button-success"></p:commandButton>
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:composition>

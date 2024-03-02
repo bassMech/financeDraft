@@ -1,19 +1,18 @@
-package de.bassmech.findra.web.model;
+package de.bassmech.findra.web.view.model;
 
 import java.io.Serializable;
 import java.time.Year;
 
-public class AccountDetailDialogViewModel implements Serializable {
+public class TagDetailDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
 	private String title;
 	private String description;
-	private int startingYear;
-	private int type;	
+	private String backgroundHexColor;
+	private String textHexColor;
 		
-	public AccountDetailDialogViewModel() {
-		startingYear = Year.now().getValue();
+	public TagDetailDialogViewModel() {
 	}
 
 	public boolean isDeleteButtonRendered() {
@@ -44,20 +43,20 @@ public class AccountDetailDialogViewModel implements Serializable {
 		this.description = description;
 	}
 
-	public Integer getType() {
-		return type;
+	public String getBackgroundHexColor() {
+		return backgroundHexColor;
 	}
 
-	public void setType(Integer type) {
-		this.type = type;
+	public void setBackgroundHexColor(String backgroundHexColor) {
+		this.backgroundHexColor = backgroundHexColor;
 	}
 
-	public int getStartingYear() {
-		return startingYear;
+	public String getTextHexColor() {
+		return textHexColor;
 	}
 
-	public void setStartingYear(int startYear) {
-		this.startingYear = startYear;
+	public void setTextHexColor(String textHexColor) {
+		this.textHexColor = textHexColor;
 	}
 
 }

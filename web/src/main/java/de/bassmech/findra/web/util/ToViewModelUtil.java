@@ -8,12 +8,12 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Tag;
+import de.bassmech.findra.web.view.model.AccountViewModel;
+import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
+import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.TagViewModel;
+import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.model.entity.AccountTransaction;
-import de.bassmech.findra.web.model.AccountViewModel;
-import de.bassmech.findra.web.model.AccountingMonthViewModel;
-import de.bassmech.findra.web.model.AccountingYearViewModel;
-import de.bassmech.findra.web.model.TagViewModel;
-import de.bassmech.findra.web.model.TransactionViewModel;
 
 
 public class ToViewModelUtil {
