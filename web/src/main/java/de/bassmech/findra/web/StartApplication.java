@@ -32,7 +32,6 @@ public class StartApplication {
 	protected Logger logger = LoggerFactory.getLogger(StartApplication.class);
 	
 	public static void main(String[] args) {
-		System.out.println("before");
 		SpringApplication.run(StartApplication.class, args);
 	}
 	

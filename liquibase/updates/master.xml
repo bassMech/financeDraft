@@ -16,7 +16,7 @@
 		<update tableName="configuration">
 			<column name="entry">${project.version}</column>
 			<column name="updated_at" valueComputed="unixepoch()"></column>
-			<where>code="project.version"</where>
+			<where>code="project.revision"</where>
 		</update>
 	</changeSet>
 	

@@ -5,18 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "account")
-public class Account {
+public class Account{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +38,13 @@ public class Account {
 	@Column(name = "deleted_at", columnDefinition = "Integer")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant deletedAt;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "account_tag", 
+        joinColumns = { @JoinColumn(name = "account_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+	private List<Tag> tags = new ArrayList<>();
 	
 	public Integer getId() {
 		return id;
@@ -73,6 +84,14 @@ public class Account {
 
 	public void setStartingYear(Integer startingYear) {
 		this.startingYear = startingYear;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 
 }

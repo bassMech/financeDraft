@@ -157,7 +157,7 @@ public class AccountView {
 	
 	public void onPreviousMonthClick() {
 		if (selectedMonth == 1) {
-			if (selectedYear <= 2024) {
+			if (selectedYear <= yearRange[0]) {
 				logger.debug("Min year reached");
 				FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizedMessageUtil.getMessage("hint", Locale.getDefault())
 						, LocalizedMessageUtil.getMessage("year.min.reached", Locale.getDefault(), yearRange[0]));

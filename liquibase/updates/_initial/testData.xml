@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
@@ -8,7 +10,8 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
 
-	<changeSet id="first-account" author="bassmech" context="test-data">
+	<changeSet id="first-account" author="bassmech"
+		context="test-data">
 		<insert tableName="account">
 			<column name="starting_year">2024</column>
 			<column name="title">Konto</column>
@@ -16,7 +19,8 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024" author="bassmech" context="test-data">
+	<changeSet id="first-account-2024" author="bassmech"
+		context="test-data">
 		<insert tableName="accounting_year">
 			<column name="account_id">1</column>
 			<column name="year">2024</column>
@@ -25,7 +29,8 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024-01" author="bassmech" context="test-data">
+	<changeSet id="first-account-2024-01" author="bassmech"
+		context="test-data">
 		<insert tableName="accounting_month">
 			<column name="accounting_year_id">1</column>
 			<column name="month">1</column>
@@ -34,7 +39,8 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="first-account-2024-01-transactions" author="bassmech" context="test-data">
+	<changeSet id="first-account-2024-01-transactions"
+		author="bassmech" context="test-data">
 		<insert tableName="account_transaction">
 			<column name="accounting_month_id">1</column>
 			<column name="title">Miete</column>
@@ -66,6 +72,37 @@
 			<column name="value">500</column>
 			<column name="expected_day">25</column>
 			<column name="executed_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+	
+	<changeSet id="tags-2024-01"
+		author="bassmech" context="test-data">
+		<insert tableName="tag">
+			<column name="title">BonW</column>
+			<column name="description">BlackOnWhite</column>
+			<column name="background_hex_color">#ffffff</column>
+			<column name="text_hex_color">#000000</column>
+		</insert>
+		<insert tableName="tag">
+			<column name="title">WonB</column>
+			<column name="description">WhiteOnBlack</column>
+			<column name="background_hex_color">#000000</column>
+			<column name="text_hex_color">#ffffff</column>
+		</insert>
+		<insert tableName="tag">
+			<column name="title">Deleted</column>
+			<column name="description">this tag is delted</column>
+			<column name="background_hex_color">#000000</column>
+			<column name="text_hex_color">#ffffff</column>
+			<column name="deleted_at">1</column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="2024-01-account_1_tags"
+		author="bassmech" context="test-data">
+		<insert tableName="account_tag">
+			<column name="account_id">1</column>
+			<column name="tag_id">1</column>
 		</insert>
 	</changeSet>
 

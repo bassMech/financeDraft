@@ -2,14 +2,17 @@ package de.bassmech.findra.web.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
+import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.web.model.AccountViewModel;
 import de.bassmech.findra.web.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.model.AccountingYearViewModel;
+import de.bassmech.findra.web.model.TagViewModel;
 import de.bassmech.findra.web.model.TransactionViewModel;
 
 
@@ -26,7 +29,7 @@ public class ToViewModelUtil {
 		return vm;
 	}
 	
-	public static List<TransactionViewModel> toViewModeList(List<AccountTransaction> entities) {
+	public static List<TransactionViewModel> toTransactionViewModelList(List<AccountTransaction> entities) {
 		List<TransactionViewModel> resultList = new ArrayList<>();
 		for (AccountTransaction month : entities) {
 			resultList.add(toViewModel(month));
@@ -77,6 +80,24 @@ public class ToViewModelUtil {
 		}
 		
 		vm.recalculateTransactions();
+		return vm;
+	}
+
+	public static List<TagViewModel> toTagViewModelList(List<Tag> tags) {
+		List<TagViewModel> vmList = new ArrayList<TagViewModel>(tags.size());
+		for (Tag tag : tags) {
+			vmList.add(toViewModel(tag));
+		}
+		return vmList;
+	}
+
+	private static TagViewModel toViewModel(Tag tag) {
+		TagViewModel vm = new TagViewModel();
+		vm.setId(tag.getId());
+		vm.setTitle(tag.getTitle());
+		vm.setDescription(tag.getDescription());
+		vm.setBackgroundHexColor(tag.getBackgroundHexColor());
+		vm.setTextHexColor(tag.getTextHexColor());
 		return vm;
 	}
 }
