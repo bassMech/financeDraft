@@ -18,15 +18,19 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.core.repository.TagRepository;
+import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.service.TagService;
+import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.ToViewModelUtil;
 import de.bassmech.findra.web.util.statics.FormIds;
+import de.bassmech.findra.web.util.statics.TagName;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.TagDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.view.ViewScoped;
 
@@ -35,8 +39,9 @@ import jakarta.faces.view.ViewScoped;
 public class TagView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final String DEFAULT_SWATCHES_HEX_COLORS = "#000000, #ffffff, #067bc2, #84bcda, #80e377, #ecc30b, #f37748, #d56062";
 	private Logger logger = LoggerFactory.getLogger(TagView.class);
-
+	
 	@Autowired
 	private TagService tagService;
 
@@ -44,52 +49,43 @@ public class TagView implements Serializable {
 	private AccountService accountService;
 
 	private List<TagViewModel> tagList;
+	private List<TagViewModel> notDeletedTagList;
+	private List<TagViewModel> tagManagementList;
+	
 	private List<AccountViewModel> selectableAccounts;
 	private Integer selectedAccountId;
 	private List<TagViewModel> tagsForAccountAvailable;
 	private List<TagViewModel> tagsForAccountAssigned;
 
-	private TagDetailDialogViewModel tagDialog;
+	private TagDetailDialogViewModel tagDialog = new TagDetailDialogViewModel("");
+	
+	private boolean showDeletedTags = false;
 
 	@PostConstruct
 	@DependsOn(value = { "TagService", "AccountService" })
 	public void init() {
-		tagList = tagService.getAllTags();
+		reloadAllTags();
 
 		selectableAccounts = accountService.getAccountList();
 		if (!selectableAccounts.isEmpty()) {
 			selectedAccountId = selectableAccounts.get(0).getId();
 		}
 
-		reloadTagsForAccount();
+		reloadTagsForAccountAssignment();
 	}
-
-	public void onAccountTagsSave() {
-		logger.debug("Saving tags for account");
-		tagService.saveAccountTags(selectedAccountId, tagsForAccountAssigned);
-		reloadTagsForAccount();
+	
+	private void reloadAllTags() {
+		tagList = tagService.getAllTags();
+		notDeletedTagList = tagList.stream().filter(x -> x.getDeletedAt() == null).toList();
+		populateTagManagementList();
 	}
-
-	public void onTagEdit(int tagId) {
-		logger.debug("onTagEdit: " + tagId);
-		TagViewModel tag = tagList.stream().filter(tagX -> tagX.getId().equals(tagId)).findFirst().orElse(null);
-		tagDialog = new TagDetailDialogViewModel();
-		tagDialog.setId(tag.getId());
-		tagDialog.setTitle(tag.getTitle());
-		tagDialog.setDescription(tag.getDescription());
-		tagDialog.setTextHexColor(tag.getTextHexColor());
-		tagDialog.setBackgroundHexColor(tag.getBackgroundHexColor());
-
-		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
-		PrimeFaces.current().executeScript("PF('tagDetailDialog').show()");
-	}
-
-	private void reloadTagsForAccount() {
+		
+	private void reloadTagsForAccountAssignment() {
 		tagsForAccountAvailable = new ArrayList<>();
 		tagsForAccountAssigned = new ArrayList<>();
 
 		List<TagViewModel> accountTags = tagService.getTagsForAccount(selectedAccountId);
-		for (TagViewModel tag : tagList) {
+		for (TagViewModel tag : notDeletedTagList) {
 			if (accountTags.contains(tag)) {
 				tagsForAccountAssigned.add(tag);
 			} else {
@@ -97,45 +93,143 @@ public class TagView implements Serializable {
 			}
 		}
 	}
+	
+	private void populateTagManagementList() {
+		tagManagementList = new ArrayList<>(showDeletedTags ? tagList : notDeletedTagList);		
+	}
+		
+///
+/// open tag dialog
+///
+	
+	public void onTagEdit(int tagId) {
+		logger.debug("onTagEdit: " + tagId);
+		TagViewModel tag = tagList.stream().filter(tagX -> tagX.getId().equals(tagId)).findFirst().orElse(null);
+		tagDialog = new TagDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.TAG_EDIT.getValue()));
+		tagDialog.setId(tag.getId());
+		tagDialog.setTitle(tag.getTitle());
+		tagDialog.setDescription(tag.getDescription());
+		tagDialog.setTextHexColor(tag.getTextHexColor());
+		tagDialog.setBackgroundHexColor(tag.getBackgroundHexColor());
+		tagDialog.setDeletedAt(tag.getDeletedAt());
+		
+		openTagDetailDialog();
+	}
+	
+	public void onTagNew() {
+		logger.debug("onTagNew");
+		tagDialog = new TagDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.TAG_NEW.getValue()));	
+		
+		openTagDetailDialog();
+	}
+	
+	private void openTagDetailDialog() {
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		PrimeFaces.current().executeScript("PF('tagDetailDialog').show()");
+	}
+	
+	public void onTagToogleDeletedVisibility() {
+		logger.debug("onTagToogleDeletedVisibility old: " + Boolean.toString(showDeletedTags));
+		showDeletedTags = !showDeletedTags;
+		populateTagManagementList();
+	}
+	
+///
+/// tag detail dialog
+///
 
-	public void onAccountChanged() {
-		logger.debug("STUB onAccountChanged");
+	public void onAccountTagsSave() {
+		logger.debug("Saving tags for account");
+		tagService.saveAccountTags(selectedAccountId, tagsForAccountAssigned);
+		reloadTagsForAccountAssignment();
 	}
 
-	public void deleteTag() {
-		logger.debug("STUB deleteTag");
+	public void onDeleteTag() {
+		logger.debug("deleteTag");
+		
+		tagService.changeTagDeletionState(tagDialog.getId(), true);
+		reloadAllTags();
+		reloadTagsForAccountAssignment();
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+	}
+	
+	public void onUndeleteTag() {
+		logger.debug("undeleteTag");
+		
+		tagService.changeTagDeletionState(tagDialog.getId(), false);
+		reloadAllTags();
+		reloadTagsForAccountAssignment();
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+	}
+	
+	public boolean isTagDialogValid() {
+		boolean isValid = true;
+		if (tagDialog.getTitle() == null || tagDialog.getTitle().isBlank()) {
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", Locale.getDefault())
+					, LocalizedMessageUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
+			isValid = false;
+		}
+
+		return isValid;
 	}
 
 	public void closeDialogAndSaveTag() {
-		logger.debug("STUB closeDialogAndSaveTag");
+		logger.debug("closeDialogAndSaveTag");
+		
+		if (isTagDialogValid()) {
+			tagService.saveTag(tagDialog);
+			reloadAllTags();
+			reloadTagsForAccountAssignment();
+			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		}
+	}
+	
+///
+///	tag assignment
+///
+	public void onAccountChanged() {
+		logger.debug("onAccountChanged");
+		
+		reloadAllTags();
+		reloadTagsForAccountAssignment();
 	}
 	
 	public void onTagAssign(int tagId) {
-		logger.debug("STUB onTagAssign");
+		logger.debug("onTagAssign: " + tagId);
 		TagViewModel vm = tagsForAccountAvailable.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
 		tagsForAccountAvailable.remove(vm);
 		tagsForAccountAssigned.add(vm);
 	}
 	
 	public void onTagRemove(int tagId) {
-		logger.debug("STUB onTagRemove");
+		logger.debug("onTagRemove: " + tagId);
 		TagViewModel vm = tagsForAccountAssigned.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
 		tagsForAccountAssigned.remove(vm);
 		tagsForAccountAvailable.add(vm);
 	}
 	
 	public void onAllTagAssign() {
-		logger.debug("STUB onAllTagAssign");
+		logger.debug("onAllTagAssign");
 		tagsForAccountAssigned.addAll(tagsForAccountAvailable);
 		tagsForAccountAvailable.clear();
 	}
 	
 	public void onAllTagRemove() {
-		logger.debug("STUB onAllTagRemove");
+		logger.debug("onAllTagRemove");
 		tagsForAccountAvailable.addAll(tagsForAccountAssigned);
 		tagsForAccountAssigned.clear();
 	}
-
+	
+	public static String getDefaultSwatchesHexColors() {
+		return DEFAULT_SWATCHES_HEX_COLORS;
+	}
+	
+///
+/// getter setter
+///
+	
 	public List<TagViewModel> getTagList() {
 		return tagList;
 	}
@@ -175,5 +269,19 @@ public class TagView implements Serializable {
 	public void setTagDialog(TagDetailDialogViewModel tagDialog) {
 		this.tagDialog = tagDialog;
 	}
+
+	public List<TagViewModel> getNotDeletedTagList() {
+		return notDeletedTagList;
+	}
+
+	public List<TagViewModel> getTagManagementList() {
+		return tagManagementList;
+	}
+
+	public void setTagManagementList(List<TagViewModel> tagManagementList) {
+		this.tagManagementList = tagManagementList;
+	}
+	
+	
 
 }

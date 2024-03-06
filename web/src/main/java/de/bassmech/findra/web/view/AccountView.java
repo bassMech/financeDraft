@@ -22,6 +22,7 @@ import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.statics.FormIds;
+import de.bassmech.findra.web.util.statics.TagName;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
@@ -61,7 +62,7 @@ public class AccountView {
 	private List<Integer> selectableYears = new ArrayList<>();
 	private int selectedYear;
 	
-	private AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel();
+	private AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
 	private TransactionDetailDialogViewModel transactionDialog = new TransactionDetailDialogViewModel();
 	
 	private int[] yearRange = new int[2];
@@ -190,14 +191,14 @@ public class AccountView {
 	}
 	
 	public void openAccountDetailDialogNew() {
-		accountDialog = new AccountDetailDialogViewModel();	
+		accountDialog = new AccountDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.ACCOUNT_NEW.getValue()));	
 		
 		PrimeFaces.current().ajax().update("@form");
 		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");
 	}
 	
 	public void openAccountDetailDialogEdit() {
-		accountDialog = new AccountDetailDialogViewModel();	
+		accountDialog = new AccountDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.ACCOUNT_EDIT.getValue()));	
 		accountDialog.setId(selectedAccount.getId());
 		accountDialog.setTitle(selectedAccount.getTitle());
 		accountDialog.setDescription(selectedAccount.getDescription());

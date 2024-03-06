@@ -1,5 +1,6 @@
 package de.bassmech.findra.web.view.model;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class TagViewModel {
@@ -8,6 +9,11 @@ public class TagViewModel {
 	private String description;
 	private String backgroundHexColor;
 	private String textHexColor;
+	private Instant deletedAt;
+	
+	public boolean isDeleted() {
+		return deletedAt != null;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -47,6 +53,14 @@ public class TagViewModel {
 
 	public void setTextHexColor(String textHexColor) {
 		this.textHexColor = textHexColor;
+	}
+	
+	public Instant getDeletedAt() {
+		return deletedAt;
+	}
+
+	public void setDeletedAt(Instant deletedAt) {
+		this.deletedAt = deletedAt;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package de.bassmech.findra.model.entity;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,11 +27,14 @@ public class Tag {
 
 	@Column(name = "text_hex_color", columnDefinition = "String")
 	private String textHexColor;
+	
+	@Column(name = "deleted_at", columnDefinition = "Integer")
+	private Instant deletedAt;
 
 	public Integer getId() {
 		return id;
 	}
-
+	
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -64,6 +69,14 @@ public class Tag {
 
 	public void setTextHexColor(String textHexColor) {
 		this.textHexColor = textHexColor;
+	}
+
+	public Instant getDeletedAt() {
+		return deletedAt;
+	}
+
+	public void setDeletedAt(Instant deletedAt) {
+		this.deletedAt = deletedAt;
 	}
 
 }

@@ -11,6 +11,10 @@ import de.bassmech.findra.web.util.statics.Statics;
 public class LocalizedMessageUtil {
 	private static Logger logger = LoggerFactory.getLogger(LocalizedMessageUtil.class);
 
+	public static String getMessage(String key) {
+		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, Locale.getDefault()), key, Locale.getDefault(), null);
+	}
+	
 	public static String getMessage(String key, Locale locale) {
 		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, null);
 	}
@@ -19,6 +23,10 @@ public class LocalizedMessageUtil {
 		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, params);
 	}
 
+	public static String getTag(String key) {
+		return getFromBundle( ResourceBundle.getBundle(Statics.TAGS_BUNDLE_PATH, Locale.getDefault()), key, Locale.getDefault(), null);
+	}
+	
 	public static String getTag(String key, Locale locale) {
 		return getFromBundle( ResourceBundle.getBundle(Statics.TAGS_BUNDLE_PATH, locale), key, locale, null);
 	}

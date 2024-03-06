@@ -91,13 +91,14 @@ public class ToViewModelUtil {
 		return vmList;
 	}
 
-	private static TagViewModel toViewModel(Tag tag) {
+	public static TagViewModel toViewModel(Tag tag) {
 		TagViewModel vm = new TagViewModel();
 		vm.setId(tag.getId());
 		vm.setTitle(tag.getTitle());
 		vm.setDescription(tag.getDescription());
 		vm.setBackgroundHexColor(tag.getBackgroundHexColor());
 		vm.setTextHexColor(tag.getTextHexColor());
+		vm.setDeletedAt(tag.getDeletedAt());
 		return vm;
 	}
 }

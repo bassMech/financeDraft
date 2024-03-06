@@ -1,8 +1,8 @@
 # financeDraft
 
 ToDo
-- Converter
-- same naming for xhtml called methods
+- 
+- hide deleted with extra symbol
 - TagDialog
 	- tag delete
 - View Scoped
@@ -13,3 +13,6 @@ ToDo
 - create new transaction
 
 - table filter
+- swatches from statics
+- same naming for xhtml called methods (on....)
+- transaction draft target value

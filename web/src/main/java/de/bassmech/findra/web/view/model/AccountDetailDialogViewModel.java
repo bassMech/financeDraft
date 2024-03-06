@@ -11,9 +11,12 @@ public class AccountDetailDialogViewModel implements Serializable {
 	private String description;
 	private int startingYear;
 	private int type;	
+	
+	private String dialogTitle;
 		
-	public AccountDetailDialogViewModel() {
+	public AccountDetailDialogViewModel(String dialogTitle) {
 		startingYear = Year.now().getValue();
+		this.dialogTitle = dialogTitle;
 	}
 
 	public boolean isDeleteButtonRendered() {
@@ -58,6 +61,14 @@ public class AccountDetailDialogViewModel implements Serializable {
 
 	public void setStartingYear(int startYear) {
 		this.startingYear = startYear;
+	}
+
+	public String getDialogTitle() {
+		return dialogTitle;
+	}
+
+	public void setDialogTitle(String dialogTitle) {
+		this.dialogTitle = dialogTitle;
 	}
 
 }
