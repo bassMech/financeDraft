@@ -1,9 +1,5 @@
-<ui:composition template="/WEB-INF/layout.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/WEB-INF/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="metadata">
 		<title>#{tags['accounts']}</title>
@@ -20,20 +16,12 @@
 				<div class="flex justify-content-start">
 					<p:fieldset legend="#{tags['account']}">
 						<div class="flex align-content-center gap-1">
-							<p:selectOneMenu id="accountSelect"
-								value="#{accountView.selectedAccountId}" style="width:150px">
-								<p:ajax listener="#{accountView.onAccountChanged}"
-									update="transactions" />
-								<f:selectItems value="#{accountView.selectableAccounts}"
-									var="account" itemLabel="#{account.title}"
-									itemValue="#{account.id}" />
+							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccountId}" style="width:150px">
+								<p:ajax listener="#{accountView.onAccountChanged}" update="transactions" />
+								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account.id}" />
 							</p:selectOneMenu>
-							<p:commandButton icon="pi pi-plus"
-								action="#{accountView.openAccountDetailDialogNew}"
-								process="@this" update="accountDetailDialog"></p:commandButton>
-							<p:commandButton icon="pi pi-pencil"
-								action="#{accountView.openAccountDetailDialogEdit}"
-								process="@this" update="accountDetailDialog"></p:commandButton>
+							<p:commandButton icon="pi pi-plus" action="#{accountView.openAccountDetailDialogNew}" process="@this" update="accountDetailDialog"></p:commandButton>
+							<p:commandButton icon="pi pi-pencil" action="#{accountView.openAccountDetailDialogEdit}" process="@this" update="accountDetailDialog"></p:commandButton>
 						</div>
 					</p:fieldset>
 				</div>
@@ -42,148 +30,61 @@
 
 				<p:fieldset legend="#{tags['month']}">
 					<div class="flex align-content-center gap-1">
-						<p:commandButton icon="pi pi-chevron-left"
-							action="#{accountView.onPreviousMonthClick}" process="@this"
+						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousMonthClick}" process="@this"
 							update="monthSelect, yearSelect, transactions" />
-						<p:selectOneMenu id="monthSelect"
-							value="#{accountView.selectedMonth}" style="width:150px">
-							<p:ajax listener="#{accountView.onMonthChanged}"
-								update="transactions" />
-							<f:selectItems value="#{accountView.selectableMonths.entrySet()}"
-								var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
+						<p:selectOneMenu id="monthSelect" value="#{accountView.selectedMonth}" style="width:150px">
+							<p:ajax listener="#{accountView.onMonthChanged}" update="transactions" />
+							<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
 						</p:selectOneMenu>
-						<p:commandButton icon="pi pi-chevron-right"
-							action="#{accountView.onNextMonthClick}" process="@this"
+						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextMonthClick}" process="@this"
 							update="monthSelect, yearSelect, transactions" />
 					</div>
 				</p:fieldset>
 
 				<p:fieldset legend="#{tags['year']}">
 					<div>
-						<p:selectOneMenu id="yearSelect"
-							value="#{accountView.selectedYear}" style="width:150px">
-							<p:ajax listener="#{accountView.onYearChanged}"
-								update="transactions" />
-							<f:selectItems value="#{accountView.selectableYears}" var="year"
-								itemLabel="#{year}" itemValue="#{year}" />
+						<p:selectOneMenu id="yearSelect" value="#{accountView.selectedYear}" style="width:150px">
+							<p:ajax listener="#{accountView.onYearChanged}" update="transactions" />
+							<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
 						</p:selectOneMenu>
 					</div>
 				</p:fieldset>
 			</div>
-			<div class="col-4">
-				<div class="flex justify-content-end">
-					<p:fieldset legend="#{tags['transactions']}">
-						<div class="grid">
-							<div class="col">
-								<div class="flex justify-content-end">
-									<h:outputText value="#{tags['executed']}: " />
-								</div>
-								<div class="flex justify-content-end">
-									<h:outputText value="#{tags['expected']}: " />
-								</div>
+			<div class="col-4"></div>
+		</div>
 
-							</div>
-							<div class="col">
-								<div class="flex justify-content-end">
-									<h:outputText
-										value="#{accountView.currentAccountingMonth.transactionCountExpected}" />
-								</div>
-								<div class="flex justify-content-end">
-									<h:outputText
-										value="#{accountView.currentAccountingMonth.transactionCountExecuted}" />
-								</div>
-							</div>
-						</div>
-					</p:fieldset>
-					<p:fieldset legend="#{tags['sum']}">
-						<div class="grid">
-							<div class="col">
-								<div class="flex justify-content-end">
-									<h:outputText value="#{tags['current']}: " />
-								</div>
-								<div class="flex justify-content-end">
-									<h:outputText value="#{tags['closing']}: " />
-								</div>
-							</div>
-							<div class="col">
-								<div class="flex justify-content-end">
-									<h:outputText
-										value="#{accountView.currentAccountingMonth.getCurrentValue()}">
-										<f:convertNumber
-											currencySymbol="#{accountView.settingService.dbCurrency.symbol}"
-											type="currency" />
-									</h:outputText>
-								</div>
-								<div class="flex justify-content-end">
-									<h:outputText
-										value="#{accountView.currentAccountingMonth.getClosingValue()}">
-										<f:convertNumber
-											currencySymbol="#{accountView.settingService.dbCurrency.symbol}"
-											type="currency" />
-									</h:outputText>
-								</div>
-							</div>
-						</div>
-					</p:fieldset>
+		<p:panel id="transactions">
+			<div class="grid">
+				<div class="col-4">
+					<p:panel>
+						<ui:include src="/template/composite/accountingMonthTransactions.xhtml">
+							<ui:param name="accountingMonth" value="#{accountView.firstAccountingMonth}" />
+						</ui:include>
+					</p:panel>
+				</div>
+				<div class="col-4">
+					<p:panel>
+						<ui:include src="/template/composite/accountingMonthTransactions.xhtml">
+							<ui:param name="accountingMonth" value="#{accountView.secondAccountingMonth}" />
+						</ui:include>
+					</p:panel>
+				</div>
+				<div class="col-4">
+					<p:panel>
+						<ui:include src="/template/composite/accountingMonthTransactions.xhtml">
+							<ui:param name="accountingMonth" value="#{accountView.thirdAccountingMonth}" />
+						</ui:include>
+					</p:panel>
 				</div>
 			</div>
-		</div>
+		</p:panel>
 
-		<div class="card flex justify-content-start flex-wrap">
-			<p:fieldset legend="#{tags['transactions']}">
-				<p:dataTable id="transactions" var="transaction"
-					value="#{accountView.currentAccountingMonth.transactions}"
-					rowKey="#{transaction.id}"
-					rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}"
-					allowUnsorting="true" sortMode="single" size="small">
-
-					<f:facet name="header">
-						<div class="flex justify-content-end">
-							<p:commandButton icon="pi pi-plus"
-								action="#{accountView.openTransactionDetailDialogNew}"
-								process="@this" update="transactionDetailDialog"></p:commandButton>
-						</div>
-						<ui:include src="/template/dialog/transactionDetailDialog.xhtml">
-						</ui:include>
-					</f:facet>
-					<p:column style="width:2rem">
-						<p:rowToggler />
-					</p:column>
-					<p:column headerText="#{tags['title']}"
-						sortBy="#{transaction.title}">
-						<h:outputText value="#{transaction.title}" />
-					</p:column>
-					<p:column headerText="#{tags['value']}"
-						sortBy="#{transaction.value}">
-						<h:outputText value="#{transaction.value}">
-							<f:convertNumber
-								currencySymbol="#{accountView.settingService.dbCurrency.symbol}"
-								type="currency" />
-						</h:outputText>
-					</p:column>
-					<p:column  headerText="#{tags['date']}"
-						sortBy="#{transaction.expectedDay}" sortOrder="asc">
-						<h:outputText value="#{transaction.expectedDay}" />
-						<i
-							class="#{transaction.executedAt == null ? 'pi pi-question-circle': 'pi pi-check-circle'}" />
-					</p:column>
-
-					<p:rowExpansion>
-						<div class="product">
-							<div class="product-list-item">
-								<div class="product-list-detail">
-									<div class="product-description">#{transaction.description}</div>
-								</div>
-							</div>
-						</div>
-					</p:rowExpansion>
-
-				</p:dataTable>
-			</p:fieldset>
-		</div>
+		<ui:include src="/template/dialog/transactionDetailDialog.xhtml">
+		</ui:include>
 		<ui:include src="/template/dialog/accountDetailDialog.xhtml">
 		</ui:include>
-
+		<ui:include src="/template/dialog/transactionExecutedDialog.xhtml">
+		</ui:include>
 	</ui:define>
 </ui:composition>
 

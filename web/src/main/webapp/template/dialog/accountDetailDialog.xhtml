@@ -11,7 +11,7 @@
 									<p:tag value="#{tags['title']}"></p:tag>
 								</div>
 								<div>
-									<p:inputText id="title" value="#{accountView.accountDialog.title}">
+									<p:inputText id="accountDetailDialog_title" value="#{accountView.accountDialog.title}">
 										<p:ajax></p:ajax>
 									</p:inputText>
 								</div>
@@ -23,7 +23,7 @@
 									<p:tag value="#{tags['year.starting']}"></p:tag>
 								</div>
 								<div>
-									<p:inputNumber id="startYear" value="#{accountView.accountDialog.startingYear}"
+									<p:inputNumber id="accountDetailDialog_startYear" value="#{accountView.accountDialog.startingYear}"
 										decimalPlaces="0" thousandSeparator="" >
 										<p:ajax></p:ajax>
 									</p:inputNumber>
@@ -36,7 +36,7 @@
 									<p:tag value="#{tags['account.type']}"></p:tag>
 								</div>
 								<div>
-									<p:selectOneMenu id="accountTypeSelection" value="#{accountView.accountDialog.type}">
+									<p:selectOneMenu id="accountDetailDialog_accountTypeSelection" value="#{accountView.accountDialog.type}">
 										<f:selectItems value="#{accountView.accountTypes.entrySet()}" var="accountType" itemLabel="#{accountType.value}"
 											itemValue="#{accountType.key}" />
 										<p:ajax></p:ajax>
@@ -51,7 +51,7 @@
 								<p:tag value="#{tags['description']}"></p:tag>
 							</div>
 							<div>
-								<p:inputText id="description" value="#{accountView.accountDialog.description}" style="width: 100% !important">
+								<p:inputText id="accountDetailDialog_description" value="#{accountView.accountDialog.description}" style="width: 100% !important">
 									<p:ajax></p:ajax>
 								</p:inputText>
 							</div>

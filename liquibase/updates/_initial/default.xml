@@ -196,29 +196,13 @@
 
 	<changeSet id="inital-account-tags" author="bassmech"
 		context="default">
-		<!--<createTable tableName="account_tag" >
-			<column name="id" type="INTEGER" autoIncrement="true">
-				<constraints primaryKey="true" />
-			</column>
-			<column name="account_id" type="INTEGER">
-				<constraints nullable="false"
-					foreignKeyName="fk_account_tag_account_id"
-					references="account(id)" unique="true" uniqueConstraintName="test1"/>
-			</column>
-			<column name="tag_id" type="INTEGER">
-				<constraints nullable="false"
-					foreignKeyName="fk_account_tag_tag_id"
-					references="tag(id)" unique="true" uniqueConstraintName="test1"/>
-			</column>
-			<column name="deleted_at" type="INTEGER">
-				<constraints nullable="true" />
-			</column>
-		</createTable>
-		<addUniqueConstraint columnNames="account_id, tag_id" tableName="account_tag"></addUniqueConstraint>
-		-->
 		<sqlFile path="account_tag_table.sql" relativeToChangelogFile="true"/>
 	</changeSet>
-
+	
+	<changeSet id="inital-transaction-tags" author="bassmech"
+		context="default">
+		<sqlFile path="transaction_tag_table.sql" relativeToChangelogFile="true"/>
+	</changeSet>
 
 	<!-- <changeSet id="inital-clearing_accounts" author="bassmech" context="default"> 
 		<createTable tableName="clearing_account"> <column name="id" type="INTEGER" 

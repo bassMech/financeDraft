@@ -3,6 +3,7 @@ package de.bassmech.findra.web.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.type.AccountType;
 
 @Service
@@ -195,7 +197,7 @@ public class AccountService {
 		transaction.setTitle(transactionDialog.getTitle());
 		transaction.setDescription(transaction.getDescription());
 		transaction.setValue(transactionDialog.getValue());
-		transaction.setExecutedAt(transactionDialog.getExecutedAt());
+		transaction.setExecutedAt(transactionDialog.getExecutedAt() == null ? null : transactionDialog.getExecutedAt().atStartOfDay(ZoneOffset.UTC).toInstant());
 		transaction.setExpectedDay(transaction.getExpectedDay());
 		
 		transaction = transactionRepository.save(transaction);

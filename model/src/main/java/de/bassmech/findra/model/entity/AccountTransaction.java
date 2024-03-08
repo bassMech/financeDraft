@@ -2,10 +2,13 @@ package de.bassmech.findra.model.entity;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.bassmech.findra.model.converter.ConfigurationCodeConverter;
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
 import de.bassmech.findra.model.statics.ConfigurationCode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -13,6 +16,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -43,6 +48,13 @@ public class AccountTransaction {
 	@Column(name = "executed_at", columnDefinition = "INTEGER")
 	@Convert(converter = NumberToInstantConverter.class)
 	private Instant executedAt;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "transaction_tag", 
+        joinColumns = { @JoinColumn(name = "transaction_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+	private List<Tag> tags = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -98,6 +110,14 @@ public class AccountTransaction {
 
 	public void setExpectedDay(int expectedDay) {
 		this.expectedDay = expectedDay;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 
 

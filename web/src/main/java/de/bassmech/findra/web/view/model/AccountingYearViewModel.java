@@ -23,6 +23,7 @@ public class AccountingYearViewModel implements Serializable {
 					month.setAccountYearId(id);
 					// month.setStartValue(BigDecimal.ZERO); TODO add start and final values
 					month.setMonth(iMonth);
+					month.setYear(year);
 					months.add(month);
 				}
 			}

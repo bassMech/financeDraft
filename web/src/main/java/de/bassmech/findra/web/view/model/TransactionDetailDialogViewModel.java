@@ -3,6 +3,9 @@ package de.bassmech.findra.web.view.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionDetailDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,7 +16,33 @@ public class TransactionDetailDialogViewModel implements Serializable {
 	private String description;
 	private BigDecimal value = BigDecimal.ZERO;
 	private Integer expectedDay;
-	private Instant executedAt;
+	private LocalDate executedAt;
+	
+	private AccountingMonthViewModel accountingMonth;
+	private List<TagViewModel> tagsAvailable = new ArrayList<>();
+	private List<TagViewModel> tagsAssigned = new ArrayList<>();
+	
+	public void onTagAssign(int tagId) {
+		TagViewModel vm = tagsAvailable.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
+		tagsAvailable.remove(vm);
+		tagsAssigned.add(vm);
+	}
+	
+	public void onTagRemove(int tagId) {
+		TagViewModel vm = tagsAssigned.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
+		tagsAssigned.remove(vm);
+		tagsAvailable.add(vm);
+	}
+	
+	public void onAllTagAssign() {
+		tagsAssigned.addAll(tagsAvailable);
+		tagsAvailable.clear();
+	}
+	
+	public void onAllTagRemove() {
+		tagsAvailable.addAll(tagsAssigned);
+		tagsAssigned.clear();
+	}
 	
 	public boolean isDeleteButtonRendered() {
 		return id != null;
@@ -59,11 +88,11 @@ public class TransactionDetailDialogViewModel implements Serializable {
 		this.expectedDay = expectedDay;
 	}
 
-	public Instant getExecutedAt() {
+	public LocalDate getExecutedAt() {
 		return executedAt;
 	}
 
-	public void setExecutedAt(Instant executedAt) {
+	public void setExecutedAt(LocalDate executedAt) {
 		this.executedAt = executedAt;
 	}
 
@@ -75,5 +104,28 @@ public class TransactionDetailDialogViewModel implements Serializable {
 		this.accountId = accountId;
 	}
 
+	public AccountingMonthViewModel getAccountingMonth() {
+		return accountingMonth;
+	}
+
+	public void setAccountingMonth(AccountingMonthViewModel accountingMonth) {
+		this.accountingMonth = accountingMonth;
+	}
+
+	public List<TagViewModel> getTagsAvailable() {
+		return tagsAvailable;
+	}
+
+	public void setTagsAvailable(List<TagViewModel> tagsAvailable) {
+		this.tagsAvailable = tagsAvailable;
+	}
+
+	public List<TagViewModel> getTagsAssigned() {
+		return tagsAssigned;
+	}
+
+	public void setTagsAssigned(List<TagViewModel> tagsAssigned) {
+		this.tagsAssigned = tagsAssigned;
+	}
 
 }

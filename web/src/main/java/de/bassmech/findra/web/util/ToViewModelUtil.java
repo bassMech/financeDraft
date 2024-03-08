@@ -48,6 +48,8 @@ public class ToViewModelUtil {
 		vm.setExecutedAt(entity.getExecutedAt());
 		vm.setValue(entity.getValue());
 		
+		vm.setTags(toTagViewModelList(entity.getTags()));
+		
 		return vm;
 	}
 	
@@ -72,7 +74,7 @@ public class ToViewModelUtil {
 		vm.setId(entity.getId());
 		vm.setAccountYearId(entity.getAccountingYear().getId());
 		vm.setMonth(entity.getMonth());
-		vm.setYear(entity.getAccountingYear().getId());
+		vm.setYear(entity.getAccountingYear().getYear());
 		vm.setStartValue(entity.getStartValue());
 		
 		for (AccountTransaction transaction : entity.getTransactions()) {

@@ -1,0 +1,22 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:dialog id="transactionExecutedDialog" header="#{tags['executedAt']}" width="auto" responsive="true"
+		widgetVar="transactionExecutedDialog" showEffect="fade">
+		<p:panel>
+			<div class="flex align-content-end gap-2">
+				<p:datePicker id="exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionExecutedDialog.executedAt}" monthNavigator="true"
+					yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}" locale="#{accountView.getCurrentLocale().getLanguage()}" >
+					<p:ajax></p:ajax>
+				</p:datePicker>
+			</div>
+
+		</p:panel>
+		<f:facet name="footer">
+			<div class="flex justify-content-end">
+				<p:commandButton icon="pi pi-undo" value="#{tags['dismiss']}" onclick="PF('transactionExecutedDialog').hide()" process="@this"></p:commandButton>
+				<p:commandButton icon="pi pi-save" value="#{tags['save']}" actionListener="#{accountView.closeDialogAndSaveTransactionExecutedAt}" process="@this"
+					styleClass="ui-button-success"></p:commandButton>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:composition>

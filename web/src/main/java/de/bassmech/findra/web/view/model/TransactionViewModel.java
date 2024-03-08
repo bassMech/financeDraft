@@ -3,9 +3,11 @@ package de.bassmech.findra.web.view.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionViewModel implements Serializable {
-	private int id;
+	private Integer id;
 	private String title;
 	private String description;
 	private int year;
@@ -13,12 +15,13 @@ public class TransactionViewModel implements Serializable {
 	private int expectedDay;
 	private Instant executedAt;
 	private BigDecimal value;
+	private List<TagViewModel> tags = new ArrayList<>();
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -76,6 +79,14 @@ public class TransactionViewModel implements Serializable {
 
 	public void setValue(BigDecimal value) {
 		this.value = value;
+	}
+
+	public List<TagViewModel> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<TagViewModel> tags) {
+		this.tags = tags;
 	}
 
 }
