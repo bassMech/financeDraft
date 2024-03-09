@@ -1,20 +1,25 @@
 # financeDraft
 
 ToDo
--account
+- Account
 	- tag add
+	- transaction drafts
+	- setting start values based on month before and after
+	- delete transaction
 - Settings
 	- Date Format in Settings
 	- theme switcher
+- Statistics
+
+- Tags
+	- swatches from statics
 	
 - Misc
-	- View Scoped
+	- View Scoped ???
+	- same naming for xhtml called methods (on....) -> closeDialog
+	- table filter
+	- check tag usage before delete
+	
 
-- adding transaction to month and year transaction sum after change
-- setting start values based on month before and after
 
 
-- table filter
-- swatches from statics
-- same naming for xhtml called methods (on....)
-- transaction draft target value

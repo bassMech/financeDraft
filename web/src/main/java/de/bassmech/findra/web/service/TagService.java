@@ -45,7 +45,7 @@ public class TagService {
 		allTags = ToViewModelUtil.toTagViewModelList(tagRespoRepository.findAllByOrderByTitleDesc());
 	}
 
-	public List<TagViewModel> getTagsForAccount(Integer accountId) {
+	public List<TagViewModel> getTagsForAccount(Integer accountId, boolean includeDeleted) {
 		if (accountId == null) {
 			logger.error("Given account id was null");
 		}
@@ -56,7 +56,12 @@ public class TagService {
 			tagsByAccountId.put(accountId, tags);
 		}
 
-		return tags;
+		if (includeDeleted) {
+			return tags;
+		} else {
+			return tags.stream().filter(tag -> tag.getDeletedAt() == null).toList();
+		}
+		
 	}
 
 	public void saveAccountTags(Integer accountId, List<TagViewModel> newTags) {

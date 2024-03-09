@@ -22,6 +22,7 @@ import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
+import de.bassmech.findra.web.service.TagService;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.statics.FormIds;
 import de.bassmech.findra.web.util.statics.TagName;
@@ -29,6 +30,7 @@ import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
@@ -47,6 +49,9 @@ public class AccountView {
 	
 	@Autowired
 	private SettingService settingService;
+	
+	@Autowired
+	private TagService tagService;
 	
 	@Autowired
 	private ConfigurationService configurationService;
@@ -302,11 +307,12 @@ public class AccountView {
 		return isValid;
 	}
 	
-	public void onTransactionEdit(int transactionId) {
+	public void onTransactionEdit(int transactionId, AccountingMonthViewModel accountingMonth) {
 		logger.debug("onTransactionEdit id: " + transactionId);
 		transactionDialog = new TransactionDetailDialogViewModel();	
-		//TODO correct month
-		TransactionViewModel vm = firstAccountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionId)).findFirst().orElse(null);
+		transactionDialog.setAccountingMonth(accountingMonth);
+		
+		TransactionViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionId)).findFirst().orElse(null);
 		transactionDialog.setId(vm.getId());
 		transactionDialog.setAccountId(selectedAccountId);
 		transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
@@ -315,6 +321,15 @@ public class AccountView {
 		transactionDialog.setDescription(vm.getDescription());
 		transactionDialog.setValue(vm.getValue());
 		
+		List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
+		for (TagViewModel tag : tagsForAccount) {
+			if (vm.getTags().contains(tag)) {
+				transactionDialog.getTagsAssigned().add(tag);
+			} else {
+				transactionDialog.getTagsAvailable().add(tag);
+			}
+		}
+		
 		openTransactionDetailDialog();
 	}
 		
@@ -322,6 +337,8 @@ public class AccountView {
 		logger.debug("onTransactionNew");
 		transactionDialog = new TransactionDetailDialogViewModel();
 		transactionDialog.setAccountingMonth(accountingMonth);
+		
+		transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
 		
 		openTransactionDetailDialog();
 	}

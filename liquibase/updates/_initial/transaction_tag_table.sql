@@ -2,7 +2,6 @@ CREATE TABLE transaction_tag(
     id INTEGER PRIMARY KEY,
 	transaction_id INTEGER NOT NULL,
 	tag_id INTEGER NOT NULL,
-	deleted_at INTEGER,
     UNIQUE(transaction_id, tag_id),
     FOREIGN KEY (transaction_id)
        REFERENCES account_transaction(id),

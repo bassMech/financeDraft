@@ -6,6 +6,7 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,12 +23,14 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
+import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
 import de.bassmech.findra.web.util.ToViewModelUtil;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.type.AccountType;
@@ -41,6 +44,9 @@ public class AccountService {
 
 	@Autowired
 	private AccountingYearRepository accountingYearRepository;
+	
+	@Autowired
+	private TransactionRepository tagRepository;
 	
 	@Autowired
 	private TransactionRepository transactionRepository;
@@ -141,6 +147,7 @@ public class AccountService {
 
 	public void saveTransaction(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
 		Integer accountId = transactionDialog.getAccountId();
+		Account account = accountRepository.findById(accountId.longValue()).get();
 		// check loaded
 		AccountingYearViewModel yearVm = loadedAccountingYearsByAccountId.get(accountId).stream()
 				.filter(yearX -> yearX.getYear() == year).findFirst().orElse(null);
@@ -149,7 +156,6 @@ public class AccountService {
 		if (yearVm == null) {
 			accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
 			if (accountingYear == null) {
-				Account account = accountRepository.findById(accountId.longValue()).get();
 				accountingYear = new AccountingYear();
 				accountingYear.setAccount(account);
 				accountingYear.setYear(year);
@@ -200,10 +206,25 @@ public class AccountService {
 		transaction.setExecutedAt(transactionDialog.getExecutedAt() == null ? null : transactionDialog.getExecutedAt().atStartOfDay(ZoneOffset.UTC).toInstant());
 		transaction.setExpectedDay(transaction.getExpectedDay());
 		
+		
+		for (TagViewModel tag : transactionDialog.getTagsAssigned()) {
+			// tag not assigned
+			if (transaction.getTags().stream().noneMatch(tagX -> tagX.getId().equals(tag.getId()))) {
+				transaction.getTags().add(account.getTags().stream().filter(tagX -> tagX.getId().equals(tag.getId())).findFirst().orElse(null));
+			}
+		}
+		
+		Iterator<Tag> tagIt = transaction.getTags().iterator();
+		while(tagIt.hasNext()) {
+			Tag tag = tagIt.next();
+			if (transactionDialog.getTagsAssigned().stream().noneMatch(tagX -> tagX.getId().equals(tag.getId()))) {
+				tagIt.remove();
+			}
+		}
+		
 		transaction = transactionRepository.save(transaction);
 
 		if (transactionDialog.getId() == null) {
-			
 			newMonth.getTransactions().add(transaction);
 		}		
 

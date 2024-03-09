@@ -94,7 +94,7 @@
 		</p:column>
 		<p:column>
 			<div class="flex justify-content-center">
-				<p:commandButton icon="pi pi-pencil" action="#{accountView.onTransactionEdit(transaction.id)}" process="@this"
+				<p:commandButton icon="pi pi-pencil" action="#{accountView.onTransactionEdit(transaction.id, accountingMonth)}" process="@this"
 					update="mainForm:transactionDetailDialog"></p:commandButton>
 			</div>
 		</p:column>

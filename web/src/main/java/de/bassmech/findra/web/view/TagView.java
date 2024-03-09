@@ -84,7 +84,7 @@ public class TagView implements Serializable {
 		tagsForAccountAvailable = new ArrayList<>();
 		tagsForAccountAssigned = new ArrayList<>();
 
-		List<TagViewModel> accountTags = tagService.getTagsForAccount(selectedAccountId);
+		List<TagViewModel> accountTags = tagService.getTagsForAccount(selectedAccountId, true);
 		for (TagViewModel tag : notDeletedTagList) {
 			if (accountTags.contains(tag)) {
 				tagsForAccountAssigned.add(tag);
