@@ -49,9 +49,11 @@
 									<p:tag value="#{tags['expected']}"></p:tag>
 								</div>
 								<div>
-									<p:selectOneMenu id="transactionDetailDialog_expectedDaySelect" value="#{accountView.selectedYear}">
-										<!-- <p:ajax listener="#{accountView.onYearChanged}" update="transactions" /> -->
-										<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+									<p:selectOneMenu id="transactionDetailDialog_expectedDaySelect" value="#{accountView.transactionDialog.expectedDay}"
+										style="padding-left:5px;">
+										<p:ajax />
+										<f:selectItems value="#{accountView.transactionDialog.selectableExpectedDay.entrySet()}" var="day" itemLabel="#{day.value}" 
+										itemValue="#{day.key}" />
 									</p:selectOneMenu>
 								</div>
 							</div>
@@ -120,7 +122,7 @@
 		<f:facet name="footer">
 			<div class="grid">
 				<div class="col-6 flex justify-content-start">
-					<p:commandButton icon="pi pi-times" value="#{tags['delete']}" actionListener="#{accountView.deleteTransaction}" process="@this"
+					<p:commandButton icon="pi pi-times" value="#{tags['delete']}" actionListener="#{accountView.onDeleteTransaction}" process="@this"
 						styleClass="ui-button-danger" rendered="#{accountView.transactionDialog.isDeleteButtonRendered()}">
 						<p:confirm header="#{messages['please.confirm']}" message="#{messages['account.delete.confirm']}" icon="pi pi-info-circle" />
 					</p:commandButton>

@@ -2,10 +2,11 @@
 
 ToDo
 - Account
-	- tag add
+	- reloadAccountingYear -> all visible years
 	- transaction drafts
 	- setting start values based on month before and after
-	- delete transaction
+	- expected day
+	- year + / - 
 - Settings
 	- Date Format in Settings
 	- theme switcher

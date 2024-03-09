@@ -13,10 +13,11 @@ public class TransactionViewModel implements Serializable {
 	private int year;
 	private int month;
 	private int expectedDay;
+	private String expectedDayForDisplay;
 	private Instant executedAt;
 	private BigDecimal value;
 	private List<TagViewModel> tags = new ArrayList<>();
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -87,6 +88,14 @@ public class TransactionViewModel implements Serializable {
 
 	public void setTags(List<TagViewModel> tags) {
 		this.tags = tags;
+	}
+
+	public String getExpectedDayForDisplay() {
+		return expectedDayForDisplay;
+	}
+
+	public void setExpectedDayForDisplay(String expectedDayForDisplay) {
+		this.expectedDayForDisplay = expectedDayForDisplay;
 	}
 
 }

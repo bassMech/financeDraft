@@ -3,13 +3,17 @@ package de.bassmech.findra.web.view;
 import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
@@ -18,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.statics.ConfigurationCode;
+import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.ConfigurationService;
@@ -77,6 +82,8 @@ public class AccountView {
 	private AccountingMonthViewModel secondAccountingMonth = null;
 	private AccountingMonthViewModel thirdAccountingMonth = null;
 	
+	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
+	
 	private int[] yearRange = new int[2];
 	
 	@PostConstruct
@@ -108,6 +115,18 @@ public class AccountView {
 		
 		yearRange[0] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MIN));
 		yearRange[1] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MAX));
+		
+		setSelectableExpectedDay();
+	}
+	
+	private void setSelectableExpectedDay() {
+		selectableExpectedDay = new LinkedHashMap<>();
+		selectableExpectedDay.put(ExpectedDay.UNKNOWN.getDbValue(), LocalizedMessageUtil.getTag(ExpectedDay.UNKNOWN.getTagString()));
+		selectableExpectedDay.put(ExpectedDay.ULTIMO.getDbValue(), LocalizedMessageUtil.getTag(ExpectedDay.ULTIMO.getTagString()));
+		int maxDayInMonth = 31;
+		for (int i = 1; i <= maxDayInMonth; i++) {
+			selectableExpectedDay.put(i, String.valueOf(i));
+		}
 	}
 	
 	private void reloadSelectableAccounts() {
@@ -235,8 +254,12 @@ public class AccountView {
 
 
 
-	public void onDeleteTransactionClick() {
-		logger.debug("onDeleteTransactionClick: " + selectedTransaction.getId());
+	public void onDeleteTransaction() {
+		logger.debug("onDeleteTransaction: " + transactionDialog.getId());
+		
+		accountService.deleteTransaction(transactionDialog.getId(), transactionDialog.getAccountId(), transactionDialog.getAccountingMonth().getYear());
+		reloadAccountingYear();
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 	
 	public void openAccountDetailDialogNew() {
@@ -309,41 +332,48 @@ public class AccountView {
 	
 	public void onTransactionEdit(int transactionId, AccountingMonthViewModel accountingMonth) {
 		logger.debug("onTransactionEdit id: " + transactionId);
-		transactionDialog = new TransactionDetailDialogViewModel();	
-		transactionDialog.setAccountingMonth(accountingMonth);
 		
-		TransactionViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionId)).findFirst().orElse(null);
-		transactionDialog.setId(vm.getId());
-		transactionDialog.setAccountId(selectedAccountId);
-		transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
-		transactionDialog.setExpectedDay(vm.getExpectedDay());
-		transactionDialog.setTitle(vm.getTitle());
-		transactionDialog.setDescription(vm.getDescription());
-		transactionDialog.setValue(vm.getValue());
-		
-		List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
-		for (TagViewModel tag : tagsForAccount) {
-			if (vm.getTags().contains(tag)) {
-				transactionDialog.getTagsAssigned().add(tag);
-			} else {
-				transactionDialog.getTagsAvailable().add(tag);
-			}
-		}
-		
-		openTransactionDetailDialog();
+		prepareAndOpenTransactionDetailDialog(transactionId, accountingMonth);
 	}
 		
 	public void onTransactionNew(AccountingMonthViewModel accountingMonth) {
 		logger.debug("onTransactionNew");
-		transactionDialog = new TransactionDetailDialogViewModel();
-		transactionDialog.setAccountingMonth(accountingMonth);
-		
-		transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
-		
-		openTransactionDetailDialog();
+
+		prepareAndOpenTransactionDetailDialog(null, accountingMonth);
 	}
 	
-	private void openTransactionDetailDialog() {
+	private void prepareAndOpenTransactionDetailDialog(Integer transactionId, AccountingMonthViewModel accountingMonth) {
+		transactionDialog = new TransactionDetailDialogViewModel();	
+		transactionDialog.setAccountingMonth(accountingMonth);
+		
+		if (transactionId == null) {
+			transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
+		} else {
+			TransactionViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionId)).findFirst().orElse(null);
+			transactionDialog.setId(vm.getId());
+			transactionDialog.setAccountId(selectedAccountId);
+			transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
+			transactionDialog.setExpectedDay(vm.getExpectedDay());
+			transactionDialog.setTitle(vm.getTitle());
+			transactionDialog.setDescription(vm.getDescription());
+			transactionDialog.setValue(vm.getValue());
+			
+			List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
+			for (TagViewModel tag : tagsForAccount) {
+				if (vm.getTags().contains(tag)) {
+					transactionDialog.getTagsAssigned().add(tag);
+				} else {
+					transactionDialog.getTagsAvailable().add(tag);
+				}
+			}
+		}
+		
+		int maxDay = YearMonth.of(accountingMonth.getYear(), accountingMonth.getMonth()).atEndOfMonth().getDayOfMonth();
+		transactionDialog.setSelectableExpectedDay(selectableExpectedDay.entrySet().stream()
+				.filter(entry -> entry.getKey() <= maxDay || entry.getKey() > 31)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> {throw new RuntimeException();}, LinkedHashMap::new)));
+		//transactionDialog.setSelectableExpectedDay(selectableExpectedDay.sub (transactionId));
+		
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
 	}
@@ -554,6 +584,14 @@ public class AccountView {
 
 	public void setThirdAccountingMonth(AccountingMonthViewModel thirdAccountingMonth) {
 		this.thirdAccountingMonth = thirdAccountingMonth;
+	}
+
+	public HashMap<Integer, String> getSelectableExpectedDay() {
+		return selectableExpectedDay;
+	}
+
+	public void setSelectableExpectedDay(HashMap<Integer, String> selectableExpectedDay) {
+		this.selectableExpectedDay = selectableExpectedDay;
 	}
 
 }

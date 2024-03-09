@@ -8,6 +8,7 @@ import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Tag;
+import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -47,6 +48,12 @@ public class ToViewModelUtil {
 		vm.setExpectedDay(entity.getExpectedDay());
 		vm.setExecutedAt(entity.getExecutedAt());
 		vm.setValue(entity.getValue());
+		if (entity.getExpectedDay() > 0) {
+			vm.setExpectedDayForDisplay(String.valueOf(entity.getExpectedDay()));
+		} else {
+			vm.setExpectedDayForDisplay(LocalizedMessageUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
+		}
+		
 		
 		vm.setTags(toTagViewModelList(entity.getTags()));
 		

@@ -201,10 +201,10 @@ public class AccountService {
 		}
 		
 		transaction.setTitle(transactionDialog.getTitle());
-		transaction.setDescription(transaction.getDescription());
+		transaction.setDescription(transactionDialog.getDescription());
 		transaction.setValue(transactionDialog.getValue());
 		transaction.setExecutedAt(transactionDialog.getExecutedAt() == null ? null : transactionDialog.getExecutedAt().atStartOfDay(ZoneOffset.UTC).toInstant());
-		transaction.setExpectedDay(transaction.getExpectedDay());
+		transaction.setExpectedDay(transactionDialog.getExpectedDay());
 		
 		
 		for (TagViewModel tag : transactionDialog.getTagsAssigned()) {
@@ -233,6 +233,17 @@ public class AccountService {
 				
 		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
 		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+	}
+
+	public void deleteTransaction(Integer transactionId, int accountId, int year) {
+		transactionRepository.deleteById(transactionId.longValue());
+		
+		AccountingYear accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
+		AccountingYearViewModel yearVm = ToViewModelUtil.toViewModel(accountingYear);
+				
+		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
+		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+		
 	}
 
 }

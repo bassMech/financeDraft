@@ -5,7 +5,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class TransactionDetailDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -21,6 +25,8 @@ public class TransactionDetailDialogViewModel implements Serializable {
 	private AccountingMonthViewModel accountingMonth;
 	private List<TagViewModel> tagsAvailable = new ArrayList<>();
 	private List<TagViewModel> tagsAssigned = new ArrayList<>();
+	
+	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
 	
 	public void onTagAssign(int tagId) {
 		TagViewModel vm = tagsAvailable.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
@@ -47,7 +53,7 @@ public class TransactionDetailDialogViewModel implements Serializable {
 	public boolean isDeleteButtonRendered() {
 		return id != null;
 	}
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -126,6 +132,14 @@ public class TransactionDetailDialogViewModel implements Serializable {
 
 	public void setTagsAssigned(List<TagViewModel> tagsAssigned) {
 		this.tagsAssigned = tagsAssigned;
+	}
+
+	public HashMap<Integer, String> getSelectableExpectedDay() {
+		return selectableExpectedDay;
+	}
+
+	public void setSelectableExpectedDay(HashMap<Integer, String> selectableExpectedDay) {
+		this.selectableExpectedDay = selectableExpectedDay;
 	}
 
 }
