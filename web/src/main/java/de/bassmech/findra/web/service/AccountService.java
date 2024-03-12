@@ -3,6 +3,7 @@ package de.bassmech.findra.web.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +19,10 @@ import org.springframework.stereotype.Service;
 
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountingYearRepository;
-import de.bassmech.findra.core.repository.TransactionRepository;
+import de.bassmech.findra.core.repository.AccountTransactionRepository;
 import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountTransaction;
+import de.bassmech.findra.model.entity.AccountTransactionDraft;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Tag;
@@ -30,9 +32,11 @@ import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
+import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.web.view.model.type.AccountType;
 
 @Service
@@ -46,13 +50,14 @@ public class AccountService {
 	private AccountingYearRepository accountingYearRepository;
 	
 	@Autowired
-	private TransactionRepository tagRepository;
+	private AccountTransactionRepository tagRepository;
 	
 	@Autowired
-	private TransactionRepository transactionRepository;
+	private AccountTransactionRepository transactionRepository;
 
 	private List<AccountViewModel> loadedAccounts = new ArrayList<>();
 	private Map<Integer, List<AccountingYearViewModel>> loadedAccountingYearsByAccountId = new HashMap<>();
+	private Map<Integer, List<DraftViewModel>> loadedDraftsByAccountId = new HashMap<>();
 	private Map<Locale, Map<Integer, String>> accountTypesByLocale = new HashMap<>();
 
 	public List<AccountViewModel> getAccountList() {
@@ -80,10 +85,26 @@ public class AccountService {
 					loadedAccountingYearsByAccountId.put(accountId, new ArrayList<>());
 				}
 				loadedAccountingYearsByAccountId.get(accountId).add(yearModel);
+				
+				addDraftsToYearViewModel(accountId, yearModel);
 			}
 		}
-		// what to do if non found?
 		return yearModel;
+	}
+	
+	public List<DraftViewModel> getDraftsForYear(Integer accountId, int year) {
+		
+		//drafts
+		if (loadedDraftsByAccountId.get(accountId) == null) {
+			Account account = accountRepository.findById(accountId.longValue()).orElse(null);
+			loadedDraftsByAccountId.put(accountId, ToViewModelUtil.toDraftViewModelList(account.getDrafts()));
+		}
+
+		//Instant yearStart = LocalDate.of(year, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant();
+		YearMonth nextYearStart = YearMonth.of(year + 1, 1);// LocalDate.of(year + 1, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant();
+		
+		return loadedDraftsByAccountId.get(accountId).stream().filter(draft -> draft.getStartsAt().compareTo(nextYearStart) <= 0
+				&& (draft.getEndsAt() == null || draft.getEndsAt().compareTo(nextYearStart) <= 0)).toList();
 	}
 
 	public Map<Integer, String> getAccountTypes(Locale locale) {
@@ -146,6 +167,11 @@ public class AccountService {
 	}
 
 	public void saveTransaction(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
+		if (transactionDialog.isDraft()) {
+			logger.error("got draft but thats not allowed");
+			return;
+		}
+		
 		Integer accountId = transactionDialog.getAccountId();
 		Account account = accountRepository.findById(accountId.longValue()).get();
 		// check loaded
@@ -243,6 +269,33 @@ public class AccountService {
 				
 		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
 		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+		
+	}
+
+	public void addDraftsToYearViewModel(int accountId, AccountingYearViewModel modelYear) {
+		List<DraftViewModel> drafts = getDraftsForYear(accountId, modelYear.getYear());
+		for (int i = 1; i <= 12; i++) {
+			YearMonth currentYm = YearMonth.of(modelYear.getYear(), i);
+			final int monthNo = i;
+			AccountingMonthViewModel month =  modelYear.getMonths().stream().filter(monthX -> monthX.getMonth() == monthNo).findFirst().orElse(null);
+			if (month == null) {
+				month = new AccountingMonthViewModel();
+				month.setAccountYearId(modelYear.getId());
+				month.setMonth(i);
+				month.setYear(modelYear.getYear());
+				modelYear.getMonths().add(month);
+			}
+			for (DraftViewModel draft : drafts) {
+				// check if draft applies
+				if (currentYm.compareTo(draft.getStartsAt()) >= 0 && (draft.getEndsAt() == null || currentYm.compareTo(draft.getEndsAt()) <= 0)) {
+					if (month.getTransactions().stream().noneMatch(tr -> !tr.isDraft() 
+							&& draft.getId().equals(((TransactionViewModel) tr).getDraftId()))) {
+						month.getTransactions().add(draft);
+					}
+				}
+			}
+			month.recalculateTransactions();
+		}
 		
 	}
 

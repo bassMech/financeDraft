@@ -35,10 +35,13 @@ import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
+import de.bassmech.findra.web.view.model.TransactionBaseViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
+import de.bassmech.findra.web.view.model.type.AccountTransactionLayout;
 import de.bassmech.findra.web.view.model.type.AccountType;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -66,7 +69,7 @@ public class AccountView {
 	private Integer selectedAccountId;
 
 	private List<AccountingYearViewModel> accountingYears = new ArrayList<>();
-	private TransactionViewModel selectedTransaction;
+	private TransactionBaseViewModel selectedTransaction;
 
 	private TreeMap<Integer, String> selectableMonths = new TreeMap<>();
 	private int selectedMonth;
@@ -75,7 +78,7 @@ public class AccountView {
 	private int selectedYear;
 	
 	private AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
-	private TransactionDetailDialogViewModel transactionDialog = new TransactionDetailDialogViewModel();
+	private TransactionDetailDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
 	private TransactionExecutedDialogViewModel transactionExecutedDialog = new TransactionExecutedDialogViewModel();
 	
 	private AccountingMonthViewModel firstAccountingMonth = null;
@@ -86,13 +89,15 @@ public class AccountView {
 	
 	private int[] yearRange = new int[2];
 	
+	private AccountTransactionLayout transactionLayout = AccountTransactionLayout.COLUMN_SINGLE;
+	
 	@PostConstruct
 	public void init() {
 		logger.debug("init called");
 		
 		reloadSelectableAccounts();
 
-		selectedMonth = 1;
+		selectedMonth = YearMonth.now().getMonthValue();
 
 		// TODO add years from account
 		int startYear = Year.now().getValue();
@@ -109,12 +114,14 @@ public class AccountView {
 		
 		for (int i = 1; i <= 12; i++) {
 			selectableMonths.put(i, java.time.Month.of(i).getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()));
-			selectableYears.add(startYear);
-			startYear++;
 		}
 		
 		yearRange[0] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MIN));
 		yearRange[1] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MAX));
+		
+		for (int i = yearRange[0]; i <= yearRange[1]; i++) {
+			selectableYears.add(i);
+		}
 		
 		setSelectableExpectedDay();
 	}
@@ -133,11 +140,11 @@ public class AccountView {
 		selectableAccounts = accountService.getAccountList();
 	}
 
-	public String getTransactionRowColorString(TransactionViewModel vm) {
+	public String getTransactionRowColorString(TransactionBaseViewModel vm) {
 		if (BigDecimal.ZERO.compareTo(vm.getValue()) > 0) {
-			return vm.getExecutedAt() == null ? "transaction-negative-expected" : "transaction-negative-executed";
+			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? "transaction-negative-expected" : "transaction-negative-executed";
 		} else if (BigDecimal.ZERO.compareTo(vm.getValue()) < 0) {	
-			return vm.getExecutedAt() == null ? "transaction-positive-expected" : "transaction-positive-executed" ;
+			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? "transaction-positive-expected" : "transaction-positive-executed" ;
 		} else {
 			return null;
 		}
@@ -154,6 +161,27 @@ public class AccountView {
 		accountingYears.clear();
 		accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear));
 
+		updateMonthTransactions();
+	}
+	public void onNextYear() {
+		logger.debug("onNextYear");
+		if (selectedYear + 1 > yearRange[1]) {
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizedMessageUtil.getMessage("hint", Locale.getDefault())
+					, LocalizedMessageUtil.getMessage("year.max.reached", Locale.getDefault(), yearRange[1]));
+			return;
+		}
+		selectedYear++;
+		updateMonthTransactions();
+	}
+	
+	public void onPreviousYear() {
+		logger.debug("onPreviousYear");
+		if (selectedYear - 1 < yearRange[0]) {
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizedMessageUtil.getMessage("hint", Locale.getDefault())
+					, LocalizedMessageUtil.getMessage("year.min.reached", Locale.getDefault(), yearRange[0]));
+			return;
+		}
+		selectedYear--;
 		updateMonthTransactions();
 	}
 	
@@ -242,12 +270,21 @@ public class AccountView {
 	private AccountingYearViewModel getOrCreateAccountingYear(int requestedYear) {
 		AccountingYearViewModel modelYear = accountingYears.stream().filter(year -> year.getYear() == requestedYear).findFirst().orElse(null);
 		if (modelYear == null) {
+			modelYear = accountService.getAccountYear(selectedAccountId, requestedYear);
+			if (modelYear != null) {
+				accountingYears.add(modelYear);
+			}
+		}
+		if (modelYear == null) {
 			logger.debug(String.format("Creating new year for account with id: %d", selectedAccount.getId()));
 			modelYear = new AccountingYearViewModel();
 			modelYear.setAccountId(selectedAccount.getId());
 			modelYear.setYear(requestedYear);
 			accountingYears.add(modelYear);
 			modelYear.addDraftMonths();
+			
+			accountService.addDraftsToYearViewModel(selectedAccount.getId(), modelYear);
+			
 		}
 		return modelYear;
 	}
@@ -316,6 +353,57 @@ public class AccountView {
 	}
 
 ///
+/// Draft related
+///
+	public void onDraftEdit(int draftId, AccountingMonthViewModel accountingMonth) {
+		logger.debug("onDraftEdit id: " + draftId);
+		
+		//prepareAndOpenTransactionDetailDialogForDraft(draftId, accountingMonth);
+	}
+		
+	public void onDraftNew(AccountingMonthViewModel accountingMonth) {
+		logger.debug("onDraftNew");
+
+		prepareAndOpenTransactionDetailDialogForDraft(null, accountingMonth);
+	}
+	
+	private void prepareAndOpenTransactionDetailDialogForDraft(Integer draftId, AccountingMonthViewModel accountingMonth) {
+		transactionDialog = new TransactionDetailDialogViewModel(LocalizedMessageUtil.getTag(draftId == null ? TagName.DRAFT_NEW.getValue() : TagName.DRAFT_EDIT.getValue()), true);	
+		transactionDialog.setAccountingMonth(accountingMonth);
+		//TODO GOON
+		if (draftId == null) {
+			transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
+		} else {
+			TransactionBaseViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(draftId)).findFirst().orElse(null);
+//			transactionDialog.setId(vm.getId());
+//			transactionDialog.setAccountId(selectedAccountId);
+//			transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
+//			transactionDialog.setExpectedDay(vm.getExpectedDay());
+//			transactionDialog.setTitle(vm.getTitle());
+//			transactionDialog.setDescription(vm.getDescription());
+//			transactionDialog.setValue(vm.getValue());
+//			
+//			List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
+//			for (TagViewModel tag : tagsForAccount) {
+//				if (vm.getTags().contains(tag)) {
+//					transactionDialog.getTagsAssigned().add(tag);
+//				} else {
+//					transactionDialog.getTagsAvailable().add(tag);
+//				}
+//			}
+		}
+		
+//		int maxDay = YearMonth.of(accountingMonth.getYear(), accountingMonth.getMonth()).atEndOfMonth().getDayOfMonth();
+//		transactionDialog.setSelectableExpectedDay(selectableExpectedDay.entrySet().stream()
+//				.filter(entry -> entry.getKey() <= maxDay || entry.getKey() > 31)
+//				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> {throw new RuntimeException();}, LinkedHashMap::new)));
+//		//transactionDialog.setSelectableExpectedDay(selectableExpectedDay.sub (transactionId));
+//		
+//		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+//		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
+	}
+	
+///
 /// Transaction related
 ///
 	
@@ -333,23 +421,24 @@ public class AccountView {
 	public void onTransactionEdit(int transactionId, AccountingMonthViewModel accountingMonth) {
 		logger.debug("onTransactionEdit id: " + transactionId);
 		
-		prepareAndOpenTransactionDetailDialog(transactionId, accountingMonth);
+		prepareAndOpenTransactionDetailDialogForTransaction(transactionId, accountingMonth);
 	}
 		
 	public void onTransactionNew(AccountingMonthViewModel accountingMonth) {
 		logger.debug("onTransactionNew");
 
-		prepareAndOpenTransactionDetailDialog(null, accountingMonth);
+		prepareAndOpenTransactionDetailDialogForTransaction(null, accountingMonth);
 	}
 	
-	private void prepareAndOpenTransactionDetailDialog(Integer transactionId, AccountingMonthViewModel accountingMonth) {
-		transactionDialog = new TransactionDetailDialogViewModel();	
+	private void prepareAndOpenTransactionDetailDialogForTransaction(Integer transactionId, AccountingMonthViewModel accountingMonth) {
+		transactionDialog = new TransactionDetailDialogViewModel(LocalizedMessageUtil.getTag(transactionId == null ? TagName.TRANSACTION_NEW.getValue() : TagName.TRANSACTION_EDIT.getValue()), false);	
 		transactionDialog.setAccountingMonth(accountingMonth);
 		
 		if (transactionId == null) {
 			transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
 		} else {
-			TransactionViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionId)).findFirst().orElse(null);
+			TransactionBaseViewModel vmb = accountingMonth.getTransactions().stream().filter(tr -> !tr.isDraft() && tr.getId().equals(transactionId)).findFirst().orElse(null);
+			TransactionViewModel vm = (TransactionViewModel) vmb;
 			transactionDialog.setId(vm.getId());
 			transactionDialog.setAccountId(selectedAccountId);
 			transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
@@ -393,6 +482,11 @@ public class AccountView {
 	public void reloadAccountingYear() {
 		accountingYears.removeIf(yearX -> yearX.getYear() == selectedYear);
 		accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear));
+		
+		if (selectedMonth >= 11) {
+			accountingYears.removeIf(yearX -> yearX.getYear() == selectedYear + 1);
+			accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear + 1));
+		}
 //		AccountingYearViewModel yearVm = accountingYears.stream().filter(year -> year.getYear() == selectedYear).findFirst().orElse(null);
 //		firstAccountingMonth = yearVm.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
 		
@@ -427,8 +521,10 @@ public class AccountView {
 		logger.debug("Saving transaction executedAt");
 		if (isTransactionExecutedDialogValid()) {
 			//TODO correct Month
-			TransactionViewModel vm = firstAccountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(transactionExecutedDialog.getId())).findFirst().orElse(null);
-			TransactionDetailDialogViewModel detailDialog = new TransactionDetailDialogViewModel();
+			TransactionBaseViewModel vmb = firstAccountingMonth.getTransactions().stream().filter(tr -> !tr.isDraft() && tr.getId().equals(transactionExecutedDialog.getId())).findFirst().orElse(null);
+			TransactionViewModel vm = (TransactionViewModel) vmb;
+			
+			TransactionDetailDialogViewModel detailDialog = new TransactionDetailDialogViewModel("", false);
 			
 			detailDialog.setId(vm.getId());
 			detailDialog.setAccountId(selectedAccountId);
@@ -522,11 +618,11 @@ public class AccountView {
 		this.accountingYears = accountingYears;
 	}
 
-	public TransactionViewModel getSelectedTransaction() {
+	public TransactionBaseViewModel getSelectedTransaction() {
 		return selectedTransaction;
 	}
 
-	public void setSelectedTransaction(TransactionViewModel selectedTransaction) {
+	public void setSelectedTransaction(TransactionBaseViewModel selectedTransaction) {
 		this.selectedTransaction = selectedTransaction;
 	}
 

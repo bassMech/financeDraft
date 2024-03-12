@@ -46,6 +46,9 @@ public class Account{
         inverseJoinColumns = { @JoinColumn(name = "tag_id") })
 	private List<Tag> tags = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
+	private List<AccountTransactionDraft> drafts = new ArrayList<>();
+	
 	public Integer getId() {
 		return id;
 	}
@@ -92,6 +95,14 @@ public class Account{
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public List<AccountTransactionDraft> getDrafts() {
+		return drafts;
+	}
+
+	public void setDrafts(List<AccountTransactionDraft> drafts) {
+		this.drafts = drafts;
 	}
 
 }

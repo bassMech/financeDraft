@@ -19,15 +19,23 @@ public class TransactionDetailDialogViewModel implements Serializable {
 	private String title;
 	private String description;
 	private BigDecimal value = BigDecimal.ZERO;
-	private Integer expectedDay;
+	private Integer expectedDay = 0;
 	private LocalDate executedAt;
+	
+	private String dialogTitle = "";
+	private boolean isDraft;
 	
 	private AccountingMonthViewModel accountingMonth;
 	private List<TagViewModel> tagsAvailable = new ArrayList<>();
 	private List<TagViewModel> tagsAssigned = new ArrayList<>();
 	
 	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
-	
+		
+	public TransactionDetailDialogViewModel(String dialogTitle, boolean isDraft) {
+		this.dialogTitle = dialogTitle;
+		this.isDraft = isDraft;
+	}
+
 	public void onTagAssign(int tagId) {
 		TagViewModel vm = tagsAvailable.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
 		tagsAvailable.remove(vm);
@@ -140,6 +148,22 @@ public class TransactionDetailDialogViewModel implements Serializable {
 
 	public void setSelectableExpectedDay(HashMap<Integer, String> selectableExpectedDay) {
 		this.selectableExpectedDay = selectableExpectedDay;
+	}
+
+	public String getDialogTitle() {
+		return dialogTitle;
+	}
+
+	public void setDialogTitle(String dialogTitle) {
+		this.dialogTitle = dialogTitle;
+	}
+
+	public boolean isDraft() {
+		return isDraft;
+	}
+
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
 	}
 
 }

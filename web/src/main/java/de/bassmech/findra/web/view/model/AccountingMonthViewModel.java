@@ -15,7 +15,7 @@ public class AccountingMonthViewModel implements Serializable {
 	private BigDecimal transactionValueExecuted = BigDecimal.ZERO;
 	private int transactionCountExpected = 0;
 	private int transactionCountExecuted = 0;
-	private List<TransactionViewModel> transactions = new ArrayList<>();
+	private List<TransactionBaseViewModel> transactions = new ArrayList<>();
 
 	public void recalculateTransactions() {
 		startValue = BigDecimal.ZERO;
@@ -24,12 +24,12 @@ public class AccountingMonthViewModel implements Serializable {
 		transactionCountExpected = 0;
 		transactionCountExecuted = 0;
 
-		for (TransactionViewModel transaction : transactions) {
-			if (transaction.getExecutedAt() == null) {
-				transactionValueExpected = transactionValueExecuted.add(transaction.getValue());
+		for (TransactionBaseViewModel transactionBase : transactions) {
+			if (transactionBase instanceof TransactionViewModel && ((TransactionViewModel) transactionBase).getExecutedAt() == null) {
+				transactionValueExpected = transactionValueExpected.add(transactionBase.getValue());
 				transactionCountExpected++;
 			} else {
-				transactionValueExecuted = transactionValueExecuted.add(transaction.getValue());
+				transactionValueExecuted = transactionValueExecuted.add(transactionBase.getValue());
 				transactionCountExecuted++;
 			}
 		}
@@ -75,11 +75,11 @@ public class AccountingMonthViewModel implements Serializable {
 		this.month = month;
 	}
 
-	public List<TransactionViewModel> getTransactions() {
+	public List<TransactionBaseViewModel> getTransactions() {
 		return transactions;
 	}
 
-	public void setTransactions(List<TransactionViewModel> transactions) {
+	public void setTransactions(List<TransactionBaseViewModel> transactions) {
 		this.transactions = transactions;
 	}
 

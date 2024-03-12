@@ -1,78 +1,87 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
-	<p:dialog id="transactionDetailDialog" header="#{tags['transaction']}" width="auto" responsive="true"
-		widgetVar="transactionDetailDialog" showEffect="fade" resizable="true">
+	<p:dialog id="transactionDetailDialog" header="#{accountView.transactionDialog.dialogTitle}" width="1400" responsive="true" widgetVar="transactionDetailDialog"
+		showEffect="fade" resizable="true">
 		<p:panel>
 			<div class="grid">
 				<div class="col-6">
-					<p:fieldset legend="#{tags['data']}">
-						<div class="grid">
-							<div class="col-6">
-								<div>
-									<p:tag value="#{tags['title']}"></p:tag>
+					<div class="flex">
+						<p:fieldset legend="#{tags['data']}">
+							<div class="grid">
+								<div class="col-12 flex justify-content-between gap-1">
+									<div>
+										<div>
+											<p:tag value="#{tags['title']}"></p:tag>
+										</div>
+										<div>
+											<p:inputText id="transactionDetailDialog_title" value="#{accountView.transactionDialog.title}">
+												<p:ajax></p:ajax>
+											</p:inputText>
+										</div>
+									</div>
+									<div>
+										<div>
+											<p:tag value="#{tags['value']}"></p:tag>
+										</div>
+										<div>
+											<p:inputNumber id="transactionDetailDialog_value" value="#{accountView.transactionDialog.value}" decimalPlaces="2"
+												symbol="#{accountView.settingService.dbCurrency.symbol}" symbolPosition="s" emptyValue="zero" inputStyle="width:150px">
+												<p:ajax></p:ajax>
+											</p:inputNumber>
+										</div>
+									</div>
 								</div>
-								<div>
-									<p:inputText id="transactionDetailDialog_title" value="#{accountView.transactionDialog.title}">
-										<p:ajax></p:ajax>
-									</p:inputText>
-								</div>
-							</div>
 
-							<div class="col-6">
-								<div>
-									<p:tag value="#{tags['value']}"></p:tag>
-								</div>
-								<div>
-									<p:inputNumber id="transactionDetailDialog_value" value="#{accountView.transactionDialog.value}" decimalPlaces="2"
-										symbol="#{accountView.settingService.dbCurrency.symbol}" symbolPosition="s" emptyValue="zero">
-										<p:ajax></p:ajax>
-									</p:inputNumber>
-								</div>
-							</div>
-						</div>
-						<div class="col-12">
-							<div>
-								<p:tag value="#{tags['description']}"></p:tag>
-							</div>
-							<div>
-								<p:inputText id="transactionDetailDialog_description" value="#{accountView.transactionDialog.description}"
-									style="width: 100% !important">
-									<p:ajax></p:ajax>
-								</p:inputText>
-							</div>
-						</div>
-					</p:fieldset>
-					<p:fieldset legend="#{tags['date']}">
-						<div class="flex gap-2">
-							<div>
-								<div>
-									<p:tag value="#{tags['expected']}"></p:tag>
-								</div>
-								<div>
-									<p:selectOneMenu id="transactionDetailDialog_expectedDaySelect" value="#{accountView.transactionDialog.expectedDay}"
-										style="padding-left:5px;">
-										<p:ajax />
-										<f:selectItems value="#{accountView.transactionDialog.selectableExpectedDay.entrySet()}" var="day" itemLabel="#{day.value}" 
-										itemValue="#{day.key}" />
-									</p:selectOneMenu>
+								<div class="col-12">
+									<div>
+										<p:tag value="#{tags['description']}"></p:tag>
+									</div>
+									<div>
+										<p:inputText id="transactionDetailDialog_description" value="#{accountView.transactionDialog.description}"
+											style="width: 100% !important">
+											<p:ajax></p:ajax>
+										</p:inputText>
+									</div>
 								</div>
 							</div>
-							<div>
-								<div>
-									<p:tag value="#{tags['executed']}"></p:tag>
+						</p:fieldset>
+						<p:fieldset legend="#{tags['date']}">
+							<div class="grid">
+								<div class="col-12">
+									<div>
+										<p:tag value="#{tags['expected']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_expectedDaySelect" value="#{accountView.transactionDialog.expectedDay}"
+											style="padding-left:5px;">
+											<p:ajax />
+											<f:selectItems value="#{accountView.transactionDialog.selectableExpectedDay.entrySet()}" var="day" itemLabel="#{day.value}"
+												itemValue="#{day.key}" />
+										</p:selectOneMenu>
+									</div>
 								</div>
-								<div>
-									<p:datePicker id="transactionDetailDialog_exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionDialog.executedAt}"
-										monthNavigator="true" yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}"
-										locale="#{accountView.getCurrentLocale().getLanguage()}" />
+								<div class="col-12">
+									<div>
+										<p:tag value="#{tags['executed']}"></p:tag>
+									</div>
+									<div>
+										<p:datePicker id="transactionDetailDialog_exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionDialog.executedAt}"
+											monthNavigator="true" yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}"
+											locale="#{accountView.getCurrentLocale().getLanguage()}" />
+									</div>
 								</div>
 							</div>
-						</div>
-					</p:fieldset>
+						</p:fieldset>
+					</div>
+					<div>
+						<p:fieldset legend="#{tags['draft']}">
+							<p:toggleSwitch />
+						</p:fieldset>
+					</div>
 				</div>
 				<div class="col-6">
-					<p:panel id="tagTransactionPickList" class="margin-top-1em">
-						<div class="grid">
+					<p:fieldset id="tagTransactionPickList" legend="#{tags['assignment']}">
+						<div class="grid" style="margin-top: 2px !important;">
 							<p:card class="col-6">
 								<p:dataTable var="tag" value="#{accountView.transactionDialog.tagsAvailable}" rowKey="#{tag.id}" class="no-header-table">
 									<f:facet name="header">
@@ -94,7 +103,8 @@
 							</p:card>
 
 							<p:card class="col-6">
-								<p:dataTable id="accountTagsAssigned" var="tag" value="#{accountView.transactionDialog.tagsAssigned}" rowKey="#{tag.id}" class="no-header-table">
+								<p:dataTable id="accountTagsAssigned" var="tag" value="#{accountView.transactionDialog.tagsAssigned}" rowKey="#{tag.id}"
+									class="no-header-table">
 									<f:facet name="header">
 										<div class="flex justify-content-between align-items-center">
 											<p:commandButton icon="pi pi-angle-double-left" action="#{accountView.transactionDialog.onAllTagRemove}" process="@this"
@@ -114,7 +124,7 @@
 							</p:card>
 
 						</div>
-					</p:panel>
+					</p:fieldset>
 				</div>
 			</div>
 

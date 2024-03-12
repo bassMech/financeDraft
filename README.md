@@ -2,14 +2,17 @@
 
 ToDo
 - Account
-	- reloadAccountingYear -> all visible years
-	- transaction drafts
+	- continue draft
+		- make sure drafts are not saved as transaction
+		- set correct start month
+		- set by interval condition usage
+	- sum up value for month and year
 	- setting start values based on month before and after
-	- expected day
-	- year + / - 
+	- display settings, 1 / 2 or 3 transactionMonth displayed
 - Settings
 	- Date Format in Settings
 	- theme switcher
+	- number input decimal separator config
 - Statistics
 
 - Tags

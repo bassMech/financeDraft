@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-	<changeSet id="inital-pragma" author="bassmech"
-		context="default">
+	<changeSet id="inital-pragma" author="bassmech" context="default">
 		<sql>PRAGMA foreign_keys = ON;</sql>
 	</changeSet>
-	<changeSet id="inital-configuration" author="bassmech"
-		context="default">
+	<changeSet id="inital-configuration" author="bassmech" context="default">
 		<createTable tableName="configuration">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -46,8 +42,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="inital-setting" author="bassmech"
-		context="default">
+	<changeSet id="inital-setting" author="bassmech" context="default">
 		<createTable tableName="setting">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -74,8 +69,7 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="inital-account" author="bassmech"
-		context="default">
+	<changeSet id="inital-account" author="bassmech" context="default">
 		<createTable tableName="account">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -95,16 +89,13 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-accounting_year" author="bassmech"
-		context="default">
+	<changeSet id="inital-accounting_year" author="bassmech" context="default">
 		<createTable tableName="accounting_year">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
 			</column>
 			<column name="account_id" type="INTEGER">
-				<constraints nullable="false"
-					foreignKeyName="fk_accounting_year_account_id"
-					references="account(id)" />
+				<constraints nullable="false" foreignKeyName="fk_accounting_year_account_id" references="account(id)" />
 			</column>
 			<column name="year" type="INTEGER">
 				<constraints nullable="false" />
@@ -118,16 +109,13 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-accounting_month" author="bassmech"
-		context="default">
+	<changeSet id="inital-accounting_month" author="bassmech" context="default">
 		<createTable tableName="accounting_month">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
 			</column>
 			<column name="accounting_year_id" type="INTEGER">
-				<constraints nullable="false"
-					foreignKeyName="fk_accounting_month_accounting_year_id"
-					references="accounting_year(id)" />
+				<constraints nullable="false" foreignKeyName="fk_accounting_month_accounting_year_id" references="accounting_year(id)" />
 			</column>
 			<column name="month" type="INTEGER">
 				<constraints nullable="false" />
@@ -141,16 +129,54 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-transaction" author="bassmech"
-		context="default">
+	<changeSet id="inital-transaction_draft" author="bassmech" context="default">
+		<createTable tableName="account_transaction_draft">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="account_id" type="int">
+				<constraints nullable="false" foreignKeyName="FK_account_transaction_draft_account_id" referencedTableName="account"
+					referencedColumnNames="id" />
+			</column>
+			<column name="predecessor_id" type="int">
+				<constraints nullable="true" foreignKeyName="FK_account_transaction_draft_predecessor"
+					referencedTableName="account_transaction_draft" referencedColumnNames="id" />
+			</column>
+			<column name="title" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="TEXT">
+				<constraints nullable="true" />
+			</column>
+			<column name="value" type="REAL">
+				<constraints nullable="false" />
+			</column>
+			<column name="expected_day" type="INTEGER">
+				<constraints nullable="false" />
+			</column>
+			<column name="starts_at" type="TEXT">
+				<constraints nullable="false" />
+			</column>
+			<column name="ends_at" type="TEXT">
+				<constraints nullable="true" />
+			</column>
+			<column name="interval" type="INTEGER">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="inital-transaction" author="bassmech" context="default">
 		<createTable tableName="account_transaction">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
 			</column>
+			<column name="draft_id" type="int">
+				<constraints nullable="true" foreignKeyName="FK_account_transaction_draft_id" referencedTableName="account_transaction_draft"
+					referencedColumnNames="id" />
+			</column>
 			<column name="accounting_month_id" type="INTEGER">
-				<constraints nullable="false"
-					foreignKeyName="fk_account_transaction_accounting_month_id"
-					references="accounting_month(id)" />
+				<constraints nullable="false" foreignKeyName="fk_account_transaction_accounting_month_id" references="accounting_month(id)" />
 			</column>
 			<column name="title" type="TEXT">
 				<constraints nullable="false" />
@@ -170,8 +196,7 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-tag" author="bassmech"
-		context="default">
+	<changeSet id="inital-tag" author="bassmech" context="default">
 		<createTable tableName="tag">
 			<column name="id" type="INTEGER" autoIncrement="true">
 				<constraints primaryKey="true" />
@@ -194,23 +219,59 @@
 		</createTable>
 	</changeSet>
 
-	<changeSet id="inital-account-tags" author="bassmech"
-		context="default">
-		<sqlFile path="account_tag_table.sql" relativeToChangelogFile="true"/>
-	</changeSet>
-	
-	<changeSet id="inital-transaction-tags" author="bassmech"
-		context="default">
-		<sqlFile path="transaction_tag_table.sql" relativeToChangelogFile="true"/>
+	<changeSet id="inital-account-tags" author="bassmech" context="default">
+		<createTable tableName="account_tag">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="account_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_account_tag_account_id" referencedTableName="account"
+					referencedColumnNames="id" unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+			<column name="tag_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_account_tag_tag_id" referencedTableName="tag" referencedColumnNames="id"
+					unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+		</createTable>
 	</changeSet>
 
-	<!-- <changeSet id="inital-clearing_accounts" author="bassmech" context="default"> 
-		<createTable tableName="clearing_account"> <column name="id" type="INTEGER" 
-		autoIncrement="true"> <constraints primaryKey="true" /> </column> <column 
-		name="title" type="TEXT"> <constraints nullable="false" /> </column> <column 
-		name="description" type="TEXT"> <constraints nullable="true" /> </column> 
-		<column name="account_id" type="INTEGER"> <constraints nullable="false" foreignKeyName="fk_clearing_account_account_id" 
-		references="account(id)" /> </column> <column name="clearingAccountId" type="TEXT"> 
-		<constraints nullable="false" foreignKeyName="fk_clearing_account_clearing_id" 
-		references="account(id)" /> </column> </createTable> </changeSet> -->
+	<changeSet id="inital-transaction-tags" author="bassmech" context="default">
+		<createTable tableName="transaction_tag">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="transaction_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_transaction_tag_transaction_id" referencedTableName="account_transaction"
+					referencedColumnNames="id" unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+			<column name="tag_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_transaction_tag_tag_id" referencedTableName="tag"
+					referencedColumnNames="id" unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="inital-draft-tags" author="bassmech" context="default">
+		<createTable tableName="draft_tag">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="draft_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_draft_tag_transaction_id" referencedTableName="account_transaction_draft"
+					referencedColumnNames="id" unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+			<column name="tag_id" type="INTEGER">
+				<constraints nullable="false" foreignKeyName="fk_draft_tag_tag_id" referencedTableName="tag" referencedColumnNames="id"
+					unique="true" uniqueConstraintName="test1" validateForeignKey="true" validateUnique="true" />
+			</column>
+		</createTable>
+	</changeSet>
+
+
+
+	<!-- <changeSet id="inital-clearing_accounts" author="bassmech" context="default"> <createTable tableName="clearing_account"> <column name="id" 
+		type="INTEGER" autoIncrement="true"> <constraints primaryKey="true" /> </column> <column name="title" type="TEXT"> <constraints nullable="false" 
+		/> </column> <column name="description" type="TEXT"> <constraints nullable="true" /> </column> <column name="account_id" type="INTEGER"> <constraints 
+		nullable="false" foreignKeyName="fk_clearing_account_account_id" references="account(id)" /> </column> <column name="clearingAccountId" type="TEXT"> 
+		<constraints nullable="false" foreignKeyName="fk_clearing_account_clearing_id" references="account(id)" /> </column> </createTable> </changeSet> -->
 </databaseChangeLog>

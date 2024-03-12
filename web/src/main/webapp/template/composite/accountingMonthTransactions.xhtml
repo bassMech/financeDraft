@@ -11,7 +11,6 @@
 						<div class="flex justify-content-end">
 							<h:outputText value="#{tags['expected']}: " />
 						</div>
-
 					</div>
 					<div class="col">
 						<div class="flex justify-content-end">
@@ -65,7 +64,7 @@
 	<p:dataTable var="transaction" value="#{accountingMonth.transactions}" rowKey="#{transaction.id}"
 		rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}" allowUnsorting="true" sortMode="single" size="small">
 
-		<p:column style="width:2rem">
+		<p:column style="width:1rem">
 			<p:rowToggler />
 		</p:column>
 		<p:column headerText="#{tags['title']}" sortBy="#{transaction.title}">
@@ -97,6 +96,11 @@
 				<p:commandButton icon="pi pi-pencil" action="#{accountView.onTransactionEdit(transaction.id, accountingMonth)}" process="@this"
 					update="mainForm:transactionDetailDialog"></p:commandButton>
 			</div>
+		</p:column>
+		<p:column style="width:1rem">
+			<h:outputLabel rendered="#{transaction.isDraft()}">
+				<i class="pi pi-compass"></i>
+			</h:outputLabel>
 		</p:column>
 
 		<p:rowExpansion>

@@ -119,4 +119,48 @@
 		</insert>
 	</changeSet>
 
+	<changeSet id="tags-2024-01_draft" author="bassmech" context="test-data">
+		<insert tableName="account_transaction_draft">
+			<column name="account_id">1</column>
+			<column name="predecessor_id">null</column>
+			<column name="title">first draft</column>
+			<column name="description">nothing</column>
+			<column name="value">777</column>
+			<column name="expected_day">1</column>
+			<column name="starts_at">2024_1</column>
+			<column name="ends_at">null</column>
+			<column name="interval">1</column>
+		</insert>
+		<insert tableName="account_transaction">
+			<column name="accounting_month_id">1</column>
+			<column name="draft_id">1</column>
+			<column name="title">first draft transaction</column>
+			<column name="description"></column>
+			<column name="value">776</column>
+			<column name="expected_day">1</column>
+			<column name="executed_at">1710267435</column>
+		</insert>
+		<insert tableName="account_transaction_draft">
+			<column name="account_id">1</column>
+			<column name="predecessor_id">null</column>
+			<column name="title">second draft</column>
+			<column name="description">nothing</column>
+			<column name="value">222</column>
+			<column name="expected_day">1</column>
+			<column name="starts_at">2024_3</column>
+			<column name="ends_at">2024_10</column>
+			<column name="interval">1</column>
+		</insert>
+		<insert tableName="account_transaction_draft">
+			<column name="account_id">1</column>
+			<column name="predecessor_id">null</column>
+			<column name="title">third draft</column>
+			<column name="description">nothing</column>
+			<column name="value">-222</column>
+			<column name="expected_day">1</column>
+			<column name="starts_at">2025_3</column>
+			<column name="ends_at">2025_10</column>
+			<column name="interval">1</column>
+		</insert>
+	</changeSet>
 </databaseChangeLog>

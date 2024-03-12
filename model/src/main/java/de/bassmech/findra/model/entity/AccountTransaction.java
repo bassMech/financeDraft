@@ -1,20 +1,14 @@
 package de.bassmech.findra.model.entity;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.bassmech.findra.model.converter.ConfigurationCodeConverter;
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
-import de.bassmech.findra.model.statics.ConfigurationCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -23,28 +17,16 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "account_transaction")
-public class AccountTransaction {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
-	@Column(name = "title", columnDefinition = "TEXT")
-	private String title;
-
-	@Column(name = "description", columnDefinition = "TEXT")
-	private String description;
+public class AccountTransaction extends TransactionBase {
+	
+	@ManyToOne(targetEntity = AccountTransactionDraft.class)
+	@JoinColumn(referencedColumnName = "id", name = "draft_id")
+	private AccountTransactionDraft draft;
 
 	@ManyToOne(targetEntity = AccountingMonth.class)
 	@JoinColumn(referencedColumnName = "id", name = "accounting_month_id")
 	private AccountingMonth accountingMonth;
-	
-	@Column(name = "value", columnDefinition = "FLOAT")
-	private BigDecimal value;
 		
-	@Column(name = "expected_day", columnDefinition = "INTEGER")
-	private int expectedDay;
-	
 	@Column(name = "executed_at", columnDefinition = "INTEGER")
 	@Convert(converter = NumberToInstantConverter.class)
 	private Instant executedAt;
@@ -55,30 +37,7 @@ public class AccountTransaction {
         joinColumns = { @JoinColumn(name = "transaction_id") }, 
         inverseJoinColumns = { @JoinColumn(name = "tag_id") })
 	private List<Tag> tags = new ArrayList<>();
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	
 
 	public Instant getExecutedAt() {
 		return executedAt;
@@ -86,14 +45,6 @@ public class AccountTransaction {
 
 	public void setExecutedAt(Instant executedAt) {
 		this.executedAt = executedAt;
-	}
-
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	public void setValue(BigDecimal value) {
-		this.value = value;
 	}
 
 	public AccountingMonth getAccountingMonth() {
@@ -104,20 +55,20 @@ public class AccountTransaction {
 		this.accountingMonth = accountingMonth;
 	}
 
-	public int getExpectedDay() {
-		return expectedDay;
-	}
-
-	public void setExpectedDay(int expectedDay) {
-		this.expectedDay = expectedDay;
-	}
-
 	public List<Tag> getTags() {
 		return tags;
 	}
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public AccountTransactionDraft getDraft() {
+		return draft;
+	}
+
+	public void setDraft(AccountTransactionDraft draft) {
+		this.draft = draft;
 	}
 
 

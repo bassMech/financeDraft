@@ -24,6 +24,12 @@
 							<p:commandButton icon="pi pi-pencil" action="#{accountView.openAccountDetailDialogEdit}" process="@this" update="accountDetailDialog"></p:commandButton>
 						</div>
 					</p:fieldset>
+					<p:fieldset legend="#{tags['draft']}">
+						<div class="flex align-content-center gap-1">
+							<p:commandButton icon="pi pi-list" action="#{accountView.onShowDraftList}" process="@this" update=""></p:commandButton>
+							<p:commandButton icon="pi pi-plus" action="#{accountView.onDraftNew}" process="@this" update="transactionDetailDialog"></p:commandButton>
+						</div>
+					</p:fieldset>
 				</div>
 			</div>
 			<div class="col-4 flex justify-content-evenly">
@@ -42,15 +48,23 @@
 				</p:fieldset>
 
 				<p:fieldset legend="#{tags['year']}">
-					<div>
+					<div class="flex align-content-center gap-1">
+						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousYear}" process="@this"
+							update="monthSelect, yearSelect, transactions" />
 						<p:selectOneMenu id="yearSelect" value="#{accountView.selectedYear}" style="width:150px">
 							<p:ajax listener="#{accountView.onYearChanged}" update="transactions" />
 							<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
 						</p:selectOneMenu>
+						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextYear}" process="@this"
+							update="monthSelect, yearSelect, transactions" />
 					</div>
 				</p:fieldset>
 			</div>
-			<div class="col-4"></div>
+			<div class="col-4 flex justify-content-end">
+				<div class="flex align-self-center">
+					<p:commandButton icon="pi pi-bars" />
+				</div>
+			</div>
 		</div>
 
 		<p:panel id="transactions">

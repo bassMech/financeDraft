@@ -12,9 +12,11 @@ import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.model.entity.AccountTransaction;
+import de.bassmech.findra.model.entity.AccountTransactionDraft;
 
 
 public class ToViewModelUtil {
@@ -52,6 +54,10 @@ public class ToViewModelUtil {
 			vm.setExpectedDayForDisplay(String.valueOf(entity.getExpectedDay()));
 		} else {
 			vm.setExpectedDayForDisplay(LocalizedMessageUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
+		}
+		
+		if (entity.getDraft() != null) {
+			vm.setDraftId(entity.getDraft().getId());
 		}
 		
 		
@@ -110,4 +116,33 @@ public class ToViewModelUtil {
 		vm.setDeletedAt(tag.getDeletedAt());
 		return vm;
 	}
+	
+	public static DraftViewModel toViewModel(AccountTransactionDraft draft) {
+		DraftViewModel vm = new DraftViewModel();
+		vm.setAccountId(draft.getAccount().getId());
+		vm.setId(draft.getId());
+		vm.setTitle(draft.getTitle());
+		vm.setDescription(draft.getDescription());
+		vm.setExpectedDay(draft.getExpectedDay());
+		vm.setInterval(draft.getInterval());
+		vm.setPredecessorId(draft.getPredecessor() == null ? null : draft.getPredecessor().getId());
+		vm.setStartsAt(draft.getStartsAt());
+		vm.setEndsAt(draft.getEndsAt());
+		vm.setValue(draft.getValue());
+		
+		for (Tag tag : draft.getTags()) {
+			vm.getTags().add(toViewModel(tag));
+		}
+		
+		return vm;
+	}
+
+	public static List<DraftViewModel> toDraftViewModelList(List<AccountTransactionDraft> drafts) {
+		List<DraftViewModel> result = new ArrayList<>(drafts.size());
+		for (AccountTransactionDraft draft : drafts) {
+			result.add(toViewModel(draft));
+		}
+		return result;
+	}
+		
 }

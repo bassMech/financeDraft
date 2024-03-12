@@ -5,6 +5,10 @@ public enum TagName {
 	ACCOUNT_EDIT("account.edit"),
 	TAG_NEW("tag.new"),
 	TAG_EDIT("tag.edit"),
+	TRANSACTION_NEW("transaction.new"),
+	TRANSACTION_EDIT("transaction.edit"),
+	DRAFT_NEW("draft.new"),
+	DRAFT_EDIT("draft.edit"),
 	;
 	private String value;
 

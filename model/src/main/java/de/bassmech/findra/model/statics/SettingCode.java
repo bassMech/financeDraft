@@ -2,7 +2,9 @@ package de.bassmech.findra.model.statics;
 
 public enum SettingCode {
 	LOCALE("locale"),
-	CURRENCY("currency")
+	CURRENCY("currency"),
+	DATE_FORMAT("date.format"),
+	ACCOUNT_TRANSACTION_LAYOUT("account.transaction.layout")
 	;
 	
 	private String dbValue;
