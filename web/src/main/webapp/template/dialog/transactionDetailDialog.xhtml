@@ -25,7 +25,9 @@
 										</div>
 										<div>
 											<p:inputNumber id="transactionDetailDialog_value" value="#{accountView.transactionDialog.value}" decimalPlaces="2"
-												symbol="#{accountView.settingService.dbCurrency.symbol}" symbolPosition="s" emptyValue="zero" inputStyle="width:150px">
+												symbol="#{accountView.settingService.dbCurrency.symbol}" inputStyle="width:150px"
+												symbolPosition="#{accountView.getCurrencySymbolPosition()}" emptyValue="zero" 
+												thousandSeparator="#{accountView.getNumberThousandSepartor()}" decimalSeparator="#{accountView.getNumberDigitSeparator()}">
 												<p:ajax></p:ajax>
 											</p:inputNumber>
 										</div>
@@ -67,7 +69,7 @@
 									<div>
 										<p:datePicker id="transactionDetailDialog_exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionDialog.executedAt}"
 											monthNavigator="true" yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}"
-											locale="#{accountView.getCurrentLocale().getLanguage()}" />
+											locale="#{accountView.getCurrentLocale().getLanguage()}" pattern="#{accountView.dateFormat}"/>
 									</div>
 								</div>
 							</div>

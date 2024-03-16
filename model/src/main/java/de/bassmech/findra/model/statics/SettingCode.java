@@ -4,7 +4,9 @@ public enum SettingCode {
 	LOCALE("locale"),
 	CURRENCY("currency"),
 	DATE_FORMAT("date.format"),
-	ACCOUNT_TRANSACTION_LAYOUT("account.transaction.layout")
+	NUMBER_GROUPING("number.separator"),
+	CURRENCY_SYMBOL_POSITION("currency.symbol_position"),
+	ACCOUNT_TRANSACTION_LAYOUT("account.transaction.layout"), 
 	;
 	
 	private String dbValue;

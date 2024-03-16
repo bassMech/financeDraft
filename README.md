@@ -1,29 +1,32 @@
 # financeDraft
 
 ToDo
+- important!
+	- drafts are added on page reload
+	- to many selections ?
 - Account
 	- continue draft
-		- make sure drafts are not saved as transaction
-		- set correct start month
 		- set by interval condition usage
 	- sum up value for month and year
 	- setting start values based on month before and after
 	- display settings, 1 / 2 or 3 transactionMonth displayed
+	- if an entry is made before the start year, the start year has to be corrected
 - Settings
-	- Date Format in Settings
 	- theme switcher
 	- number input decimal separator config
+	- more date formats
 - Statistics
 
 - Tags
 	- swatches from statics
 	
 - Misc
+	- test data starting from last month
 	- View Scoped ???
 	- same naming for xhtml called methods (on....) -> closeDialog
 	- table filter
 	- check tag usage before delete
-	
+	- hotkeys
 
 
 

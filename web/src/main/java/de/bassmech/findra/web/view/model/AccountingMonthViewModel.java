@@ -17,22 +17,26 @@ public class AccountingMonthViewModel implements Serializable {
 	private int transactionCountExecuted = 0;
 	private List<TransactionBaseViewModel> transactions = new ArrayList<>();
 
-	public void recalculateTransactions() {
-		startValue = BigDecimal.ZERO;
+	public void recalculateTransactions(BigDecimal previousClosingValue) {
+		startValue = previousClosingValue;
 		transactionValueExpected = BigDecimal.ZERO;
 		transactionValueExecuted = BigDecimal.ZERO;
 		transactionCountExpected = 0;
 		transactionCountExecuted = 0;
 
 		for (TransactionBaseViewModel transactionBase : transactions) {
-			if (transactionBase instanceof TransactionViewModel && ((TransactionViewModel) transactionBase).getExecutedAt() == null) {
-				transactionValueExpected = transactionValueExpected.add(transactionBase.getValue());
-				transactionCountExpected++;
-			} else {
+			if (transactionBase instanceof TransactionViewModel && ((TransactionViewModel) transactionBase).getExecutedAt() != null) {
 				transactionValueExecuted = transactionValueExecuted.add(transactionBase.getValue());
 				transactionCountExecuted++;
+			} else {
+				transactionValueExpected = transactionValueExpected.add(transactionBase.getValue());
+				transactionCountExpected++;
 			}
 		}
+	}
+	
+	public BigDecimal getExpectedSumAtMonthEnd() {
+		return startValue.add(transactionValueExecuted).add(transactionValueExpected);
 	}
 
 	public BigDecimal getCurrentValue() {

@@ -32,15 +32,13 @@
 							<h:outputText value="#{tags['closing']}: " />
 						</div>
 					</div>
-					<div class="col">
+					<div class="col-fixed">
 						<div class="flex justify-content-end">
-							<h:outputText value="#{accountingMonth.getCurrentValue()}">
-								<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
+							<h:outputText value="#{accountView.getCurrencyFormatted(accountingMonth.getCurrentValue())}">
 							</h:outputText>
 						</div>
 						<div class="flex justify-content-end">
-							<h:outputText value="#{accountingMonth.getClosingValue()}">
-								<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
+							<h:outputText value="#{accountView.getCurrencyFormatted(accountingMonth.getClosingValue())}">
 							</h:outputText>
 						</div>
 					</div>
@@ -71,12 +69,11 @@
 			<h:outputText value="#{transaction.title}" />
 		</p:column>
 		<p:column headerText="#{tags['value']}" sortBy="#{transaction.value}">
-			<h:outputText value="#{transaction.value}">
-				<f:convertNumber currencySymbol="#{accountView.settingService.dbCurrency.symbol}" type="currency" />
+			<h:outputText value="#{accountView.getCurrencyFormatted(transaction.value)}">
 			</h:outputText>
 		</p:column>
 		<p:column headerText="#{tags['date']}" sortBy="#{transaction.expectedDay}" sortOrder="asc">
-			<h:outputText value="#{transaction.expectedDayForDisplay}" />
+			<h:outputText value="#{transaction.dayForDisplay}" />
 			<i class="#{transaction.executedAt == null ? 'pi pi-question-circle': 'pi pi-check-circle'}" />
 		</p:column>
 		<p:column headerText="#{tags['tags']}">
@@ -87,14 +84,15 @@
 		</p:column>
 		<p:column>
 			<div class="flex justify-content-center">
-				<p:commandButton icon="pi pi-clock" action="#{accountView.onTransactionExecuted(transaction.id)}" process="@this"
+				<p:commandButton icon="pi pi-clock"
+					action="#{accountView.onTransactionBaseExecuted(transaction.id, transaction.isDraft(), accountingMonth)}" process="@this"
 					update="mainForm:transactionDetailDialog" rendered="#{transaction.executedAt == null}"></p:commandButton>
 			</div>
 		</p:column>
 		<p:column>
 			<div class="flex justify-content-center">
 				<p:commandButton icon="pi pi-pencil" action="#{accountView.onTransactionEdit(transaction.id, accountingMonth)}" process="@this"
-					update="mainForm:transactionDetailDialog"></p:commandButton>
+					update="mainForm:transactionDetailDialog" rendered="#{!transaction.isDraft()}"></p:commandButton>
 			</div>
 		</p:column>
 		<p:column style="width:1rem">

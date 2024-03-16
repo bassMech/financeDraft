@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.bassmech.findra.core.repository.AccountRepository;
+import de.bassmech.findra.core.repository.AccountTransactionDraftRepository;
 import de.bassmech.findra.core.repository.AccountingYearRepository;
 import de.bassmech.findra.core.repository.AccountTransactionRepository;
 import de.bassmech.findra.model.entity.Account;
@@ -54,6 +55,9 @@ public class AccountService {
 	
 	@Autowired
 	private AccountTransactionRepository transactionRepository;
+	
+	@Autowired
+	private AccountTransactionDraftRepository draftRepository;
 
 	private List<AccountViewModel> loadedAccounts = new ArrayList<>();
 	private Map<Integer, List<AccountingYearViewModel>> loadedAccountingYearsByAccountId = new HashMap<>();
@@ -85,9 +89,10 @@ public class AccountService {
 					loadedAccountingYearsByAccountId.put(accountId, new ArrayList<>());
 				}
 				loadedAccountingYearsByAccountId.get(accountId).add(yearModel);
-				
-				addDraftsToYearViewModel(accountId, yearModel);
 			}
+		}
+		if (yearModel != null) {
+			addDraftsToYearViewModel(accountId, yearModel);
 		}
 		return yearModel;
 	}
@@ -166,11 +171,7 @@ public class AccountService {
 		loadedAccounts.removeIf(acc -> acc.getId().equals(accountId));
 	}
 
-	public void saveTransaction(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
-		if (transactionDialog.isDraft()) {
-			logger.error("got draft but thats not allowed");
-			return;
-		}
+	public void saveTransactionBase(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
 		
 		Integer accountId = transactionDialog.getAccountId();
 		Account account = accountRepository.findById(accountId.longValue()).get();
@@ -219,11 +220,15 @@ public class AccountService {
 			newMonth = accountingYear.getMonths().stream().filter(monthX -> monthX.getMonth() == month).findFirst()
 					.orElse(null);
 		}
-		if (transactionDialog.getId() != null) {
+		if (!transactionDialog.isDraft() && transactionDialog.getId() != null) {
 			transaction = newMonth.getTransactions().stream().filter(tr -> tr.getId() == transactionDialog.getId()).findFirst().orElse(null);
 		} else {
 			transaction = new AccountTransaction();
 			transaction.setAccountingMonth(newMonth);
+			if (transactionDialog.isDraft()) {
+				AccountTransactionDraft draft = draftRepository.findById(transactionDialog.getId().longValue()).orElseGet(null);
+				transaction.setDraft(draft);
+			}
 		}
 		
 		transaction.setTitle(transactionDialog.getTitle());
@@ -250,7 +255,7 @@ public class AccountService {
 		
 		transaction = transactionRepository.save(transaction);
 
-		if (transactionDialog.getId() == null) {
+		if (transactionDialog.isDraft() || transactionDialog.getId() == null) {
 			newMonth.getTransactions().add(transaction);
 		}		
 
@@ -274,6 +279,7 @@ public class AccountService {
 
 	public void addDraftsToYearViewModel(int accountId, AccountingYearViewModel modelYear) {
 		List<DraftViewModel> drafts = getDraftsForYear(accountId, modelYear.getYear());
+		AccountingMonthViewModel previousMonth = null;
 		for (int i = 1; i <= 12; i++) {
 			YearMonth currentYm = YearMonth.of(modelYear.getYear(), i);
 			final int monthNo = i;
@@ -294,9 +300,10 @@ public class AccountService {
 					}
 				}
 			}
-			month.recalculateTransactions();
+			month.recalculateTransactions(previousMonth == null ? modelYear.getStartValue(): previousMonth.getExpectedSumAtMonthEnd());
+			previousMonth = month;
 		}
-		
+		modelYear.recalculateTransactionSum();
 	}
 
 }

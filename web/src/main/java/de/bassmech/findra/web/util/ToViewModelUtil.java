@@ -1,5 +1,8 @@
 package de.bassmech.findra.web.util;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -50,10 +53,12 @@ public class ToViewModelUtil {
 		vm.setExpectedDay(entity.getExpectedDay());
 		vm.setExecutedAt(entity.getExecutedAt());
 		vm.setValue(entity.getValue());
-		if (entity.getExpectedDay() > 0) {
-			vm.setExpectedDayForDisplay(String.valueOf(entity.getExpectedDay()));
+		if (entity.getExecutedAt() != null) {
+			vm.setDayForDisplay(String.valueOf(LocalDate.ofInstant(entity.getExecutedAt(), ZoneOffset.UTC).getDayOfMonth()));
+		} else if(entity.getExpectedDay() > 0) {
+			vm.setDayForDisplay(String.valueOf(entity.getExpectedDay()));
 		} else {
-			vm.setExpectedDayForDisplay(LocalizedMessageUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
+			vm.setDayForDisplay(LocalizedMessageUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
 		}
 		
 		if (entity.getDraft() != null) {
@@ -94,7 +99,7 @@ public class ToViewModelUtil {
 			vm.getTransactions().add(toViewModel(transaction));
 		}
 		
-		vm.recalculateTransactions();
+		vm.recalculateTransactions(BigDecimal.ZERO);
 		return vm;
 	}
 

@@ -14,7 +14,7 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	protected String title;
 	protected String description;
 	protected int expectedDay;
-	protected String expectedDayForDisplay;
+	protected String dayForDisplay;
 	protected BigDecimal value;
 	protected Instant executedAt;
 	
@@ -22,7 +22,7 @@ public abstract class TransactionBaseViewModel implements Serializable {
 			
 	public TransactionBaseViewModel() {
 		expectedDay = 0;
-		expectedDayForDisplay = LocalizedMessageUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
+		dayForDisplay = LocalizedMessageUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
 	}
 	
 	public abstract boolean isDraft();
@@ -75,12 +75,12 @@ public abstract class TransactionBaseViewModel implements Serializable {
 		this.tags = tags;
 	}
 
-	public String getExpectedDayForDisplay() {
-		return expectedDayForDisplay;
+	public String getDayForDisplay() {
+		return dayForDisplay;
 	}
 
-	public void setExpectedDayForDisplay(String expectedDayForDisplay) {
-		this.expectedDayForDisplay = expectedDayForDisplay;
+	public void setDayForDisplay(String expectedDayForDisplay) {
+		this.dayForDisplay = expectedDayForDisplay;
 	}
 
 	public Instant getExecutedAt() {

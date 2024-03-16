@@ -10,8 +10,8 @@ public class AccountingYearViewModel implements Serializable {
 	private Integer id;
 	private Integer accountId;
 	private int year;
-	private BigDecimal startValue;
-	private BigDecimal transactionSum;
+	private BigDecimal startValue = BigDecimal.ZERO;
+	private BigDecimal transactionSum = BigDecimal.ZERO;
 	private List<AccountingMonthViewModel> months = new ArrayList<>();
 
 	public void addDraftMonths() {
@@ -28,6 +28,13 @@ public class AccountingYearViewModel implements Serializable {
 				}
 			}
 			months.sort(Comparator.comparing(AccountingMonthViewModel::getMonth));
+		}
+	}
+	
+	public void recalculateTransactionSum() {
+		transactionSum = startValue;
+		for (AccountingMonthViewModel month : months) {
+			transactionSum = transactionSum.add(month.getTransactionValueExecuted().add(month.getTransactionValueExpected()));
 		}
 	}
 
