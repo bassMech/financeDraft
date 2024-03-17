@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountTransactionDraftRepository;
-import de.bassmech.findra.core.repository.AccountingYearRepository;
 import de.bassmech.findra.core.repository.AccountTransactionRepository;
+import de.bassmech.findra.core.repository.AccountingYearRepository;
 import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountTransactionDraft;
@@ -36,7 +36,6 @@ import de.bassmech.findra.web.view.model.AccountingYearViewModel;
 import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
-import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.web.view.model.type.AccountType;
 
@@ -49,13 +48,13 @@ public class AccountService {
 
 	@Autowired
 	private AccountingYearRepository accountingYearRepository;
-	
+
 	@Autowired
 	private AccountTransactionRepository tagRepository;
-	
+
 	@Autowired
 	private AccountTransactionRepository transactionRepository;
-	
+
 	@Autowired
 	private AccountTransactionDraftRepository draftRepository;
 
@@ -90,26 +89,31 @@ public class AccountService {
 				}
 				loadedAccountingYearsByAccountId.get(accountId).add(yearModel);
 			}
+			if (yearModel != null) {
+				addDraftsToYearViewModel(accountId, yearModel);
+			}
 		}
-		if (yearModel != null) {
-			addDraftsToYearViewModel(accountId, yearModel);
-		}
+
 		return yearModel;
 	}
-	
+
 	public List<DraftViewModel> getDraftsForYear(Integer accountId, int year) {
-		
-		//drafts
+
+		// drafts
 		if (loadedDraftsByAccountId.get(accountId) == null) {
 			Account account = accountRepository.findById(accountId.longValue()).orElse(null);
 			loadedDraftsByAccountId.put(accountId, ToViewModelUtil.toDraftViewModelList(account.getDrafts()));
 		}
 
-		//Instant yearStart = LocalDate.of(year, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant();
-		YearMonth nextYearStart = YearMonth.of(year + 1, 1);// LocalDate.of(year + 1, 1, 1).atStartOfDay(ZoneOffset.UTC).toInstant();
-		
-		return loadedDraftsByAccountId.get(accountId).stream().filter(draft -> draft.getStartsAt().compareTo(nextYearStart) <= 0
-				&& (draft.getEndsAt() == null || draft.getEndsAt().compareTo(nextYearStart) <= 0)).toList();
+		// Instant yearStart = LocalDate.of(year, 1,
+		// 1).atStartOfDay(ZoneOffset.UTC).toInstant();
+		YearMonth nextYearStart = YearMonth.of(year + 1, 1);// LocalDate.of(year + 1, 1,
+															// 1).atStartOfDay(ZoneOffset.UTC).toInstant();
+
+		return loadedDraftsByAccountId.get(accountId).stream()
+				.filter(draft -> draft.getStartsAt().compareTo(nextYearStart) <= 0
+						&& (draft.getEndsAt() == null || draft.getEndsAt().compareTo(nextYearStart) <= 0))
+				.toList();
 	}
 
 	public Map<Integer, String> getAccountTypes(Locale locale) {
@@ -124,7 +128,7 @@ public class AccountService {
 		return result;
 	}
 
-	public void saveAccount(AccountDetailDialogViewModel accountDialog) {
+	public AccountViewModel saveAccount(AccountDetailDialogViewModel accountDialog) {
 		Account account;
 		if (accountDialog.getId() == null) {
 			account = new Account();
@@ -151,11 +155,13 @@ public class AccountService {
 		AccountViewModel accountVm = loadedAccounts.stream().filter(acc -> acc.getId().equals(accountDialog.getId()))
 				.findFirst().orElse(null);
 		if (accountVm == null) {
-			loadedAccounts.add(ToViewModelUtil.toViewModel(account));
+			accountVm = ToViewModelUtil.toViewModel(account);
+			loadedAccounts.add(accountVm);
 		} else {
 			int accountIndex = loadedAccounts.indexOf(accountVm);
 			loadedAccounts.set(accountIndex, ToViewModelUtil.toViewModel(account));
 		}
+		return accountVm;
 	}
 
 	public void deleteAccount(Integer accountId) {
@@ -172,9 +178,10 @@ public class AccountService {
 	}
 
 	public void saveTransactionBase(TransactionDetailDialogViewModel transactionDialog, int year, int month) {
-		
+		logger.debug(String.format("saveTransactionBase: with dialog: {0}", transactionDialog.toString()));
 		Integer accountId = transactionDialog.getAccountId();
 		Account account = accountRepository.findById(accountId.longValue()).get();
+		boolean valueChanged = false;
 		// check loaded
 		AccountingYearViewModel yearVm = loadedAccountingYearsByAccountId.get(accountId).stream()
 				.filter(yearX -> yearX.getYear() == year).findFirst().orElse(null);
@@ -197,8 +204,7 @@ public class AccountService {
 				.findFirst().orElse(null);
 		AccountingMonth newMonth = null;
 		if (accountingYear == null) {
-			accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId,
-					year);
+			accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
 		}
 		if (monthVm == null || monthVm.getId() == null) {
 			newMonth = new AccountingMonth();
@@ -221,60 +227,92 @@ public class AccountService {
 					.orElse(null);
 		}
 		if (!transactionDialog.isDraft() && transactionDialog.getId() != null) {
-			transaction = newMonth.getTransactions().stream().filter(tr -> tr.getId() == transactionDialog.getId()).findFirst().orElse(null);
+			transaction = newMonth.getTransactions().stream().filter(tr -> tr.getId() == transactionDialog.getId())
+					.findFirst().orElse(null);
+			if (transaction.getValue().compareTo(transactionDialog.getValue()) != 0) {
+				valueChanged = true;
+			}
 		} else {
 			transaction = new AccountTransaction();
 			transaction.setAccountingMonth(newMonth);
+			valueChanged = true;
 			if (transactionDialog.isDraft()) {
-				AccountTransactionDraft draft = draftRepository.findById(transactionDialog.getId().longValue()).orElseGet(null);
+				AccountTransactionDraft draft = draftRepository.findById(transactionDialog.getId().longValue())
+						.orElseGet(null);
 				transaction.setDraft(draft);
 			}
 		}
-		
+
 		transaction.setTitle(transactionDialog.getTitle());
 		transaction.setDescription(transactionDialog.getDescription());
 		transaction.setValue(transactionDialog.getValue());
-		transaction.setExecutedAt(transactionDialog.getExecutedAt() == null ? null : transactionDialog.getExecutedAt().atStartOfDay(ZoneOffset.UTC).toInstant());
+		transaction.setExecutedAt(transactionDialog.getExecutedAt() == null ? null
+				: transactionDialog.getExecutedAt().atStartOfDay(ZoneOffset.UTC).toInstant());
 		transaction.setExpectedDay(transactionDialog.getExpectedDay());
-		
-		
+
 		for (TagViewModel tag : transactionDialog.getTagsAssigned()) {
 			// tag not assigned
 			if (transaction.getTags().stream().noneMatch(tagX -> tagX.getId().equals(tag.getId()))) {
-				transaction.getTags().add(account.getTags().stream().filter(tagX -> tagX.getId().equals(tag.getId())).findFirst().orElse(null));
+				transaction.getTags().add(account.getTags().stream().filter(tagX -> tagX.getId().equals(tag.getId()))
+						.findFirst().orElse(null));
 			}
 		}
-		
+
 		Iterator<Tag> tagIt = transaction.getTags().iterator();
-		while(tagIt.hasNext()) {
+		while (tagIt.hasNext()) {
 			Tag tag = tagIt.next();
 			if (transactionDialog.getTagsAssigned().stream().noneMatch(tagX -> tagX.getId().equals(tag.getId()))) {
 				tagIt.remove();
 			}
 		}
-		
+
 		transaction = transactionRepository.save(transaction);
 
 		if (transactionDialog.isDraft() || transactionDialog.getId() == null) {
 			newMonth.getTransactions().add(transaction);
-		}		
+		}
 
+		// TODO merge with "recalculateAndSaveAccountingYear" ?
 		accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
 		yearVm = ToViewModelUtil.toViewModel(accountingYear);
-				
+
 		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
 		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+
+		if (valueChanged) {
+			recalculateAndSaveAccountingYear(accountId, accountingYear.getId());
+		}
+	}
+
+	private void recalculateAndSaveAccountingYear(int accountId, int accountingYearId) {
+		logger.debug(String.format("recalculateAndSaveAccountingYear: id: {0} year: {1}", accountId, accountingYearId));
+		AccountingYearViewModel yearVm = loadedAccountingYearsByAccountId.get(accountId).stream()
+				.filter(year -> year.getId() == accountingYearId).findFirst().orElse(null);
+
+		yearVm.recalculateTransactionSum();
+		AccountingYear accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, accountingYearId);
+		if (accountingYear != null) {
+			accountingYear.setStartValue(yearVm.getStartValue());
+			accountingYear.setTransactionSum(yearVm.getTransactionSum());
+
+			accountingYear = accountingYearRepository.save(accountingYear);
+			yearVm = ToViewModelUtil.toViewModel(accountingYear);
+
+			loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getId() == accountingYearId);
+			loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
+		}
+		// TODO all existing after
 	}
 
 	public void deleteTransaction(Integer transactionId, int accountId, int year) {
 		transactionRepository.deleteById(transactionId.longValue());
-		
+
 		AccountingYear accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
 		AccountingYearViewModel yearVm = ToViewModelUtil.toViewModel(accountingYear);
-				
+
 		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
 		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
-		
+
 	}
 
 	public void addDraftsToYearViewModel(int accountId, AccountingYearViewModel modelYear) {
@@ -283,7 +321,8 @@ public class AccountService {
 		for (int i = 1; i <= 12; i++) {
 			YearMonth currentYm = YearMonth.of(modelYear.getYear(), i);
 			final int monthNo = i;
-			AccountingMonthViewModel month =  modelYear.getMonths().stream().filter(monthX -> monthX.getMonth() == monthNo).findFirst().orElse(null);
+			AccountingMonthViewModel month = modelYear.getMonths().stream()
+					.filter(monthX -> monthX.getMonth() == monthNo).findFirst().orElse(null);
 			if (month == null) {
 				month = new AccountingMonthViewModel();
 				month.setAccountYearId(modelYear.getId());
@@ -293,14 +332,17 @@ public class AccountService {
 			}
 			for (DraftViewModel draft : drafts) {
 				// check if draft applies
-				if (currentYm.compareTo(draft.getStartsAt()) >= 0 && (draft.getEndsAt() == null || currentYm.compareTo(draft.getEndsAt()) <= 0)) {
-					if (month.getTransactions().stream().noneMatch(tr -> !tr.isDraft() 
-							&& draft.getId().equals(((TransactionViewModel) tr).getDraftId()))) {
+				if (currentYm.compareTo(draft.getStartsAt()) >= 0
+						&& (draft.getEndsAt() == null || currentYm.compareTo(draft.getEndsAt()) <= 0)) {
+					if (month.getTransactions().stream().noneMatch(
+							tr -> !tr.isDraft() && draft.getId().equals(((TransactionViewModel) tr).getDraftId()))) {
 						month.getTransactions().add(draft);
 					}
 				}
 			}
-			month.recalculateTransactions(previousMonth == null ? modelYear.getStartValue(): previousMonth.getExpectedSumAtMonthEnd());
+			month.setStartValue(
+					previousMonth == null ? modelYear.getStartValue() : previousMonth.getExpectedSumAtMonthEnd());
+			month.recalculateTransactions();
 			previousMonth = month;
 		}
 		modelYear.recalculateTransactionSum();

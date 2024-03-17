@@ -106,8 +106,7 @@ public class AccountView {
 
 		if (selectableAccounts.size() > 0) {
 			accountingYears.add(accountService.getAccountYear(selectableAccounts.get(0).getId(), startYear));
-//			firstAccountingMonth = accountingYears.get(0).getMonths().stream()
-//					.filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
+
 			selectedAccount = selectableAccounts.get(0);
 			selectedAccountId = selectedAccount.getId();
 			updateMonthTransactions();
@@ -302,8 +301,6 @@ public class AccountView {
 		return modelYear;
 	}
 
-
-
 	public void onDeleteTransaction() {
 		logger.debug("onDeleteTransaction: " + transactionDialog.getId());
 		
@@ -351,8 +348,11 @@ public class AccountView {
 		logger.debug("Saving account");
 		
 		if (isAccountDialogValid()) {
-			accountService.saveAccount(accountDialog);
+			AccountViewModel newAccount = accountService.saveAccount(accountDialog);
 			reloadSelectableAccounts();
+			selectedAccount = selectableAccounts.stream().filter(acc -> acc.getId().equals(newAccount.getId())).findFirst().orElse(null);
+			selectedAccountId = selectedAccount.getId();
+			init();
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		}
 	}
@@ -537,13 +537,6 @@ public class AccountView {
 		if (isTransactionBaseExecutedDialogValid()) {
 			
 			TransactionBaseViewModel vmb = transactionExecutedDialog.getAccountingMonth().getTransactions().stream().filter(tr -> tr.getId().equals(transactionExecutedDialog.getId())).findFirst().orElse(null);
-			if (transactionExecutedDialog.isDraft()) {
-				
-			} else {
-				
-			}
-			
-			//TransactionViewModel vm = (TransactionViewModel) vmb;
 			
 			TransactionDetailDialogViewModel detailDialog = new TransactionDetailDialogViewModel("", false);
 			

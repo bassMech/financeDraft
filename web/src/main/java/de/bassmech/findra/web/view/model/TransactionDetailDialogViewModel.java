@@ -166,4 +166,12 @@ public class TransactionDetailDialogViewModel implements Serializable {
 		this.isDraft = isDraft;
 	}
 
+	@Override
+	public String toString() {
+		return "TransactionDetailDialogViewModel [id=" + id + ", accountId=" + accountId + ", title=" + title
+				+ ", description=" + description + ", value=" + value + ", expectedDay=" + expectedDay + ", executedAt="
+				+ executedAt + ", dialogTitle=" + dialogTitle + ", isDraft=" + isDraft + ", accountingMonth="
+				+ accountingMonth + "]";
+	}
+
 }

@@ -33,8 +33,12 @@ public class AccountingYearViewModel implements Serializable {
 	
 	public void recalculateTransactionSum() {
 		transactionSum = startValue;
+		BigDecimal lastMonthClosing = startValue;
 		for (AccountingMonthViewModel month : months) {
+			month.setStartValue(lastMonthClosing);
+			month.recalculateTransactions();
 			transactionSum = transactionSum.add(month.getTransactionValueExecuted().add(month.getTransactionValueExpected()));
+			lastMonthClosing = month.getClosingValue();
 		}
 	}
 

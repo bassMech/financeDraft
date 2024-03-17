@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import jakarta.faces.context.FacesContext;
 @Component
 public class SettingService {
 	private Logger logger = LoggerFactory.getLogger(SettingService.class);
-	
+
 	public static final List<Locale> LANGUAGES = Arrays.asList(Locale.GERMAN, Locale.ENGLISH);
 	public static final List<Currency> CURRENCIES = Arrays.asList(Currency.getInstance("EUR"),
 			Currency.getInstance("USD"), Currency.getInstance("GBP"));
@@ -33,7 +34,7 @@ public class SettingService {
 
 	@Autowired
 	private SettingRepository settingRespoRepository;
-	
+
 	private Locale dbLocale;
 	private Currency dbCurrency;
 	private String dbDateFormat;
@@ -41,16 +42,48 @@ public class SettingService {
 	private String dbNumberDecimalSeparator;
 	private String dbNumberGrouping;
 	private String dbCurrencySymbolPosition;
-	
+
 	@PostConstruct
 	public void init() {
-		getDbLocale();
-		getDbCurrency();
-		getDbLocale();
-		getDbNumberGrouping();
-		getDbCurrencySymbolPosition();
+		initAll();
+//		getDbLocale();
+//		getDbCurrency();
+//		getDbLocale();
+//		getDbNumberGrouping();
+//		getDbCurrencySymbolPosition();
 
 		Locale.setDefault(dbLocale);
+	}
+
+	private void initAll() {
+		logger.debug("init called");
+		List<Setting> settings = settingRespoRepository.findAll();
+		for (Setting setting : settings) {
+			switch (setting.getCode()) {
+			case ACCOUNT_TRANSACTION_LAYOUT:
+				logger.warn("Implementation needed");
+				break;
+			case CURRENCY:
+				dbCurrency = Currency.getInstance(setting.getEntry());
+				break;
+			case CURRENCY_SYMBOL_POSITION:
+				dbCurrencySymbolPosition = setting.getEntry();
+				break;
+			case DATE_FORMAT:
+				dbDateFormat = setting.getEntry();
+				break;
+			case LOCALE:
+				dbLocale = Locale.forLanguageTag(setting.getEntry());
+				break;
+			case NUMBER_GROUPING:
+				dbNumberGrouping = setting.getEntry();
+				splitAndProvideNumberGrouping();
+				break;
+			default:
+				throw new IllegalStateException(String.format("No implementation for code:", setting.getCode()));
+
+			}
+		}
 	}
 
 	public Locale getDbLocale() {
@@ -75,16 +108,16 @@ public class SettingService {
 			logger.debug("Locale already set. Skip saving");
 			return;
 		}
-				
+
 		dbLocale = Locale.forLanguageTag(saveDbSetting(SettingCode.DATE_FORMAT, locale.getLanguage()).getEntry());
-		
+
 		FacesContext.getCurrentInstance().getViewRoot().setLocale(dbLocale);
 		Locale.setDefault(dbLocale);
-		logger.info("language updated to: " + FacesContext.getCurrentInstance()
-		.getViewRoot().getLocale().getISO3Language());
-		//PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		logger.info("language updated to: "
+				+ FacesContext.getCurrentInstance().getViewRoot().getLocale().getISO3Language());
+		// PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
-	
+
 	public Currency getDbCurrency() {
 		if (dbCurrency == null) {
 			Setting currencySetting = settingRespoRepository.findByCode(SettingCode.CURRENCY);
@@ -100,7 +133,7 @@ public class SettingService {
 		}
 		return dbCurrency;
 	}
-	
+
 	public void saveDbCurrency(Currency currency) {
 		logger.debug("Saving currency: " + currency.getCurrencyCode());
 		if (currency.equals(dbCurrency)) {
@@ -110,7 +143,7 @@ public class SettingService {
 
 		dbCurrency = Currency.getInstance(saveDbSetting(SettingCode.CURRENCY, currency.getCurrencyCode()).getEntry());
 	}
-	
+
 	public String getDbDateFormat() {
 		if (dbDateFormat == null) {
 			Setting dateFormatSetting = settingRespoRepository.findByCode(SettingCode.DATE_FORMAT);
@@ -126,17 +159,17 @@ public class SettingService {
 		}
 		return dbDateFormat;
 	}
-	
+
 	public void saveDbDateFormat(String dateFormat) {
 		logger.debug("Saving date format: " + dateFormat);
 		if (dateFormat.equals(dbDateFormat)) {
 			logger.debug("Date format already set. Skip saving");
 			return;
 		}
-		
+
 		dbDateFormat = saveDbSetting(SettingCode.DATE_FORMAT, dateFormat).getEntry();
 	}
-	
+
 	public Setting saveDbSetting(SettingCode settingCode, String valueToSave) {
 
 		Setting setting = settingRespoRepository.findByCode(settingCode);
@@ -146,7 +179,7 @@ public class SettingService {
 			setting.setUpdateAt(Instant.now());
 		}
 		setting.setEntry(valueToSave);
-		
+
 		return settingRespoRepository.save(setting);
 	}
 
@@ -156,63 +189,72 @@ public class SettingService {
 		}
 		return dbNumberThousandSeparator;
 	}
-	
+
 	public String getDbNumberDigitSeparator() {
 		if (dbNumberDecimalSeparator == null) {
 			getDbNumberGrouping();
 		}
 		return dbNumberDecimalSeparator;
 	}
-	
-	public String getDbNumberGrouping() {
-		Setting setting = settingRespoRepository.findByCode(SettingCode.NUMBER_GROUPING);
-		if (setting == null) {
-			setting = new Setting();
-			setting.setCode(SettingCode.NUMBER_GROUPING);
-			setting.setEntry(NUMBER_GROUPINGS.get(0));
-			setting.setUpdateAt(Instant.now());
 
-			setting = settingRespoRepository.save(setting);
+	public String getDbNumberGrouping() {
+		if (dbNumberGrouping == null) {
+			Setting setting = settingRespoRepository.findByCode(SettingCode.NUMBER_GROUPING);
+			if (setting == null) {
+				setting = new Setting();
+				setting.setCode(SettingCode.NUMBER_GROUPING);
+				setting.setEntry(NUMBER_GROUPINGS.get(0));
+				setting.setUpdateAt(Instant.now());
+
+				setting = settingRespoRepository.save(setting);
+			}
+			dbNumberGrouping = setting.getEntry();
 		}
-		dbNumberGrouping = setting.getEntry();
+
+		splitAndProvideNumberGrouping();
+		return dbNumberGrouping;
+	}
+
+	private void splitAndProvideNumberGrouping() {
 		String[] split = dbNumberGrouping.split("_");
 		dbNumberThousandSeparator = split[0];
 		dbNumberDecimalSeparator = split[1];
-		return dbNumberGrouping;
 	}
-	
+
 	public void saveDbNumberGrouping(String numberSeparator) {
 		logger.debug("Saving number grouping: " + numberSeparator);
 		if (numberSeparator.equals(dbNumberGrouping)) {
 			logger.debug("Number grouping already set. Skip saving");
 			return;
 		}
-		
+
 		dbNumberGrouping = saveDbSetting(SettingCode.NUMBER_GROUPING, numberSeparator).getEntry();
 	}
-	
-	public String getDbCurrencySymbolPosition() {
-		Setting setting = settingRespoRepository.findByCode(SettingCode.CURRENCY_SYMBOL_POSITION);
-		if (setting == null) {
-			setting = new Setting();
-			setting.setCode(SettingCode.CURRENCY_SYMBOL_POSITION);
-			setting.setEntry(CURRENCY_SYMBOL_POSITION.get(1));
-			setting.setUpdateAt(Instant.now());
 
-			setting = settingRespoRepository.save(setting);
+	public String getDbCurrencySymbolPosition() {
+		if (dbCurrencySymbolPosition == null) {
+			Setting setting = settingRespoRepository.findByCode(SettingCode.CURRENCY_SYMBOL_POSITION);
+			if (setting == null) {
+				setting = new Setting();
+				setting.setCode(SettingCode.CURRENCY_SYMBOL_POSITION);
+				setting.setEntry(CURRENCY_SYMBOL_POSITION.get(1));
+				setting.setUpdateAt(Instant.now());
+
+				setting = settingRespoRepository.save(setting);
+			}
+			dbCurrencySymbolPosition = setting.getEntry();
 		}
-		dbCurrencySymbolPosition = setting.getEntry();
-		
 		return dbCurrencySymbolPosition;
 	}
-	
+
 	public void saveDbCurrencySymbolPosition(String currencySymbolPosition) {
 		logger.debug("Saving currency symbol position: " + currencySymbolPosition);
 		if (currencySymbolPosition.equals(dbCurrencySymbolPosition)) {
 			logger.debug("Currency symbol position already set. Skip saving");
 			return;
 		}
-		
-		dbCurrencySymbolPosition = saveDbSetting(SettingCode.CURRENCY_SYMBOL_POSITION, currencySymbolPosition).getEntry();
+
+		dbCurrencySymbolPosition = saveDbSetting(SettingCode.CURRENCY_SYMBOL_POSITION, currencySymbolPosition)
+				.getEntry();
 	}
 }

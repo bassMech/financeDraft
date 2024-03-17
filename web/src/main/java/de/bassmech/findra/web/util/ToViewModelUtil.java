@@ -99,7 +99,7 @@ public class ToViewModelUtil {
 			vm.getTransactions().add(toViewModel(transaction));
 		}
 		
-		vm.recalculateTransactions(BigDecimal.ZERO);
+		vm.recalculateTransactions();
 		return vm;
 	}
 

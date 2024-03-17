@@ -4,6 +4,8 @@ ToDo
 - important!
 	- drafts are added on page reload
 	- to many selections ?
+	- on transaction save, rebuild month and year transaction sums
+	- accountingyears move to service
 - Account
 	- continue draft
 		- set by interval condition usage
@@ -19,9 +21,11 @@ ToDo
 
 - Tags
 	- swatches from statics
-	
+- test
+	- as SQL
+	- data starting from last month 
 - Misc
-	- test data starting from last month
+	- Multitenancy 
 	- View Scoped ???
 	- same naming for xhtml called methods (on....) -> closeDialog
 	- table filter

@@ -17,8 +17,7 @@ public class AccountingMonthViewModel implements Serializable {
 	private int transactionCountExecuted = 0;
 	private List<TransactionBaseViewModel> transactions = new ArrayList<>();
 
-	public void recalculateTransactions(BigDecimal previousClosingValue) {
-		startValue = previousClosingValue;
+	public void recalculateTransactions() {
 		transactionValueExpected = BigDecimal.ZERO;
 		transactionValueExecuted = BigDecimal.ZERO;
 		transactionCountExpected = 0;
@@ -109,6 +108,14 @@ public class AccountingMonthViewModel implements Serializable {
 
 	public int getTransactionCountExecuted() {
 		return transactionCountExecuted;
+	}
+
+	@Override
+	public String toString() {
+		return "AccountingMonthViewModel [id=" + id + ", accountYearId=" + accountYearId + ", year=" + year + ", month="
+				+ month + ", startValue=" + startValue + ", transactionValueExpected=" + transactionValueExpected
+				+ ", transactionValueExecuted=" + transactionValueExecuted + ", transactionCountExpected="
+				+ transactionCountExpected + ", transactionCountExecuted=" + transactionCountExecuted + "]";
 	}
 
 }
