@@ -1,12 +1,18 @@
 package de.bassmech.findra.model.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
@@ -26,6 +32,13 @@ public abstract class TransactionBase {
 		
 	@Column(name = "expected_day", columnDefinition = "INTEGER")
 	private int expectedDay;
+	
+	@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+        name = "transaction_tag", 
+        joinColumns = { @JoinColumn(name = "transaction_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+	private List<Tag> tags = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -65,6 +78,14 @@ public abstract class TransactionBase {
 
 	public void setExpectedDay(int expectedDay) {
 		this.expectedDay = expectedDay;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
 	}
 	
 	

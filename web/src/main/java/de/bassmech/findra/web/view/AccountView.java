@@ -19,6 +19,7 @@ import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.statics.ConfigurationCode;
@@ -30,16 +31,20 @@ import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.service.TagService;
 import de.bassmech.findra.web.util.FormatterUtil;
 import de.bassmech.findra.web.util.LocalizedMessageUtil;
+import de.bassmech.findra.web.util.statics.CssReference;
 import de.bassmech.findra.web.util.statics.FormIds;
 import de.bassmech.findra.web.util.statics.TagName;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
+import de.bassmech.findra.web.view.model.DraftListDialogViewModel;
 import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionBaseViewModel;
+import de.bassmech.findra.web.view.model.TransactionDetailBaseDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.TransactionDraftDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.web.view.model.type.AccountTransactionLayout;
@@ -69,7 +74,6 @@ public class AccountView {
 	private AccountViewModel selectedAccount;
 	private Integer selectedAccountId;
 
-	private List<AccountingYearViewModel> accountingYears = new ArrayList<>();
 	private TransactionBaseViewModel selectedTransaction;
 
 	private TreeMap<Integer, String> selectableMonths = new TreeMap<>();
@@ -79,8 +83,9 @@ public class AccountView {
 	private int selectedYear;
 	
 	private AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
-	private TransactionDetailDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
+	private TransactionDetailBaseDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
 	private TransactionExecutedDialogViewModel transactionExecutedDialog = new TransactionExecutedDialogViewModel();
+	private DraftListDialogViewModel draftListDialog;
 	
 	private AccountingMonthViewModel firstAccountingMonth = null;
 	private AccountingMonthViewModel secondAccountingMonth = null;
@@ -93,6 +98,7 @@ public class AccountView {
 	private AccountTransactionLayout transactionLayout = AccountTransactionLayout.COLUMN_SINGLE;
 	
 	@PostConstruct
+	@DependsOn(value = { "SettingService", "AccountService"})
 	public void init() {
 		logger.debug("init called");
 		
@@ -105,7 +111,7 @@ public class AccountView {
 		selectedYear = startYear;
 
 		if (selectableAccounts.size() > 0) {
-			accountingYears.add(accountService.getAccountYear(selectableAccounts.get(0).getId(), startYear));
+			//accountingYears.add(accountService.getAccountYear(selectableAccounts.get(0).getId(), startYear));
 
 			selectedAccount = selectableAccounts.get(0);
 			selectedAccountId = selectedAccount.getId();
@@ -142,9 +148,9 @@ public class AccountView {
 
 	public String getTransactionRowColorString(TransactionBaseViewModel vm) {
 		if (BigDecimal.ZERO.compareTo(vm.getValue()) > 0) {
-			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? "transaction-negative-expected" : "transaction-negative-executed";
+			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? CssReference.TRANSCTION_BG_NEGATIVE_EXPECTED.getValue() : CssReference.TRANSCTION_BG_NEGATIVE_EXECUTED.getValue();
 		} else if (BigDecimal.ZERO.compareTo(vm.getValue()) < 0) {	
-			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? "transaction-positive-expected" : "transaction-positive-executed" ;
+			return vm instanceof DraftViewModel || ((TransactionViewModel) vm).getExecutedAt() == null ? CssReference.TRANSCTION_BG_POSITIVE_EXPECTED.getValue() : CssReference.TRANSCTION_BG_POSITIVE_EXECUTED.getValue();
 		} else {
 			return null;
 		}
@@ -158,8 +164,8 @@ public class AccountView {
 		if (selectedYear > selectedAccount.getStartingYear()) {
 			selectedYear = selectedAccount.getStartingYear();
 		}
-		accountingYears.clear();
-		accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear));
+//		accountingYears.clear();
+//		accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear));
 
 		updateMonthTransactions();
 	}
@@ -232,13 +238,13 @@ public class AccountView {
 	
 	private void updateMonthTransactions() {
 		logger.debug("updateMonthTransactions");
-		AccountingYearViewModel modelYear = getOrCreateAccountingYear(selectedYear);
+		AccountingYearViewModel modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear);
 		
 		firstAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
 		
 		int secondMonthNumber = selectedMonth + 1;
 		if (selectedMonth + 1 == 13) {
-			modelYear = getOrCreateAccountingYear(selectedYear + 1);
+			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
 			secondMonthNumber = 1;
 		}
 		final int finalSecondMonthNumber = secondMonthNumber;
@@ -252,7 +258,7 @@ public class AccountView {
 		
 		int thirdMonthNumber = selectedMonth + 2;
 		if (selectedMonth + 2 == 13) {
-			modelYear = getOrCreateAccountingYear(selectedYear + 1);
+			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
 			thirdMonthNumber = 1;
 		} else if (selectedMonth + 2 == 14) {
 			thirdMonthNumber = 2;
@@ -267,45 +273,11 @@ public class AccountView {
 		}
 	}
 	
-	private AccountingYearViewModel getOrCreateAccountingYear(int requestedYear) {	
-		AccountingYearViewModel modelYear = accountingYears.stream().filter(year -> year.getYear() == requestedYear).findFirst().orElse(null);
-		if (modelYear == null) {
-			modelYear = accountService.getAccountYear(selectedAccountId, requestedYear);
-			if (modelYear != null) {
-				accountingYears.add(modelYear);
-			}
-		}
-		if (modelYear == null) {
-			logger.debug(String.format("Creating new year for account with id: %d", selectedAccount.getId()));
-			
-			BigDecimal lastYearClosingValue = BigDecimal.ZERO;
-			if (requestedYear > selectedAccount.getStartingYear()) {
-//				//TODO fill not existing
-				AccountingYearViewModel previousModelYear = accountingYears.stream().filter(year -> year.getYear() == requestedYear - 1).findFirst().orElse(null);
-				if (previousModelYear == null) {
-					previousModelYear = getOrCreateAccountingYear(requestedYear - 1);
-					lastYearClosingValue = previousModelYear.getTransactionSum();
-				}
-			}
-			
-			modelYear = new AccountingYearViewModel();
-			modelYear.setAccountId(selectedAccount.getId());
-			modelYear.setYear(requestedYear);
-			accountingYears.add(modelYear);
-			modelYear.addDraftMonths();
-			modelYear.setStartValue(lastYearClosingValue);
-			accountService.addDraftsToYearViewModel(selectedAccount.getId(), modelYear);
-			
-			modelYear.recalculateTransactionSum();		
-		}
-		return modelYear;
-	}
-
 	public void onDeleteTransaction() {
 		logger.debug("onDeleteTransaction: " + transactionDialog.getId());
 		
 		accountService.deleteTransaction(transactionDialog.getId(), transactionDialog.getAccountId(), transactionDialog.getAccountingMonth().getYear());
-		reloadAccountingYear();
+		//reloadAccountingYear();
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 	
@@ -371,49 +343,78 @@ public class AccountView {
 	public void onDraftEdit(int draftId, AccountingMonthViewModel accountingMonth) {
 		logger.debug("onDraftEdit id: " + draftId);
 		
-		//prepareAndOpenTransactionDetailDialogForDraft(draftId, accountingMonth);
+		prepareAndOpenTransactionDetailDialogForDraft(draftId, accountingMonth);
 	}
 		
-	public void onDraftNew(AccountingMonthViewModel accountingMonth) {
+	public void onDraftNew() {
 		logger.debug("onDraftNew");
-
-		prepareAndOpenTransactionDetailDialogForDraft(null, accountingMonth);
+		
+		AccountingYearViewModel yearVm = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear);
+		AccountingMonthViewModel monthVm =  yearVm == null ? null : yearVm.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
+				
+		prepareAndOpenTransactionDetailDialogForDraft(null, monthVm);
 	}
 	
 	private void prepareAndOpenTransactionDetailDialogForDraft(Integer draftId, AccountingMonthViewModel accountingMonth) {
-		transactionDialog = new TransactionDetailDialogViewModel(LocalizedMessageUtil.getTag(draftId == null ? TagName.DRAFT_NEW.getValue() : TagName.DRAFT_EDIT.getValue()), true);	
-		transactionDialog.setAccountingMonth(accountingMonth);
-		//TODO GOON
-		if (draftId == null) {
-			transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
-		} else {
-			TransactionBaseViewModel vm = accountingMonth.getTransactions().stream().filter(tr -> tr.getId().equals(draftId)).findFirst().orElse(null);
-//			transactionDialog.setId(vm.getId());
-//			transactionDialog.setAccountId(selectedAccountId);
-//			transactionDialog.setExecutedAt(vm.getExecutedAt() == null ? null : vm.getExecutedAt().atZone(ZoneOffset.UTC).toLocalDate());
-//			transactionDialog.setExpectedDay(vm.getExpectedDay());
-//			transactionDialog.setTitle(vm.getTitle());
-//			transactionDialog.setDescription(vm.getDescription());
-//			transactionDialog.setValue(vm.getValue());
-//			
-//			List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
-//			for (TagViewModel tag : tagsForAccount) {
-//				if (vm.getTags().contains(tag)) {
-//					transactionDialog.getTagsAssigned().add(tag);
-//				} else {
-//					transactionDialog.getTagsAvailable().add(tag);
-//				}
-//			}
+		TransactionDraftDetailDialogViewModel transactionDialog = new TransactionDraftDetailDialogViewModel(LocalizedMessageUtil.getTag(draftId == null ? TagName.DRAFT_NEW.getValue() : TagName.DRAFT_EDIT.getValue()), true);	
+		if (accountingMonth == null) {
+			accountingMonth = new AccountingMonthViewModel();
+			accountingMonth.setAccountYearId(selectedYear);
+			accountingMonth.setMonth(selectedMonth);
 		}
 		
-//		int maxDay = YearMonth.of(accountingMonth.getYear(), accountingMonth.getMonth()).atEndOfMonth().getDayOfMonth();
-//		transactionDialog.setSelectableExpectedDay(selectableExpectedDay.entrySet().stream()
-//				.filter(entry -> entry.getKey() <= maxDay || entry.getKey() > 31)
-//				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> {throw new RuntimeException();}, LinkedHashMap::new)));
-//		//transactionDialog.setSelectableExpectedDay(selectableExpectedDay.sub (transactionId));
-//		
-//		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
-//		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
+		transactionDialog.setAccountingMonth(accountingMonth);
+
+		if (draftId == null) {
+			transactionDialog.getTagsAvailable().addAll(tagService.getTagsForAccount(selectedAccountId, false));
+			transactionDialog.setSelectedStartMonth(selectedMonth);
+			transactionDialog.setSelectedStartYear(selectedYear);
+		} else {
+			DraftViewModel vm = accountService.getDraftViewModelById(draftId, selectedAccountId);
+			transactionDialog.setId(vm.getId());
+			transactionDialog.setAccountId(selectedAccountId);
+			transactionDialog.setExpectedDay(vm.getExpectedDay());
+			transactionDialog.setTitle(vm.getTitle());
+			transactionDialog.setDescription(vm.getDescription());
+			transactionDialog.setValue(vm.getValue());
+			
+			transactionDialog.setSelectedStartMonth(vm.getStartsAt().getMonthValue());
+			transactionDialog.setSelectedStartYear(vm.getStartsAt().getYear());
+			
+			if (vm.getEndsAt() != null) {
+				transactionDialog.setSelectedEndMonth(vm.getEndsAt().getMonthValue());
+				transactionDialog.setSelectedEndYear(vm.getEndsAt().getYear());
+			}
+						
+			List<TagViewModel> tagsForAccount = tagService.getTagsForAccount(selectedAccountId, false);
+			for (TagViewModel tag : tagsForAccount) {
+				if (vm.getTags().contains(tag)) {
+					transactionDialog.getTagsAssigned().add(tag);
+				} else {
+					transactionDialog.getTagsAvailable().add(tag);
+				}
+			}
+		}
+				
+		int maxDay = YearMonth.of(accountingMonth.getYear(), accountingMonth.getMonth()).atEndOfMonth().getDayOfMonth();
+		transactionDialog.setSelectableExpectedDay(selectableExpectedDay.entrySet().stream()
+				.filter(entry -> entry.getKey() <= maxDay || entry.getKey() > 31)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> {throw new RuntimeException();}, LinkedHashMap::new)));
+		//transactionDialog.setSelectableExpectedDay(selectableExpectedDay.sub (transactionId));
+		
+		this.transactionDialog = transactionDialog;
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
+	}
+	
+	public void onShowDraftList() {
+		logger.debug("onShowDraftList");
+		
+		draftListDialog = new DraftListDialogViewModel(accountService.getLoadedDraftsByAccountId(selectedAccountId));
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		PrimeFaces.current().executeScript("PF('draftListDialog').show()");
 	}
 	
 ///
@@ -426,6 +427,25 @@ public class AccountView {
 			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", Locale.getDefault())
 					, LocalizedMessageUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
 			isValid = false;
+		}
+		
+		if (transactionDialog.isDraft()) {
+			TransactionDraftDetailDialogViewModel draftDialog = (TransactionDraftDetailDialogViewModel) transactionDialog;
+			if (draftDialog.getSelectedEndMonth() != null && draftDialog.getSelectedEndYear() == null
+					|| draftDialog.getSelectedEndMonth() == null && draftDialog.getSelectedEndYear() != null) {
+				FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", Locale.getDefault())
+						, LocalizedMessageUtil.getMessage("error.draft.end.year.month.need.both", Locale.getDefault()));
+				isValid = false;
+			}
+			if (draftDialog.getSelectedEndMonth() != null && draftDialog.getSelectedEndYear() != null) {
+				YearMonth startYear = YearMonth.of(draftDialog.getSelectedStartYear(), draftDialog.getSelectedStartMonth());
+				YearMonth endYear = YearMonth.of(draftDialog.getSelectedEndYear(), draftDialog.getSelectedEndMonth());
+				if (endYear.isBefore(startYear)) {
+					FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", Locale.getDefault())
+							, LocalizedMessageUtil.getMessage("error.draft.date.end.needs.after.date.start", Locale.getDefault()));
+					isValid = false;
+				}
+			}
 		}
 
 		return isValid;
@@ -444,7 +464,7 @@ public class AccountView {
 	}
 	
 	private void prepareAndOpenTransactionDetailDialogForTransaction(Integer transactionId, AccountingMonthViewModel accountingMonth) {
-		transactionDialog = new TransactionDetailDialogViewModel(LocalizedMessageUtil.getTag(transactionId == null ? TagName.TRANSACTION_NEW.getValue() : TagName.TRANSACTION_EDIT.getValue()), false);	
+		TransactionDetailDialogViewModel transactionDialog = new TransactionDetailDialogViewModel(LocalizedMessageUtil.getTag(transactionId == null ? TagName.TRANSACTION_NEW.getValue() : TagName.TRANSACTION_EDIT.getValue()), false);	
 		transactionDialog.setAccountingMonth(accountingMonth);
 		
 		if (transactionId == null) {
@@ -476,6 +496,8 @@ public class AccountView {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> {throw new RuntimeException();}, LinkedHashMap::new)));
 		//transactionDialog.setSelectableExpectedDay(selectableExpectedDay.sub (transactionId));
 		
+		this.transactionDialog = transactionDialog;
+		
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
 	}
@@ -486,26 +508,17 @@ public class AccountView {
 		if (isTransactionDialogValid()) {
 			transactionDialog.setAccountId(selectedAccountId);
 			
-			accountService.saveTransactionBase(transactionDialog, transactionDialog.getAccountingMonth().getYear(), transactionDialog.getAccountingMonth().getMonth());
-			reloadAccountingYear();
+			if (transactionDialog.isDraft()) {
+				accountService.saveDraft((TransactionDraftDetailDialogViewModel) transactionDialog);
+			} else {
+				accountService.saveTransactionBase(transactionDialog, transactionDialog.getAccountingMonth().getYear(), transactionDialog.getAccountingMonth().getMonth());
+			}
+			
+			updateMonthTransactions();
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		}
 	}
-	
-	public void reloadAccountingYear() {
-		accountingYears.removeIf(yearX -> yearX.getYear() == selectedYear);
-		getOrCreateAccountingYear(selectedYear);
 		
-		if (selectedMonth >= 11) {
-			accountingYears.removeIf(yearX -> yearX.getYear() == selectedYear + 1);
-			accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear + 1));
-		}
-//		AccountingYearViewModel yearVm = accountingYears.stream().filter(year -> year.getYear() == selectedYear).findFirst().orElse(null);
-//		firstAccountingMonth = yearVm.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
-		
-		updateMonthTransactions();
-	}
-	
 	///
 	/// TransactionExecutedDialog
 	///
@@ -551,7 +564,8 @@ public class AccountView {
 			detailDialog.setDraft(transactionExecutedDialog.isDraft());
 			
 			accountService.saveTransactionBase(detailDialog, transactionExecutedDialog.getAccountingMonth().getYear(), transactionExecutedDialog.getAccountingMonth().getMonth());
-			reloadAccountingYear();
+			//reloadAccountingYear();
+			updateMonthTransactions();
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		}
 	}
@@ -646,14 +660,6 @@ public class AccountView {
 		this.selectedMonth = selectedMonth;
 	}
 
-	public List<AccountingYearViewModel> getAccountingYears() {
-		return accountingYears;
-	}
-
-	public void setAccountingYears(List<AccountingYearViewModel> accountingYears) {
-		this.accountingYears = accountingYears;
-	}
-
 	public TransactionBaseViewModel getSelectedTransaction() {
 		return selectedTransaction;
 	}
@@ -674,7 +680,7 @@ public class AccountView {
 		this.selectedAccountId = selectedAccountId;
 	}
 
-	public TransactionDetailDialogViewModel getTransactionDialog() {
+	public TransactionDetailBaseDialogViewModel getTransactionDialog() {
 		return transactionDialog;
 	}
 
@@ -724,6 +730,14 @@ public class AccountView {
 
 	public void setSelectableExpectedDay(HashMap<Integer, String> selectableExpectedDay) {
 		this.selectableExpectedDay = selectableExpectedDay;
+	}
+
+	public DraftListDialogViewModel getDraftListDialog() {
+		return draftListDialog;
+	}
+
+	public void setDraftListDialog(DraftListDialogViewModel draftListDialogViewModel) {
+		this.draftListDialog = draftListDialogViewModel;
 	}
 
 }

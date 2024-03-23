@@ -41,19 +41,6 @@ public class AccountTransactionDraft extends TransactionBase {
 	@Convert(converter = IntervalConverter.class)
 	private Interval interval;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "transaction_tag", joinColumns = { @JoinColumn(name = "transaction_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "tag_id") })
-	private List<Tag> tags = new ArrayList<>();
-
-	public List<Tag> getTags() {
-		return tags;
-	}
-
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
-	}
-
 	public Account getAccount() {
 		return account;
 	}

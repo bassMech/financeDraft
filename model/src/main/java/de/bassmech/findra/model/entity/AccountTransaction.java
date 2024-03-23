@@ -30,14 +30,7 @@ public class AccountTransaction extends TransactionBase {
 	@Column(name = "executed_at", columnDefinition = "INTEGER")
 	@Convert(converter = NumberToInstantConverter.class)
 	private Instant executedAt;
-	
-	@ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-        name = "transaction_tag", 
-        joinColumns = { @JoinColumn(name = "transaction_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "tag_id") })
-	private List<Tag> tags = new ArrayList<>();
-	
+		
 
 	public Instant getExecutedAt() {
 		return executedAt;
@@ -53,14 +46,6 @@ public class AccountTransaction extends TransactionBase {
 
 	public void setAccountingMonth(AccountingMonth accountingMonth) {
 		this.accountingMonth = accountingMonth;
-	}
-
-	public List<Tag> getTags() {
-		return tags;
-	}
-
-	public void setTags(List<Tag> tags) {
-		this.tags = tags;
 	}
 
 	public AccountTransactionDraft getDraft() {

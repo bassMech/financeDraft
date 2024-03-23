@@ -36,8 +36,8 @@ public class AccountingYear {
 	@Column(name = "start_value", columnDefinition = "FLOAT")
 	private BigDecimal startValue = BigDecimal.ZERO;
 	
-	@Column(name = "transaction_sum", columnDefinition = "FLOAT")
-	private BigDecimal transactionSum = BigDecimal.ZERO;
+	@Column(name = "closing_value", columnDefinition = "FLOAT")
+	private BigDecimal closingValue = BigDecimal.ZERO;
 
 	public Integer getId() {
 		return id;
@@ -67,12 +67,12 @@ public class AccountingYear {
 		this.year = year;
 	}
 
-	public BigDecimal getTransactionSum() {
-		return transactionSum;
+	public BigDecimal getClosingValue() {
+		return closingValue;
 	}
 
-	public void setTransactionSum(BigDecimal transactionSum) {
-		this.transactionSum = transactionSum;
+	public void setClosingValue(BigDecimal transactionSum) {
+		this.closingValue = transactionSum;
 	}
 
 	public List<AccountingMonth> getMonths() {

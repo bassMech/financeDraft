@@ -31,6 +31,9 @@
 						<div class="flex justify-content-end">
 							<h:outputText value="#{tags['closing']}: " />
 						</div>
+						<div class="flex justify-content-end">
+							<h:outputText value="#{tags['difference']}: " />
+						</div>
 					</div>
 					<div class="col-fixed">
 						<div class="flex justify-content-end">
@@ -39,6 +42,11 @@
 						</div>
 						<div class="flex justify-content-end">
 							<h:outputText value="#{accountView.getCurrencyFormatted(accountingMonth.getClosingValue())}">
+							</h:outputText>
+						</div>
+						<div class="flex justify-content-end">
+							<h:outputText value="#{accountView.getCurrencyFormatted(accountingMonth.getTransactionSum())}" 
+								class="#{accountingMonth.getTransactionSumColorCssClass()}">
 							</h:outputText>
 						</div>
 					</div>
@@ -93,6 +101,8 @@
 			<div class="flex justify-content-center">
 				<p:commandButton icon="pi pi-pencil" action="#{accountView.onTransactionEdit(transaction.id, accountingMonth)}" process="@this"
 					update="mainForm:transactionDetailDialog" rendered="#{!transaction.isDraft()}"></p:commandButton>
+				<p:commandButton icon="pi pi-pencil" action="#{accountView.onDraftEdit(transaction.id, accountingMonth)}" process="@this"
+					update="mainForm:transactionDetailDialog" rendered="#{transaction.isDraft()}"></p:commandButton>
 			</div>
 		</p:column>
 		<p:column style="width:1rem">

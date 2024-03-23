@@ -2,8 +2,6 @@
 
 ToDo
 - important!
-	- drafts are added on page reload
-	- to many selections ?
 	- on transaction save, rebuild month and year transaction sums
 	- accountingyears move to service
 - Account
@@ -25,12 +23,15 @@ ToDo
 	- as SQL
 	- data starting from last month 
 - Misc
+	- remove monthViewmodel from dialog
+	- disable tags navigation when no account exists
 	- Multitenancy 
 	- View Scoped ???
 	- same naming for xhtml called methods (on....) -> closeDialog
 	- table filter
 	- check tag usage before delete
 	- hotkeys
+	- importer ?
 
 
 

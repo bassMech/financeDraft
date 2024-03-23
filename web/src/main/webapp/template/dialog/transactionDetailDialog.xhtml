@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
-	<p:dialog id="transactionDetailDialog" header="#{accountView.transactionDialog.dialogTitle}" width="1400" responsive="true" widgetVar="transactionDetailDialog"
-		showEffect="fade" resizable="true">
+	<p:dialog id="transactionDetailDialog" header="#{accountView.transactionDialog.dialogTitle}" width="1400" responsive="true"
+		widgetVar="transactionDetailDialog" showEffect="fade" resizable="true">
 		<p:panel>
 			<div class="grid">
 				<div class="col-6">
@@ -26,7 +26,7 @@
 										<div>
 											<p:inputNumber id="transactionDetailDialog_value" value="#{accountView.transactionDialog.value}" decimalPlaces="2"
 												symbol="#{accountView.settingService.dbCurrency.symbol}" inputStyle="width:150px"
-												symbolPosition="#{accountView.getCurrencySymbolPosition()}" emptyValue="zero" 
+												symbolPosition="#{accountView.getCurrencySymbolPosition()}" emptyValue="zero"
 												thousandSeparator="#{accountView.getNumberThousandSepartor()}" decimalSeparator="#{accountView.getNumberDigitSeparator()}">
 												<p:ajax></p:ajax>
 											</p:inputNumber>
@@ -55,7 +55,7 @@
 									</div>
 									<div>
 										<p:selectOneMenu id="transactionDetailDialog_expectedDaySelect" value="#{accountView.transactionDialog.expectedDay}"
-											style="padding-left:5px;">
+											class="padding-left-5">
 											<p:ajax />
 											<f:selectItems value="#{accountView.transactionDialog.selectableExpectedDay.entrySet()}" var="day" itemLabel="#{day.value}"
 												itemValue="#{day.key}" />
@@ -64,26 +64,86 @@
 								</div>
 								<div class="col-12">
 									<div>
-										<p:tag value="#{tags['executed']}"></p:tag>
+										<p:tag value="#{tags['executed']}" rendered="#{!accountView.transactionDialog.draft}"></p:tag>
 									</div>
 									<div>
 										<p:datePicker id="transactionDetailDialog_exectuedAt" widgetVar="exectuedAt" value="#{accountView.transactionDialog.executedAt}"
 											monthNavigator="true" yearNavigator="true" yearRange="#{accountView.getYearRangeForDatePicker()}"
-											locale="#{accountView.getCurrentLocale().getLanguage()}" pattern="#{accountView.dateFormat}"/>
+											locale="#{accountView.getCurrentLocale().getLanguage()}" pattern="#{accountView.dateFormat}"
+											rendered="#{!accountView.transactionDialog.draft}" />
 									</div>
 								</div>
 							</div>
 						</p:fieldset>
 					</div>
-					<div>
-						<p:fieldset legend="#{tags['draft']}">
-							<p:toggleSwitch />
+					<div class="flex">
+						<p:fieldset legend="#{tags['duration']}" rendered="#{accountView.transactionDialog.draft}">
+							<div class="grid">
+								<div class="col-4">
+									<div>
+										<p:tag value="#{tags['start.year']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_startYearSelect" value="#{accountView.transactionDialog.selectedStartYear}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+										</p:selectOneMenu>
+									</div>
+									<div class="dialog-input-top-margin">
+										<p:tag value="#{tags['start.month']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_startMonthSelect" value="#{accountView.transactionDialog.selectedStartMonth}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div class="col-4">
+									<div>
+										<p:tag value="#{tags['end.year']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_endYearSelect" value="#{accountView.transactionDialog.selectedEndYear}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItem itemLabel="" itemValue="null" />
+											<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+										</p:selectOneMenu>
+									</div>
+									<div class="dialog-input-top-margin">
+										<p:tag value="#{tags['end.month']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_endMonthSelect" value="#{accountView.transactionDialog.selectedEndMonth}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItem itemLabel="" itemValue="null" />
+											<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div class="col-4">
+									<div>
+										<p:tag value="#{tags['interval']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_intervalSelect" value="#{accountView.transactionDialog.selectedInterval}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItems value="#{accountView.transactionDialog.selectableIntervals.entrySet()}" var="interval" itemLabel="#{interval.value}" itemValue="#{interval.key}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
 						</p:fieldset>
 					</div>
 				</div>
 				<div class="col-6">
 					<p:fieldset id="tagTransactionPickList" legend="#{tags['assignment']}">
-						<div class="grid" style="margin-top: 2px !important;">
+						<div class="grid">
 							<p:card class="col-6">
 								<p:dataTable var="tag" value="#{accountView.transactionDialog.tagsAvailable}" rowKey="#{tag.id}" class="no-header-table">
 									<f:facet name="header">

@@ -76,7 +76,7 @@ public class ToViewModelUtil {
 		vm.setId(entity.getId());
 		vm.setYear(entity.getYear());
 		vm.setStartValue(entity.getStartValue());
-		vm.setTransactionSum(entity.getTransactionSum());
+		vm.setTransactionSum(entity.getClosingValue());
 		vm.setAccountId(entity.getAccount().getId());
 		
 		for (AccountingMonth month : entity.getMonths()) {

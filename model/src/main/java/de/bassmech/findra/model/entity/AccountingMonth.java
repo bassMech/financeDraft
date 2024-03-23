@@ -33,11 +33,11 @@ public class AccountingMonth {
 	@OneToMany(mappedBy = "accountingMonth", cascade = CascadeType.ALL)
 	private List<AccountTransaction> transactions = new ArrayList<>();
 	
-	@Column(name = "startValue", columnDefinition = "FLOAT")
+	@Column(name = "start_value", columnDefinition = "FLOAT")
 	private BigDecimal startValue = BigDecimal.ZERO;
 	
-	@Column(name = "transaction_sum", columnDefinition = "FLOAT")
-	private BigDecimal transactionSum = BigDecimal.ZERO;
+	@Column(name = "closing_value", columnDefinition = "FLOAT")
+	private BigDecimal closingValue = BigDecimal.ZERO;
 
 	public Integer getId() {
 		return id;
@@ -71,12 +71,12 @@ public class AccountingMonth {
 		this.accountingYear = accountingYear;
 	}
 
-	public BigDecimal getTransactionSum() {
-		return transactionSum;
+	public BigDecimal getClosingValue() {
+		return closingValue;
 	}
 
-	public void setTransactionSum(BigDecimal transactionSum) {
-		this.transactionSum = transactionSum;
+	public void setClosingValue(BigDecimal transactionSum) {
+		this.closingValue = transactionSum;
 	}
 
 	public BigDecimal getStartValue() {

@@ -103,7 +103,7 @@
 			<column name="start_value" type="FLOAT">
 				<constraints nullable="false" />
 			</column>
-			<column name="transaction_sum" type="FLOAT">
+			<column name="closing_value" type="FLOAT">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -123,7 +123,7 @@
 			<column name="start_value" type="FLOAT">
 				<constraints nullable="false" />
 			</column>
-			<column name="transaction_sum" type="FLOAT">
+			<column name="closing_value" type="FLOAT">
 				<constraints nullable="false" />
 			</column>
 		</createTable>

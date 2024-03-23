@@ -16,16 +16,20 @@ public class AccountingYearViewModel implements Serializable {
 
 	public void addDraftMonths() {
 		if (months.size() < 12) {
+			BigDecimal monthStartValue = startValue;
 			for (int iMonth = 1; iMonth <= 12; iMonth++) {
 				final int finalMonth = iMonth;
-				if (months.stream().noneMatch(month -> month.getMonth() == finalMonth)) {
-					AccountingMonthViewModel month = new AccountingMonthViewModel();
+				AccountingMonthViewModel month = months.stream().filter(monthX -> monthX.getMonth() == finalMonth).findFirst().orElse(null);
+				if (month == null) {
+					month = new AccountingMonthViewModel();
 					month.setAccountYearId(id);
 					// month.setStartValue(BigDecimal.ZERO); TODO add start and final values
 					month.setMonth(iMonth);
 					month.setYear(year);
+					month.setStartValue(monthStartValue);
 					months.add(month);
 				}
+				monthStartValue = month.getClosingValue();
 			}
 			months.sort(Comparator.comparing(AccountingMonthViewModel::getMonth));
 		}

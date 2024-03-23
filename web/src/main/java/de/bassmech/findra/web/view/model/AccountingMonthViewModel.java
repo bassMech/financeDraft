@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bassmech.findra.web.util.statics.CssReference;
+
 public class AccountingMonthViewModel implements Serializable {
 	private Integer id;
 	private Integer accountYearId;
@@ -34,16 +36,24 @@ public class AccountingMonthViewModel implements Serializable {
 		}
 	}
 	
-	public BigDecimal getExpectedSumAtMonthEnd() {
-		return startValue.add(transactionValueExecuted).add(transactionValueExpected);
-	}
-
 	public BigDecimal getCurrentValue() {
 		return startValue.add(transactionValueExecuted);
 	}
 
 	public BigDecimal getClosingValue() {
-		return startValue.add(transactionValueExecuted).add(transactionValueExpected);
+		return startValue.add(getTransactionSum());
+	}
+	
+	public BigDecimal getTransactionSum() {
+		return transactionValueExecuted.add(transactionValueExpected);
+	}
+	
+	public String getTransactionSumColorCssClass() {
+		int transactionSumEval = getTransactionSum().compareTo(BigDecimal.ZERO);
+		if (transactionSumEval == 0) {
+			return "";
+		} 
+		return transactionSumEval > 0 ? CssReference.TRANSCTION_SUM_POSITIVE.getValue() : CssReference.TRANSCTION_SUM_NEGATIVE.getValue();
 	}
 
 	public Integer getId() {

@@ -10,24 +10,27 @@
 
 	<ui:define name="content">
 		<h:outputStylesheet name="account.css" library="style" />
+		<ui:param name="noAccountExists" value="#{accountView.selectedAccount == null}"></ui:param>
 
 		<div class="grid">
 			<div class="col-4">
 				<div class="flex justify-content-start">
 					<p:fieldset legend="#{tags['account']}">
 						<div class="flex align-content-center gap-1">
-							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccountId}" style="width:150px">
+							<p:selectOneMenu id="accountSelect" value="#{accountView.selectedAccountId}" style="width:150px" disabled="#{noAccountExists}">
 								<p:ajax listener="#{accountView.onAccountChanged}" update="transactions" />
 								<f:selectItems value="#{accountView.selectableAccounts}" var="account" itemLabel="#{account.title}" itemValue="#{account.id}" />
 							</p:selectOneMenu>
 							<p:commandButton icon="pi pi-plus" action="#{accountView.openAccountDetailDialogNew}" process="@this" update="accountDetailDialog"></p:commandButton>
-							<p:commandButton icon="pi pi-pencil" action="#{accountView.openAccountDetailDialogEdit}" process="@this" update="accountDetailDialog"></p:commandButton>
+							<p:commandButton icon="pi pi-pencil" action="#{accountView.openAccountDetailDialogEdit}" process="@this" update="accountDetailDialog"
+								disabled="#{noAccountExists}"></p:commandButton>
 						</div>
 					</p:fieldset>
 					<p:fieldset legend="#{tags['draft']}">
 						<div class="flex align-content-center gap-1">
-							<p:commandButton icon="pi pi-list" action="#{accountView.onShowDraftList}" process="@this" update=""></p:commandButton>
-							<p:commandButton icon="pi pi-plus" action="#{accountView.onDraftNew}" process="@this" update="transactionDetailDialog"></p:commandButton>
+							<p:commandButton icon="pi pi-list" action="#{accountView.onShowDraftList}" process="@this" update="" disabled="#{noAccountExists}"></p:commandButton>
+							<p:commandButton icon="pi pi-plus" action="#{accountView.onDraftNew}" process="@this" update="transactionDetailDialog"
+								disabled="#{noAccountExists}"></p:commandButton>
 						</div>
 					</p:fieldset>
 				</div>
@@ -37,26 +40,26 @@
 				<p:fieldset legend="#{tags['month']}">
 					<div class="flex align-content-center gap-1">
 						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousMonthClick}" process="@this"
-							update="monthSelect, yearSelect, transactions" />
-						<p:selectOneMenu id="monthSelect" value="#{accountView.selectedMonth}" style="width:150px">
+							update="monthSelect, yearSelect, transactions" disabled="#{noAccountExists}" />
+						<p:selectOneMenu id="monthSelect" value="#{accountView.selectedMonth}" style="width:150px" disabled="#{noAccountExists}">
 							<p:ajax listener="#{accountView.onMonthChanged}" update="transactions" />
 							<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
 						</p:selectOneMenu>
 						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextMonthClick}" process="@this"
-							update="monthSelect, yearSelect, transactions" />
+							update="monthSelect, yearSelect, transactions" disabled="#{noAccountExists}" />
 					</div>
 				</p:fieldset>
 
 				<p:fieldset legend="#{tags['year']}">
 					<div class="flex align-content-center gap-1">
 						<p:commandButton icon="pi pi-chevron-left" action="#{accountView.onPreviousYear}" process="@this"
-							update="monthSelect, yearSelect, transactions" />
-						<p:selectOneMenu id="yearSelect" value="#{accountView.selectedYear}" style="width:150px">
+							update="monthSelect, yearSelect, transactions" disabled="#{noAccountExists}" />
+						<p:selectOneMenu id="yearSelect" value="#{accountView.selectedYear}" style="width:150px" disabled="#{noAccountExists}">
 							<p:ajax listener="#{accountView.onYearChanged}" update="transactions" />
 							<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
 						</p:selectOneMenu>
 						<p:commandButton icon="pi pi-chevron-right" action="#{accountView.onNextYear}" process="@this"
-							update="monthSelect, yearSelect, transactions" />
+							update="monthSelect, yearSelect, transactions" disabled="#{noAccountExists}" />
 					</div>
 				</p:fieldset>
 			</div>
@@ -67,7 +70,7 @@
 			</div>
 		</div>
 
-		<p:panel id="transactions" rendered="#{accountView.selectedAccountId != null}">
+		<p:panel id="transactions" rendered="#{!noAccountExists}">
 			<div class="grid">
 				<div class="col-4">
 					<p:panel>
@@ -98,6 +101,8 @@
 		<ui:include src="/template/dialog/accountDetailDialog.xhtml">
 		</ui:include>
 		<ui:include src="/template/dialog/transactionExecutedDialog.xhtml">
+		</ui:include>
+		<ui:include src="/template/dialog/draftListDialog.xhtml">
 		</ui:include>
 	</ui:define>
 </ui:composition>
