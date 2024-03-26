@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.bassmech.findra.model.statics.ExpectedDay;
-import de.bassmech.findra.web.util.LocalizedMessageUtil;
+import de.bassmech.findra.web.util.LocalizationUtil;
 
 public abstract class TransactionBaseViewModel implements Serializable {
 	protected Integer id;
@@ -22,7 +22,7 @@ public abstract class TransactionBaseViewModel implements Serializable {
 			
 	public TransactionBaseViewModel() {
 		expectedDay = 0;
-		dayForDisplay = LocalizedMessageUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
+		dayForDisplay = LocalizationUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
 	}
 	
 	public abstract boolean isDraft();

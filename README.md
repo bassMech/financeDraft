@@ -23,9 +23,10 @@ ToDo
 	- as SQL
 	- data starting from last month 
 - Misc
-	- remove monthViewmodel from dialog
-	- disable tags navigation when no account exists
 	- Multitenancy 
+		- for setting
+		- for account
+		- for tag
 	- View Scoped ???
 	- same naming for xhtml called methods (on....) -> closeDialog
 	- table filter

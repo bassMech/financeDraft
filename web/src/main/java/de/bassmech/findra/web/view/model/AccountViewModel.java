@@ -7,6 +7,7 @@ import java.util.Objects;
 public class AccountViewModel implements Serializable {
 
 	private Integer id;
+	private Integer userId;
 	private String title;
 	private String description;
 	private int startingYear;
@@ -52,9 +53,17 @@ public class AccountViewModel implements Serializable {
 		this.startingYear = startingYear;
 	}
 
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, title);
+		return Objects.hash(id, userId);
 	}
 
 	@Override
@@ -66,7 +75,7 @@ public class AccountViewModel implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		AccountViewModel other = (AccountViewModel) obj;
-		return id == other.id && Objects.equals(title, other.title);
+		return Objects.equals(id, other.id) && Objects.equals(userId, other.userId);
 	}
 
 }

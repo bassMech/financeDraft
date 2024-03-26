@@ -1,13 +1,13 @@
 package de.bassmech.findra.web.util;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import de.bassmech.findra.model.entity.Account;
+import de.bassmech.findra.model.entity.AccountTransaction;
+import de.bassmech.findra.model.entity.AccountTransactionDraft;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Tag;
@@ -18,8 +18,6 @@ import de.bassmech.findra.web.view.model.AccountingYearViewModel;
 import de.bassmech.findra.web.view.model.DraftViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
-import de.bassmech.findra.model.entity.AccountTransaction;
-import de.bassmech.findra.model.entity.AccountTransactionDraft;
 
 
 public class ToViewModelUtil {
@@ -27,6 +25,7 @@ public class ToViewModelUtil {
 	public static AccountViewModel toViewModel(Account entity) {
 		AccountViewModel vm = new AccountViewModel();
 		vm.setId(entity.getId());
+		vm.setUserId(entity.getClient().getId());
 		vm.setTitle(entity.getTitle());
 		vm.setDescription(entity.getDescription());
 		vm.setStartingYear(entity.getStartingYear());
@@ -58,7 +57,7 @@ public class ToViewModelUtil {
 		} else if(entity.getExpectedDay() > 0) {
 			vm.setDayForDisplay(String.valueOf(entity.getExpectedDay()));
 		} else {
-			vm.setDayForDisplay(LocalizedMessageUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
+			vm.setDayForDisplay(LocalizationUtil.getTag(ExpectedDay.getTagStringByDbValue(entity.getExpectedDay())));
 		}
 		
 		if (entity.getDraft() != null) {
@@ -114,6 +113,7 @@ public class ToViewModelUtil {
 	public static TagViewModel toViewModel(Tag tag) {
 		TagViewModel vm = new TagViewModel();
 		vm.setId(tag.getId());
+		vm.setUserId(tag.getClient().getId());
 		vm.setTitle(tag.getTitle());
 		vm.setDescription(tag.getDescription());
 		vm.setBackgroundHexColor(tag.getBackgroundHexColor());

@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import de.bassmech.findra.web.util.statics.Statics;
 
-public class LocalizedMessageUtil {
-	private static Logger logger = LoggerFactory.getLogger(LocalizedMessageUtil.class);
+public class LocalizationUtil {
+	private static Logger logger = LoggerFactory.getLogger(LocalizationUtil.class);
 
 	public static String getMessage(String key) {
 		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, Locale.getDefault()), key, Locale.getDefault(), null);

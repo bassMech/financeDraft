@@ -1,9 +1,9 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
-	<p:dialog id="draftListDialog" header="#{tags['list.draft']}" width="1000" responsive="true" widgetVar="draftListDialog" showEffect="fade">
+	<p:dialog id="draftListDialog" header="#{tags['drafts']}" width="1000" responsive="true" widgetVar="draftListDialog" showEffect="fade">
 		<p:panel>
 			<div class="flex align-content-end gap-2">
-				<p:dataTable var="draft" value="#{accountView.draftListDialog.draftList}" rowKey="#{draft.id}"
+				<p:dataTable var="draft" value="#{accountView.draftListDialog.draftList}" rowKey="#{draft.id}" lazy="false"
 					rowStyleClass="#{accountView.getTransactionRowColorString(draft)}" allowUnsorting="true" sortMode="single" size="small">
 
 					<p:column style="width:1rem">
@@ -38,6 +38,10 @@
 					</p:column>
 					<p:column headerText="#{tags['date.end']}" sortBy="#{draft.endsAt}">
 						<h:outputText value="#{draft.endsAt}">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{tags['interval']}" sortBy="#{draft.interval}">
+						<h:outputText value="#{draft.getIntervalForDisplay()}">
 						</h:outputText>
 					</p:column>
 				</p:dataTable>

@@ -12,8 +12,8 @@ import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.bean.SessionScoped;
-import jakarta.faces.view.ViewScoped;
+//import jakarta.faces.bean.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 @Component
 @SessionScoped

@@ -1,0 +1,44 @@
+
+<ui:composition template="/WEB-INF/layout_public.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="metadata">
+		<f:metadata>
+			<f:event type="preRenderView"
+				listener="#{loginView.checkLanguageChange()}" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:outputStylesheet name="login.css" library="style" />
+		<div class="card">
+			<div class="flex justify-content-center">
+				<div id="input-wrapper" class="vertical-align-middle">
+					<div class="field">
+						<p:outputLabel for="identifier" styleClass="block">${tags['mail']}</p:outputLabel>
+						<p:inputText id="identifier" styleClass="block"
+							value="#{loginView.mail}" />
+					</div>
+					<div class="field">
+						<p:outputLabel for="password" styleClass="block">${tags['password']}</p:outputLabel>
+						<p:password id="password" styleClass="block"
+							value="#{loginView.password}" />
+					</div>
+					<div>
+						<p:commandButton update="@parent" value="#{tags['login']}"
+							action="#{loginView.process()}" />
+					</div>
+				</div>
+			</div>
+			<div>
+				<p:messages id="messages" showDetail="true">
+					<p:autoUpdate />
+				</p:messages>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

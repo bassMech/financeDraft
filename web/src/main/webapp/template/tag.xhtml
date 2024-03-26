@@ -9,16 +9,18 @@
 
 	<ui:define name="content">
 		<!-- <h:outputStylesheet name="tag.css" library="style" /> -->
-
+		<p:card rendered="#{!tagView.isViewRendered()}" class="flex justify-content-center">
+			<f:facet name="title">"#{messages['create.account.first']}"</f:facet>
+		</p:card>
 		<div class="grid">
 			<div class="col-5 col-offset-1">
-				<p:fieldset id="allTags" legend="#{tags['all']}">
+				<p:fieldset id="allTags" legend="#{tags['all']}" rendered="#{tagView.isViewRendered()}">
 					<div class="flex justify-content-end gap-1">
 						<p:commandButton icon="pi pi-eye-slash" actionListener="#{tagView.onTagToogleDeletedVisibility}" process="@this" update="allTags"></p:commandButton>
 						<p:commandButton icon="pi pi-plus" actionListener="#{tagView.onTagNew}" process="@this"></p:commandButton>
 					</div>
 
-					<p:dataTable id="tags" var="tag" value="#{tagView.tagManagementList}" rowKey="#{tag.id}" allowUnsorting="true" sortMode="single"
+					<p:dataTable id="tags" var="tag" value="#{tagView.tagManagementList}" rowKey="#{tag.id}" allowUnsorting="true" sortMode="single" lazy="false"
 						size="small">
 						<p:column headerText="#{tags['title']}" sortBy="#{tag.title}" sortOrder="asc">
 							<h:outputText value="#{tag.title}"></h:outputText>
@@ -33,7 +35,7 @@
 						<p:column>
 							<div class="flex justify-content-center">
 								<p:commandButton styleClass="#{tag.isDeleted() ? 'ui-button-danger' : 'ui-button-success'}"
-								icon="pi #{tag.isDeleted() ? 'pi-eye-slash' : 'pi-eye'}" disabled="true"></p:commandButton>
+									icon="pi #{tag.isDeleted() ? 'pi-eye-slash' : 'pi-eye'}" disabled="true"></p:commandButton>
 							</div>
 						</p:column>
 						<p:column>
@@ -45,7 +47,7 @@
 				</p:fieldset>
 			</div>
 			<div class="col-5">
-				<p:fieldset legend="#{tags['assignment']}">
+				<p:fieldset legend="#{tags['assignment']}" rendered="#{tagView.isViewRendered()}">
 					<div class="flex justify-content-between">
 						<div>
 							<div>
@@ -68,7 +70,7 @@
 					<p:panel id="tagAccountPickList" class="margin-top-1em">
 						<div class="grid">
 							<p:card class="col-6">
-								<p:dataTable var="tag" value="#{tagView.tagsForAccountAvailable}" rowKey="#{tag.id}" class="no-header-table">
+								<p:dataTable var="tag" value="#{tagView.tagsForAccountAvailable}" rowKey="#{tag.id}" class="no-header-table" lazy="false">
 									<f:facet name="header">
 										<div class="flex justify-content-between align-items-center">
 											<h:outputText value="#{tags['available']}" />
@@ -88,7 +90,7 @@
 							</p:card>
 
 							<p:card class="col-6">
-								<p:dataTable id="accountTagsAssigned" var="tag" value="#{tagView.tagsForAccountAssigned}" rowKey="#{tag.id}" class="no-header-table">
+								<p:dataTable id="accountTagsAssigned" var="tag" value="#{tagView.tagsForAccountAssigned}" rowKey="#{tag.id}" class="no-header-table" lazy="false">
 									<f:facet name="header">
 										<div class="flex justify-content-between align-items-center">
 											<p:commandButton icon="pi pi-angle-double-left" action="#{tagView.onAllTagRemove}" process="@this"

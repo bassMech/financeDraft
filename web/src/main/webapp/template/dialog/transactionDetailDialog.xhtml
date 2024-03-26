@@ -133,7 +133,36 @@
 										<p:selectOneMenu id="transactionDetailDialog_intervalSelect" value="#{accountView.transactionDialog.selectedInterval}"
 											class="padding-left-5">
 											<p:ajax />
-											<f:selectItems value="#{accountView.transactionDialog.selectableIntervals.entrySet()}" var="interval" itemLabel="#{interval.value}" itemValue="#{interval.key}" />
+											<f:selectItems value="#{accountView.transactionDialog.selectableIntervals.entrySet()}" var="interval"
+												itemLabel="#{interval.value}" itemValue="#{interval.key}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+						<p:fieldset legend="#{tags['accounting.month']}" rendered="#{!accountView.transactionDialog.draft}" class="dialog-input-top-margin">
+							<div class="flex justify-content-start gap-2">
+								<div>
+									<div>
+										<p:tag value="#{tags['year']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_accountingyearSelect" value="#{accountView.transactionDialog.selectedAccountingYear}"
+											class="padding-left-5">
+											<p:ajax />
+											<f:selectItems value="#{accountView.selectableYears}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+								<div>
+									<div>
+										<p:tag value="#{tags['month']}"></p:tag>
+									</div>
+									<div>
+										<p:selectOneMenu id="transactionDetailDialog_accountingMonthSelect"
+											value="#{accountView.transactionDialog.selectedAccountingMonth}" class="padding-left-5">
+											<p:ajax />
+											<f:selectItems value="#{accountView.selectableMonths.entrySet()}" var="month" itemLabel="#{month.value}" itemValue="#{month.key}" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -142,10 +171,10 @@
 					</div>
 				</div>
 				<div class="col-6">
-					<p:fieldset id="tagTransactionPickList" legend="#{tags['assignment']}">
+					<p:fieldset id="tagTransactionPickList" legend="#{tags['tag.assignment']}">
 						<div class="grid">
 							<p:card class="col-6">
-								<p:dataTable var="tag" value="#{accountView.transactionDialog.tagsAvailable}" rowKey="#{tag.id}" class="no-header-table">
+								<p:dataTable var="tag" value="#{accountView.transactionDialog.tagsAvailable}" rowKey="#{tag.id}" class="no-header-table" lazy="false">
 									<f:facet name="header">
 										<div class="flex justify-content-between align-items-center">
 											<h:outputText value="#{tags['available']}" />
@@ -166,7 +195,7 @@
 
 							<p:card class="col-6">
 								<p:dataTable id="accountTagsAssigned" var="tag" value="#{accountView.transactionDialog.tagsAssigned}" rowKey="#{tag.id}"
-									class="no-header-table">
+									class="no-header-table" lazy="false">
 									<f:facet name="header">
 										<div class="flex justify-content-between align-items-center">
 											<p:commandButton icon="pi pi-angle-double-left" action="#{accountView.transactionDialog.onAllTagRemove}" process="@this"

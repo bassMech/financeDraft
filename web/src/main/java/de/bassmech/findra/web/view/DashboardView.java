@@ -12,12 +12,12 @@ import org.primefaces.model.dashboard.DefaultDashboardWidget;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.faces.view.ViewScoped;
 
 @Component
-@ViewScoped
+@SessionScoped
 public class DashboardView implements Serializable {
 
     private static final long serialVersionUID = 1L;

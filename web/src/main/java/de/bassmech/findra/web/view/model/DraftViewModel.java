@@ -3,6 +3,7 @@ package de.bassmech.findra.web.view.model;
 import java.time.YearMonth;
 
 import de.bassmech.findra.model.statics.Interval;
+import de.bassmech.findra.web.util.LocalizationUtil;
 
 public class DraftViewModel extends TransactionBaseViewModel {
 	private Integer accountId;
@@ -18,6 +19,10 @@ public class DraftViewModel extends TransactionBaseViewModel {
 	@Override
 	public boolean isDraft() {
 		return true;
+	}
+	
+	public String getIntervalForDisplay() {
+		return LocalizationUtil.getTag(interval.getTagString());
 	}
 
 	public Integer getAccountId() {

@@ -45,14 +45,9 @@ public class SettingService {
 
 	@PostConstruct
 	public void init() {
-		initAll();
-//		getDbLocale();
-//		getDbCurrency();
-//		getDbLocale();
-//		getDbNumberGrouping();
-//		getDbCurrencySymbolPosition();
-
-		Locale.setDefault(dbLocale);
+//		initAll();
+//
+//		Locale.setDefault(dbLocale);
 	}
 
 	private void initAll() {

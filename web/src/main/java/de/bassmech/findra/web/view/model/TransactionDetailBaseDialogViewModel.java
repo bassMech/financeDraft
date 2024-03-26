@@ -24,7 +24,6 @@ public abstract class TransactionDetailBaseDialogViewModel implements Serializab
 	private String dialogTitle = "";
 	private boolean isDraft;
 	
-	private AccountingMonthViewModel accountingMonth;
 	private List<TagViewModel> tagsAvailable = new ArrayList<>();
 	private List<TagViewModel> tagsAssigned = new ArrayList<>();
 	
@@ -107,14 +106,6 @@ public abstract class TransactionDetailBaseDialogViewModel implements Serializab
 
 	public void setAccountId(Integer accountId) {
 		this.accountId = accountId;
-	}
-
-	public AccountingMonthViewModel getAccountingMonth() {
-		return accountingMonth;
-	}
-
-	public void setAccountingMonth(AccountingMonthViewModel accountingMonth) {
-		this.accountingMonth = accountingMonth;
 	}
 
 	public List<TagViewModel> getTagsAvailable() {

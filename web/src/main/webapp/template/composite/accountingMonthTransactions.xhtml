@@ -67,7 +67,7 @@
 		</div>
 	</div>
 
-	<p:dataTable var="transaction" value="#{accountingMonth.transactions}" rowKey="#{transaction.id}"
+	<p:dataTable var="transaction" value="#{accountingMonth.transactions}" rowKey="#{transaction.id}" lazy="false"
 		rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}" allowUnsorting="true" sortMode="single" size="small">
 
 		<p:column style="width:1rem">

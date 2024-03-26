@@ -5,16 +5,17 @@ import java.util.Objects;
 
 public class TagViewModel {
 	private Integer id;
+	private Integer userId;
 	private String title;
 	private String description;
 	private String backgroundHexColor;
 	private String textHexColor;
 	private Instant deletedAt;
-	
+
 	public boolean isDeleted() {
 		return deletedAt != null;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -54,13 +55,21 @@ public class TagViewModel {
 	public void setTextHexColor(String textHexColor) {
 		this.textHexColor = textHexColor;
 	}
-	
+
 	public Instant getDeletedAt() {
 		return deletedAt;
 	}
 
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	@Override

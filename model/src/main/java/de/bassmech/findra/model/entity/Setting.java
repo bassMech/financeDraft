@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +23,10 @@ public class Setting {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@ManyToOne(targetEntity = Client.class)
+	@JoinColumn(referencedColumnName = "id", name = "client_id")
+	private Client client;
 
 	@Column(name = "code", columnDefinition = "TEXT")
 	@Convert(converter = SettingCodeConverter.class)
@@ -63,6 +69,14 @@ public class Setting {
 
 	public void setUpdateAt(Instant updateAt) {
 		this.updateAt = updateAt;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client user) {
+		this.client = user;
 	}
 
 }

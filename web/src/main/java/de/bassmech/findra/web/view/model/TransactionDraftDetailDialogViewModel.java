@@ -1,13 +1,10 @@
 package de.bassmech.findra.web.view.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.bassmech.findra.model.statics.Interval;
-import de.bassmech.findra.web.util.LocalizedMessageUtil;
+import de.bassmech.findra.web.util.LocalizationUtil;
 
 public class TransactionDraftDetailDialogViewModel extends TransactionDetailBaseDialogViewModel {
 	private static final long serialVersionUID = 1L;
@@ -26,7 +23,7 @@ public class TransactionDraftDetailDialogViewModel extends TransactionDetailBase
 		super(dialogTitle, isDraft);
 		selectableIntervals = new HashMap<>();
 		for (Interval interval : Interval.values()) {
-			selectableIntervals.put(interval.getDbValue(), LocalizedMessageUtil.getTag(interval.getTagString()));
+			selectableIntervals.put(interval.getDbValue(), LocalizationUtil.getTag(interval.getTagString()));
 		}
 	}
 

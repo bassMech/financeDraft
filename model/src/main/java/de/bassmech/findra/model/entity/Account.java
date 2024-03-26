@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -25,6 +26,10 @@ public class Account{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@ManyToOne(targetEntity = Client.class)
+	@JoinColumn(referencedColumnName = "id", name = "client_id")
+	private Client client;
 
 	@Column(name = "title", columnDefinition = "TEXT")
 	private String title;
@@ -103,6 +108,14 @@ public class Account{
 
 	public void setDrafts(List<AccountTransactionDraft> drafts) {
 		this.drafts = drafts;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client user) {
+		this.client = user;
 	}
 
 }

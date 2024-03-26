@@ -1,38 +1,29 @@
 package de.bassmech.findra.web.view;
 
 import java.io.Serializable;
-import java.time.Year;
 import java.util.ArrayList;
-import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.core.repository.TagRepository;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
-import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.service.TagService;
-import de.bassmech.findra.web.util.LocalizedMessageUtil;
-import de.bassmech.findra.web.util.ToViewModelUtil;
+import de.bassmech.findra.web.util.LocalizationUtil;
 import de.bassmech.findra.web.util.statics.FormIds;
 import de.bassmech.findra.web.util.statics.TagName;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.TagDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TagViewModel;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.bean.SessionScoped;
-import jakarta.faces.view.ViewScoped;
 
 @Component
 @SessionScoped
@@ -69,9 +60,8 @@ public class TagView implements Serializable {
 		selectableAccounts = accountService.getAccountList();
 		if (!selectableAccounts.isEmpty()) {
 			selectedAccountId = selectableAccounts.get(0).getId();
+			reloadTagsForAccountAssignment();
 		}
-
-		reloadTagsForAccountAssignment();
 	}
 	
 	private void reloadAllTags() {
@@ -105,7 +95,7 @@ public class TagView implements Serializable {
 	public void onTagEdit(int tagId) {
 		logger.debug("onTagEdit: " + tagId);
 		TagViewModel tag = tagList.stream().filter(tagX -> tagX.getId().equals(tagId)).findFirst().orElse(null);
-		tagDialog = new TagDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.TAG_EDIT.getValue()));
+		tagDialog = new TagDetailDialogViewModel(LocalizationUtil.getTag(TagName.TAG_EDIT.getValue()));
 		tagDialog.setId(tag.getId());
 		tagDialog.setTitle(tag.getTitle());
 		tagDialog.setDescription(tag.getDescription());
@@ -118,7 +108,7 @@ public class TagView implements Serializable {
 	
 	public void onTagNew() {
 		logger.debug("onTagNew");
-		tagDialog = new TagDetailDialogViewModel(LocalizedMessageUtil.getTag(TagName.TAG_NEW.getValue()));	
+		tagDialog = new TagDetailDialogViewModel(LocalizationUtil.getTag(TagName.TAG_NEW.getValue()));	
 		
 		openTagDetailDialog();
 	}
@@ -167,8 +157,8 @@ public class TagView implements Serializable {
 	public boolean isTagDialogValid() {
 		boolean isValid = true;
 		if (tagDialog.getTitle() == null || tagDialog.getTitle().isBlank()) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizedMessageUtil.getMessage("error", Locale.getDefault())
-					, LocalizedMessageUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
+					, LocalizationUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
 			isValid = false;
 		}
 
@@ -224,6 +214,14 @@ public class TagView implements Serializable {
 	
 	public static String getDefaultSwatchesHexColors() {
 		return DEFAULT_SWATCHES_HEX_COLORS;
+	}
+	
+///
+/// misc
+///
+	
+	public boolean isViewRendered() {
+		return selectedAccountId != null;
 	}
 	
 ///
