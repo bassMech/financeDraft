@@ -30,6 +30,7 @@ public class ToViewModelUtil {
 		vm.setDescription(entity.getDescription());
 		vm.setStartingYear(entity.getStartingYear());
 		vm.setDeletedAt(entity.getDeletedAt());
+		vm.setCreatedAt(entity.getCreatedAt());
 		
 		return vm;
 	}
@@ -52,6 +53,8 @@ public class ToViewModelUtil {
 		vm.setExpectedDay(entity.getExpectedDay());
 		vm.setExecutedAt(entity.getExecutedAt());
 		vm.setValue(entity.getValue());
+		vm.setCreatedAt(entity.getCreatedAt());
+		
 		if (entity.getExecutedAt() != null) {
 			vm.setDayForDisplay(String.valueOf(LocalDate.ofInstant(entity.getExecutedAt(), ZoneOffset.UTC).getDayOfMonth()));
 		} else if(entity.getExpectedDay() > 0) {
@@ -119,6 +122,7 @@ public class ToViewModelUtil {
 		vm.setBackgroundHexColor(tag.getBackgroundHexColor());
 		vm.setTextHexColor(tag.getTextHexColor());
 		vm.setDeletedAt(tag.getDeletedAt());
+		vm.setCreatedAt(tag.getCreatedAt());
 		return vm;
 	}
 	
@@ -134,6 +138,7 @@ public class ToViewModelUtil {
 		vm.setStartsAt(draft.getStartsAt());
 		vm.setEndsAt(draft.getEndsAt());
 		vm.setValue(draft.getValue());
+		vm.setCreatedAt(draft.getCreatedAt());
 		
 		for (Tag tag : draft.getTags()) {
 			vm.getTags().add(toViewModel(tag));

@@ -9,21 +9,19 @@
 		<div
 			class="col-7 col-offset-1 flex justify-content-start align-items-center">
 			<div class="header-nav">
-				<p:link outcome="/template/dashboard.xhtml"
+				<p:link outcome="/template/client/dashboard.xhtml"
 					value="#{tags['dashboard']}">
 
 				</p:link>
 			</div>
 			<div class="header-nav">
-				<p:link outcome="/template/account.xhtml"
+				<p:link outcome="/template/client/account.xhtml"
 					value="#{tags['accounts']}">
-					<!-- <f:param name="productId" value="10" /> -->
 				</p:link>
 			</div>
 			<div class="header-nav">
-				<p:link outcome="/template/tag.xhtml"
+				<p:link outcome="/template/client/tag.xhtml"
 					value="#{tags['tags']}">
-					<!-- <f:param name="productId" value="10" /> -->
 				</p:link>
 			</div>
 		</div>
@@ -31,9 +29,10 @@
 		<div
 			class="col-4 grid-nogutter flex justify-content-end align-items-center">
 			<div id="header-language-column" class="flex align-items-center">
-				<div class="header-nav">
-					<p:linkButton outcome="/template/settings.xhtml" icon="pi pi-cog">
+				<div class="header-nav flex gap-1">
+					<p:linkButton outcome="/template/client/settings.xhtml" icon="pi pi-cog">
 					</p:linkButton>
+					<p:commandButton icon="pi pi-sign-out" action="#{headerView.onLogout}"></p:commandButton>
 				</div>
 			</div>
 		</div>

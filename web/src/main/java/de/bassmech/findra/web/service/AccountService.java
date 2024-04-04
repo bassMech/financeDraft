@@ -28,6 +28,7 @@ import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountTransactionDraft;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
+import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.model.entity.TransactionBase;
 import de.bassmech.findra.model.statics.Interval;
@@ -128,7 +129,7 @@ public class AccountService {
 		return result;
 	}
 
-	public AccountViewModel saveAccount(AccountDetailDialogViewModel accountDialog) {
+	public AccountViewModel saveAccount(Client client, AccountDetailDialogViewModel accountDialog) {
 		Account account;
 		if (accountDialog.getId() == null) {
 			account = new Account();
@@ -138,6 +139,8 @@ public class AccountService {
 		account.setTitle(accountDialog.getTitle());
 		account.setDescription(accountDialog.getDescription());
 		account.setStartingYear(accountDialog.getStartingYear());
+		account.setClient(client);
+		account.setCreatedAt(Instant.now());
 		account = accountRepository.save(account);
 
 		if (accountDialog.getId() == null) {
@@ -250,6 +253,7 @@ public class AccountService {
 			}
 		} else {
 			transaction = new AccountTransaction();
+			transaction.setCreatedAt(Instant.now());
 			transaction.setAccountingMonth(newMonth);
 			valueChanged = true;
 			if (transactionDialog.isDraft()) {
@@ -439,6 +443,7 @@ public class AccountService {
 		} else {
 			draft = new AccountTransactionDraft();
 			draft.setAccount(account);
+			draft.setCreatedAt(Instant.now());
 
 		}
 		draft.setTitle(dialogVm.getTitle());

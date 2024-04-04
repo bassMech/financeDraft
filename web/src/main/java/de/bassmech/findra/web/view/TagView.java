@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.TagService;
@@ -38,6 +40,9 @@ public class TagView implements Serializable {
 
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private SessionHandler sessionHandler;
 
 	private List<TagViewModel> tagList;
 	private List<TagViewModel> notDeletedTagList;
@@ -51,10 +56,12 @@ public class TagView implements Serializable {
 	private TagDetailDialogViewModel tagDialog = new TagDetailDialogViewModel("");
 	
 	private boolean showDeletedTags = false;
+	private Client client;
 
 	@PostConstruct
 	@DependsOn(value = { "TagService", "AccountService" })
 	public void init() {
+		client = sessionHandler.getLoggedInClientWithSessionCheck();
 		reloadAllTags();
 
 		selectableAccounts = accountService.getAccountList();
@@ -157,8 +164,8 @@ public class TagView implements Serializable {
 	public boolean isTagDialogValid() {
 		boolean isValid = true;
 		if (tagDialog.getTitle() == null || tagDialog.getTitle().isBlank()) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-					, LocalizationUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
+					, "error.title.must.not.be.empty");
 			isValid = false;
 		}
 
@@ -169,7 +176,7 @@ public class TagView implements Serializable {
 		logger.debug("closeDialogAndSaveTag");
 		
 		if (isTagDialogValid()) {
-			tagService.saveTag(tagDialog);
+			tagService.saveTag(client, tagDialog);
 			reloadAllTags();
 			reloadTagsForAccountAssignment();
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());

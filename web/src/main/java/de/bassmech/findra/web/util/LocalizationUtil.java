@@ -19,12 +19,16 @@ public class LocalizationUtil {
 		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, null);
 	}
 	
+	public static String getMessage(String key, Object... params) {
+		return getMessage(key, Locale.getDefault(), params);
+	}
+	
 	public static String getMessage(String key, Locale locale, Object... params) {
 		return getFromBundle( ResourceBundle.getBundle(Statics.MESSAGES_BUNDLE_PATH, locale), key, locale, params);
 	}
 
 	public static String getTag(String key) {
-		return getFromBundle( ResourceBundle.getBundle(Statics.TAGS_BUNDLE_PATH, Locale.getDefault()), key, Locale.getDefault(), null);
+		return getTag(key, Locale.getDefault());
 	}
 	
 	public static String getTag(String key, Locale locale) {

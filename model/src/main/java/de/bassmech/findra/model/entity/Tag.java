@@ -34,6 +34,9 @@ public class Tag {
 	@Column(name = "text_hex_color", columnDefinition = "String")
 	private String textHexColor;
 	
+	@Column(name = "created_at", columnDefinition = "Integer")
+	private Instant createdAt;
+	
 	@Column(name = "deleted_at", columnDefinition = "Integer")
 	private Instant deletedAt;
 
@@ -91,6 +94,14 @@ public class Tag {
 
 	public void setClient(Client user) {
 		this.client = user;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 
 }

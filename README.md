@@ -2,8 +2,8 @@
 
 ToDo
 - important!
-	- on transaction save, rebuild month and year transaction sums
 	- accountingyears move to service
+	- error code revamp -> add display message to enum
 - Account
 	- continue draft
 		- set by interval condition usage
@@ -22,8 +22,19 @@ ToDo
 - test
 	- as SQL
 	- data starting from last month 
+-db
+	- 
+- settings
+	- add password change
+-Git 
+	- never check in databases
+- Checks
+	- for imports
+	- for Inject annotations
 - Misc
 	- Multitenancy 
+		- transactional still needed ?
+		- public language selection
 		- for setting
 		- for account
 		- for tag
@@ -33,6 +44,11 @@ ToDo
 	- check tag usage before delete
 	- hotkeys
 	- importer ?
+	- check web.xml still needed
+	- client from baseView extension?
+	- check existing account on creation attempt
 
+- BUGS
+	- Firefox: Color picker slider resets on change
 
 

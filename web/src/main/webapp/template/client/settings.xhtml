@@ -1,0 +1,86 @@
+<ui:composition template="/WEB-INF/layout.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="metadata">
+		<title>#{tags['settings']}</title>
+		<f:metadata>
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:outputStylesheet name="settings.css" library="style" />
+		<h1 class="flex justify-content-center">#{tags['settings']}</h1>
+
+		<div class="grid">
+			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
+				<h:outputLabel class="flex align-items-center" value="#{tags['language']}" />
+			</div>
+			<div class="col-2 flex justify-content-start align-content-center">
+				<p:selectOneMenu id="languageSelect" value="#{settingsView.selectedLanguage}">
+					<p:ajax></p:ajax>
+					<f:selectItems value="#{settingsView.selectableLanguages.entrySet()}" var="language" itemLabel="#{language.value}"
+						itemValue="#{language.key}" />
+				</p:selectOneMenu>
+			</div>
+		</div>
+
+		<div class="grid">
+			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
+				<h:outputLabel class="flex align-items-center" value="#{tags['date.format']}" />
+			</div>
+			<div class="col-2 flex justify-content-start align-content-center">
+				<p:selectOneMenu id="dateFormatSelection" value="#{settingsView.selectedDateFormat}">
+					<p:ajax />
+					<f:selectItems value="#{settingsView.selectableDateFormats.entrySet()}" var="dateFormat" itemLabel="#{dateFormat.value}"
+						itemValue="#{dateFormat.key}" />
+				</p:selectOneMenu>
+			</div>
+		</div>
+
+		<div class="grid">
+			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
+				<h:outputLabel class="flex align-items-center" value="#{tags['number.grouping']}" />
+			</div>
+			<div class="col-2 flex justify-content-start align-content-center">
+				<p:selectOneMenu id="numberGroupingSelection" value="#{settingsView.selectedNumberGrouping}">
+					<p:ajax listener="#{settingsView.updateCurrencyFormatPreview()}" update="currencyPreview" />
+					<f:selectItems value="#{settingsView.selectableNumberGroupings.entrySet()}" var="numberGrouping" itemLabel="#{numberGrouping.value}"
+						itemValue="#{numberGrouping.key}" />
+				</p:selectOneMenu>
+			</div>
+		</div>
+
+		<div class="grid">
+			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
+				<h:outputLabel class="flex align-items-center" value="#{tags['currency']}" />
+			</div>
+			<div class="col-2 flex justify-content-start align-items-center gap-1">
+				<p:selectOneMenu id="currencySelection" value="#{settingsView.selectedCurrency}">
+					<p:ajax listener="#{settingsView.updateCurrencyFormatPreview()}" update="currencyPreview" />
+					<f:selectItems value="#{settingsView.selectableCurrencies.entrySet()}" var="currency" itemLabel="#{currency.value}"
+						itemValue="#{currency.key}" />
+				</p:selectOneMenu>
+				<h:outputLabel class="flex align-items-center" value="#{tags['symbol.position']}" />
+				<p:toggleSwitch value="#{settingsView.selectedCurrencySymbolPositionToggle}">
+					<p:ajax listener="#{settingsView.updateCurrencyFormatPreview()}" update="currencyPreview" />
+				</p:toggleSwitch>
+
+			</div>
+		</div>
+		<div class="grid">
+			<div class="col-2 col-offset-4 flex justify-content-end align-content-center">
+				<h:outputLabel class="flex align-items-center" value="#{tags['preview']}" />
+			</div>
+			<div class="col-2 flex justify-content-start align-items-center">
+				<h:outputLabel id="currencyPreview" class="flex align-items-center" value="#{settingsView.currencyPreview}" />
+			</div>
+		</div>
+
+		<div class="grid">
+			<div class="col-2 col-offset-6 flex justify-content-start">
+				<p:commandButton value="Save" action="#{settingsView.saveSettings()}" process="@this" update=":mainForm"></p:commandButton>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>

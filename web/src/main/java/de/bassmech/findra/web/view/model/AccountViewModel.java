@@ -6,11 +6,14 @@ import java.util.Objects;
 
 public class AccountViewModel implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Integer id;
 	private Integer userId;
 	private String title;
 	private String description;
 	private int startingYear;
+	private Instant createdAt;
 	private Instant deletedAt;
 
 	public Integer getId() {
@@ -59,6 +62,14 @@ public class AccountViewModel implements Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	@Override

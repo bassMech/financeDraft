@@ -1,9 +1,6 @@
 package de.bassmech.findra.web.view;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.Year;
@@ -21,10 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.util.FormatterUtil;
 import jakarta.annotation.PostConstruct;
-import jakarta.faces.bean.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 
 @Component
 @SessionScoped
@@ -48,18 +47,24 @@ public class SettingsView {
 
 	private String currencyPreview;
 	private boolean selectedCurrencySymbolPositionToggle;
+	
+	private Client client;
 
 	@Autowired
 	private SettingService settingsService;
+	
+	@Autowired
+	SessionHandler sessionHandler;
 
 	@PostConstruct
 	@DependsOn("SettingService")
 	public void init() {
-		selectedLanguage = settingsService.getDbLocale().getLanguage();
-		selectedCurrency = settingsService.getDbCurrency().getCurrencyCode();
-		selectedDateFormat = settingsService.getDbDateFormat();
-		selectedNumberGrouping = settingsService.getDbNumberGrouping();
-		selectedCurrencySymbolPositionToggle = settingsService.getDbCurrencySymbolPosition() != "p";
+		client = sessionHandler.getLoggedInClientWithSessionCheck();
+		selectedLanguage = settingsService.getDbLocale(client).getLanguage();
+		selectedCurrency = settingsService.getDbCurrency(client).getCurrencyCode();
+		selectedDateFormat = settingsService.getDbDateFormat(client);
+		selectedNumberGrouping = settingsService.getDbNumberGrouping(client);
+		selectedCurrencySymbolPositionToggle = settingsService.getDbCurrencySymbolPosition(client) != "p";
 
 		for (Locale lang : SettingService.LANGUAGES) {
 			selectableLanguages.put(lang.getLanguage(), lang.getDisplayLanguage(lang));
@@ -87,11 +92,11 @@ public class SettingsView {
 
 	public void saveSettings() {
 		logger.debug("Saving settings");
-		settingsService.saveDbCurrency(Currency.getInstance(selectedCurrency));
-		settingsService.saveDbLocale(Locale.forLanguageTag(selectedLanguage));
-		settingsService.saveDbDateFormat(selectedDateFormat);
-		settingsService.saveDbNumberGrouping(selectedNumberGrouping);
-		settingsService.saveDbCurrencySymbolPosition(selectedCurrencySymbolPositionToggle ? "s" : "p");
+		settingsService.saveDbCurrency(client, Currency.getInstance(selectedCurrency));
+		settingsService.saveDbLocale(client, Locale.forLanguageTag(selectedLanguage));
+		settingsService.saveDbDateFormat(client, selectedDateFormat);
+		settingsService.saveDbNumberGrouping(client, selectedNumberGrouping);
+		settingsService.saveDbCurrencySymbolPosition(client, selectedCurrencySymbolPositionToggle ? "s" : "p");
 	}
 
 	public void updateCurrencyFormatPreview() {

@@ -17,6 +17,7 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	protected String dayForDisplay;
 	protected BigDecimal value;
 	protected Instant executedAt;
+	protected Instant createdAt;
 	
 	protected List<TagViewModel> tags = new ArrayList<>();
 			
@@ -89,6 +90,14 @@ public abstract class TransactionBaseViewModel implements Serializable {
 
 	public void setExecutedAt(Instant executedAt) {
 		this.executedAt = executedAt;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 
 }

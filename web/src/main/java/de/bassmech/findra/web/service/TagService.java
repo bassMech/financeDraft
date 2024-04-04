@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.TagRepository;
 import de.bassmech.findra.model.entity.Account;
+import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.web.util.ToViewModelUtil;
 import de.bassmech.findra.web.view.model.TagDetailDialogViewModel;
@@ -88,18 +89,21 @@ public class TagService {
 		tagsByAccountId.put(accountId, ToViewModelUtil.toTagViewModelList(account.getTags()));
 	}
 
-	public void saveTag(TagDetailDialogViewModel tagDialog) {
+	public void saveTag(Client client, TagDetailDialogViewModel tagDialog) {
 		Tag tag = null;
 		if (tagDialog.getId() == null) {
 			tag = new Tag();
+			tag.setCreatedAt(Instant.now());
 		} else {
 			tag = tagRespoRepository.findById(tagDialog.getId()).orElse(null);
 		}
 
 		tag.setTitle(tagDialog.getTitle());
+		tag.setClient(client);
 		tag.setDescription(tagDialog.getDescription());
 		tag.setTextHexColor(tagDialog.getTextHexColor());
 		tag.setBackgroundHexColor(tagDialog.getBackgroundHexColor());
+		
 		tag = tagRespoRepository.save(tag);
 
 		if (tagDialog.getId() != null) {

@@ -1,6 +1,7 @@
 package de.bassmech.findra.model.entity;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public abstract class TransactionBase {
 		
 	@Column(name = "expected_day", columnDefinition = "INTEGER")
 	private int expectedDay;
+	
+	@Column(name = "created_at", columnDefinition = "Integer")
+	private Instant createdAt;
 	
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
@@ -86,6 +90,14 @@ public abstract class TransactionBase {
 
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 	

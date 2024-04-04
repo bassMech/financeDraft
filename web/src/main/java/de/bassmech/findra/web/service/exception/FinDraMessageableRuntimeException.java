@@ -11,7 +11,7 @@ public class FinDraMessageableRuntimeException extends FinDraRuntimeException {
 	
 	public FinDraMessageableRuntimeException(String message) {
 		super(message);
-		FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
+		FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR
 				, LocalizationUtil.getMessage("error.occured", Locale.getDefault()));
 	}
 }

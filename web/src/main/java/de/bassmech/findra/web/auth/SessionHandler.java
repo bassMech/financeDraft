@@ -2,34 +2,37 @@ package de.bassmech.findra.web.auth;
 
 import java.time.Instant;
 
-import javax.security.auth.login.LoginException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.web.service.AccountService;
-import de.bassmech.findra.web.util.FacesMessageUtil;
+import de.bassmech.findra.core.repository.ClientRepository;
+import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.web.handler.FacesMessageHandler;
+import de.bassmech.findra.web.service.exception.ClientFetchException;
+import de.bassmech.findra.web.service.exception.LoginException;
+import de.bassmech.findra.web.util.CryptUtil;
+import de.bassmech.findra.web.util.statics.ClientFetchErrorCode;
+import de.bassmech.findra.web.util.statics.LoginErrorCode;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
-@Named
+@Component
 @SessionScoped
 public class SessionHandler {
 	protected Logger logger = LoggerFactory.getLogger(SessionHandler.class);
 
-	@Inject
-	MemberRepository memberRepository;
-
-	@Inject
+	@Autowired
+	ClientRepository clientRepository;
+	
+	@Autowired
 	private HttpSession session;
 
-	private String memberUuid;
+	private String clientUuid;
 
 	private String logoutMessage;
 
@@ -39,27 +42,27 @@ public class SessionHandler {
 	}
 
 	@Transactional
-	public boolean create(String mail, String passwordPlain) throws LoginException {
-		Member tempMember = memberRepository.findByMail(mail);
-		if (tempMember == null) {
-			throw new LoginException(LoginErrorCode.LOGIN_001, "Mail: %s", mail);
+	public boolean create(String name, String passwordPlain) throws LoginException {
+		Client loginClient = clientRepository.findByName(name);
+		if (loginClient == null) {
+			throw new LoginException(String.format(LoginErrorCode.LOGIN_001.getLoggerMessage(), name));
 		}
 
-		if (tempMember.getDeleted() != null || tempMember.getSuspended() != null) {
-			throw new LoginException(LoginErrorCode.LOGIN_005, "Member: %s", tempMember.getUuid());
+		if (loginClient.getDeletedAt() != null ) {
+			throw new LoginException(String.format(LoginErrorCode.LOGIN_005.getLoggerMessage(), loginClient.getUuid()));
 		}
 
-		boolean loginCorrect = CryptUtil.areCredentialsCorrect(tempMember, passwordPlain);
+		boolean loginCorrect = CryptUtil.areCredentialsCorrect(loginClient, passwordPlain);
 		Instant now = Instant.now();
 
-		memberUuid = tempMember.getUuid();
-		tempMember.setLastLogin(now);
-		tempMember.setLastUpdate(now);
-		tempMember.setSession(session.getId());
+		clientUuid = loginClient.getUuid();
+		loginClient.setLastLogin(now);
+		loginClient.setUpdatedAt(now);
+		loginClient.setSession(session.getId());
 
-		session.setAttribute("memberUuid", tempMember.getUuid());
+		session.setAttribute("clientUuid", clientUuid);
 
-		memberRepository.persistAndFlush(tempMember);
+		clientRepository.saveAndFlush(loginClient);
 		// timeOut = now.plus(timeoutValue, ChronoUnit.MINUTES);
 
 		logger.debug("Login successful");
@@ -67,63 +70,54 @@ public class SessionHandler {
 	}
 
 	@Transactional
-	public Member getLoggedInMemberWithSessionCheck() throws MemberFetchException {
-		Member member = memberRepository.findByUuid(memberUuid);
-		if (member == null) {
-			throw new MemberFetchException(MemberFetchErrorCode.MEMBER_001, "uuid", memberUuid);
+	public Client getLoggedInClientWithSessionCheck() throws ClientFetchException {
+		Client client = clientRepository.findByUuid(clientUuid);
+		if (client == null) {
+			throw new ClientFetchException(String.format(ClientFetchErrorCode.CLIENT_001.getLoggerMessage(), clientUuid) );
 		}
 
-		// TODO unify member check
-		if (!member.getSession().equals(session.getId())) {
-			throw new MemberFetchException(MemberFetchErrorCode.MEMBER_002, "uuid", memberUuid);
+		// TODO unify client check
+		if (!client.getSession().equals(session.getId())) {
+			throw new ClientFetchException(String.format(ClientFetchErrorCode.CLIENT_002.getLoggerMessage(), clientUuid) );
 		}
 		
-		if (!member.getSession().equals(session.getId())) {
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error",
-					"error.member.not.found.or.wrong.password", facesContext.getViewRoot().getLocale()));
+		if (!client.getSession().equals(session.getId())) {
+			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, "error.client.not.found.or.wrong.password");
+			
+//			FacesContext facesContext = FacesContext.getCurrentInstance();
+//			facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error",
+//					"error.client.not.found.or.wrong.password", facesContext.getViewRoot().getLocale()));
 			destroy();
-			return member;
+			return client;
 		}
 
-		return member;
+		return client;
 
 	}
 
-	public boolean isLoggedIn() throws MemberFetchException {
-		if (memberUuid == null) {
+	public boolean isLoggedIn() throws ClientFetchException {
+		if (clientUuid == null) {
 			return false;
 		}
-		return getLoggedInMemberWithSessionCheck() != null;
-
-//		if (timeOut.isAfter(Instant.now())) {
-//			Member tempMember = memberRepository.findByUuid(memberUuid);
-//			if (!tempMember.getSession().equals(session.getId())) {
-////				refreshTimeout();
-////			} else {
-//				destroy();
-//				return false;
-//			}
-//		}
-
+		return getLoggedInClientWithSessionCheck() != null;
 	}
 
 //	private void refreshTimeout() {
 //		Instant now = Instant.now();
 //		timeOut = now.plus(timeoutValue, ChronoUnit.MINUTES);
-//		member.setLastUpdate(now);
-//		memberRepository.persistAndFlush(member);
+//		client.setLastUpdate(now);
+//		clientRepository.persistAndFlush(client);
 //	}
 
 	@Transactional
 	public void destroy() {
-		if (memberUuid != null) {
-			Member tempMember = memberRepository.findByUuid(memberUuid);
-			tempMember.setLastUpdate(Instant.now());
-			tempMember.setSession(null);
-			// memberRepository.persistAndFlush(tempMember);
+		if (clientUuid != null) {
+			Client tempClient = clientRepository.findByUuid(clientUuid);
+			tempClient.setUpdatedAt(Instant.now());
+			tempClient.setSession(null);
+//			
 		}
-		memberUuid = null;
+		clientUuid = null;
 		logoutMessage = null;
 		session.invalidate();
 		logger.debug("Session destroyed");
@@ -143,8 +137,8 @@ public class SessionHandler {
 		this.logoutMessage = logoutMessage;
 	}
 
-	public String getMemberUuid() {
-		return memberUuid;
+	public String geClientUuid() {
+		return clientUuid;
 	}
 
 }

@@ -1,15 +1,17 @@
-package de.bassmech.findra.web.auth;
+package de.bassmech.findra.web.view;
 
 
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.security.auth.login.LoginException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.web.util.FacesMessageUtil;
+import de.bassmech.findra.web.auth.SessionHandler;
+import de.bassmech.findra.web.handler.FacesMessageHandler;
+import de.bassmech.findra.web.service.exception.LoginException;
+import de.bassmech.findra.web.util.statics.LoginErrorCode;
 import de.bassmech.findra.web.util.statics.UrlFilterType;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
@@ -17,12 +19,11 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
-@Named
+@Component
 @SessionScoped
 public class LoginView implements Serializable {
-	private String mail;
+	private String name;
 	private String password;
 	
 	protected Logger logger = LoggerFactory.getLogger(LoginView.class);
@@ -32,7 +33,7 @@ public class LoginView implements Serializable {
 		
 	@PostConstruct
 	public void init() {
-		mail = "";
+		name = "";
 		password = "";
 	}
 	
@@ -40,35 +41,33 @@ public class LoginView implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
 		
-
 		try {
-			if (sessionHandler.create(mail, password)) {
+			if (sessionHandler.create(name, password)) {
 				try {
 					externalContext.redirect(externalContext.getRequestContextPath() + UrlFilterType.DASHBOARD.getFullUrl());
 				} catch (IOException e) {
 					//TODO errorpage
-					logger.error(e);
+					logger.error("error on redirection", e);
 				}
 				return;
 			} 
 			
 		} catch (LoginException e) {
-			logger.error(e);
+			logger.error("error on login", e);
+			
 		}
+		FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR, "error.client.not.found.or.wrong.password");
 		
-		facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error", "error.member.not.found.or.wrong.password"
-				, facesContext.getViewRoot().getLocale()));
-		
-		
+//		facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error", "error.client.not.found.or.wrong.password"
+//				, facesContext.getViewRoot().getLocale()));
 	}
 
-
-	public String getMail() {
-		return mail;
+	public String getName() {
+		return name;
 	}
 
-	public void setMail(String identifier) {
-		this.mail = identifier;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPassword() {
@@ -78,6 +77,5 @@ public class LoginView implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
 	
 }

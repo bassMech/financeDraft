@@ -7,6 +7,7 @@ import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.model.statics.ExpectedDay;
+import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
 import de.bassmech.findra.web.service.ConfigurationService;
@@ -68,8 +71,12 @@ public class AccountView {
 	private TagService tagService;
 	
 	@Autowired
+	private SessionHandler sessionHandler;
+	
+	@Autowired
 	private ConfigurationService configurationService;
-		
+
+	private Client client;
 	private List<AccountViewModel> selectableAccounts = new ArrayList<>();
 	private AccountViewModel selectedAccount;
 	private Integer selectedAccountId;
@@ -101,6 +108,8 @@ public class AccountView {
 	@DependsOn(value = { "SettingService", "AccountService"})
 	public void init() {
 		logger.debug("init called");
+		
+		client = sessionHandler.getLoggedInClientWithSessionCheck();
 		
 		reloadSelectableAccounts();
 
@@ -172,8 +181,8 @@ public class AccountView {
 	public void onNextYear() {
 		logger.debug("onNextYear");
 		if (selectedYear + 1 > yearRange[1]) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizationUtil.getMessage("hint", Locale.getDefault())
-					, LocalizationUtil.getMessage("year.max.reached", Locale.getDefault(), yearRange[1]));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
+					, "year.max.reached", yearRange[1]);
 			return;
 		}
 		selectedYear++;
@@ -183,8 +192,8 @@ public class AccountView {
 	public void onPreviousYear() {
 		logger.debug("onPreviousYear");
 		if (selectedYear - 1 < yearRange[0]) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizationUtil.getMessage("hint", Locale.getDefault())
-					, LocalizationUtil.getMessage("year.min.reached", Locale.getDefault(), yearRange[0]));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
+					, "year.min.reached", yearRange[0]);
 			return;
 		}
 		selectedYear--;
@@ -206,8 +215,8 @@ public class AccountView {
 		if (selectedMonth == 12) {
 			if (selectedYear >= yearRange[1]) {
 				logger.debug("Max year reached");
-				FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizationUtil.getMessage("hint", Locale.getDefault())
-						, LocalizationUtil.getMessage("year.max.reached", Locale.getDefault(), yearRange[1]));
+				FacesMessageHandler.addMessageFromKey (FacesMessage.SEVERITY_WARN
+						, "year.max.reached" , yearRange[1]);
 				return;
 			}
 			selectedYear++;
@@ -223,8 +232,8 @@ public class AccountView {
 		if (selectedMonth == 1) {
 			if (selectedYear <= yearRange[0]) {
 				logger.debug("Min year reached");
-				FacesMessageHandler.addMessage(FacesMessage.SEVERITY_WARN, LocalizationUtil.getMessage("hint", Locale.getDefault())
-						, LocalizationUtil.getMessage("year.min.reached", Locale.getDefault(), yearRange[0]));
+				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
+						, "year.min.reached", yearRange[0]);
 				return;
 			}
 			selectedYear--;
@@ -304,13 +313,13 @@ public class AccountView {
 	private boolean isAccountDialogValid() {
 		boolean isValid = true;
 		if (accountDialog.getTitle() == null || accountDialog.getTitle().isBlank()) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-					, LocalizationUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
+			FacesMessageHandler.addMessageFromKey (FacesMessage.SEVERITY_ERROR
+					, "error.title.must.not.be.empty");
 			isValid = false;
 		}
 		if (accountDialog.getStartingYear() < yearRange[0] || accountDialog.getStartingYear() > yearRange[1]) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-					, LocalizationUtil.getMessage("error.starting.year.must.be.in.range", Locale.getDefault(), yearRange[0], yearRange[1]));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
+					, "error.starting.year.must.be.in.range", yearRange[0], yearRange[1]);
 			isValid = false;
 		}
 		return isValid;
@@ -320,7 +329,7 @@ public class AccountView {
 		logger.debug("Saving account");
 		
 		if (isAccountDialogValid()) {
-			AccountViewModel newAccount = accountService.saveAccount(accountDialog);
+			AccountViewModel newAccount = accountService.saveAccount(client, accountDialog);
 			reloadSelectableAccounts();
 			selectedAccount = selectableAccounts.stream().filter(acc -> acc.getId().equals(newAccount.getId())).findFirst().orElse(null);
 			selectedAccountId = selectedAccount.getId();
@@ -417,8 +426,8 @@ public class AccountView {
 	private boolean isTransactionDialogValid() {
 		boolean isValid = true;
 		if (transactionDialog.getTitle() == null || transactionDialog.getTitle().isBlank()) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-					, LocalizationUtil.getMessage("error.title.must.not.be.empty", Locale.getDefault()));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
+					, "error.title.must.not.be.empty");
 			isValid = false;
 		}
 		
@@ -426,16 +435,16 @@ public class AccountView {
 			TransactionDraftDetailDialogViewModel draftDialog = (TransactionDraftDetailDialogViewModel) transactionDialog;
 			if (draftDialog.getSelectedEndMonth() != null && draftDialog.getSelectedEndYear() == null
 					|| draftDialog.getSelectedEndMonth() == null && draftDialog.getSelectedEndYear() != null) {
-				FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-						, LocalizationUtil.getMessage("error.draft.end.year.month.need.both", Locale.getDefault()));
+				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
+						, "error.draft.end.year.month.need.both");
 				isValid = false;
 			}
 			if (draftDialog.getSelectedEndMonth() != null && draftDialog.getSelectedEndYear() != null) {
 				YearMonth startYear = YearMonth.of(draftDialog.getSelectedStartYear(), draftDialog.getSelectedStartMonth());
 				YearMonth endYear = YearMonth.of(draftDialog.getSelectedEndYear(), draftDialog.getSelectedEndMonth());
 				if (endYear.isBefore(startYear)) {
-					FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-							, LocalizationUtil.getMessage("error.draft.date.end.needs.after.date.start", Locale.getDefault()));
+					FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR
+							, "error.draft.date.end.needs.after.date.start");
 					isValid = false;
 				}
 			}
@@ -532,8 +541,8 @@ public class AccountView {
 	public boolean isTransactionBaseExecutedDialogValid() {
 		boolean isValid = true;
 		if (transactionExecutedDialog.getExecutedAt() == null) {
-			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, LocalizationUtil.getMessage("error", Locale.getDefault())
-					, LocalizationUtil.getMessage("error.date.must.not.be.empty", Locale.getDefault()));
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
+					, "error.date.must.not.be.empty");
 			isValid = false;
 		}
 
@@ -584,23 +593,27 @@ public class AccountView {
 	}
 	
 	public String getCurrencyFormatted(BigDecimal value) {
-		return FormatterUtil.getCurrencyNumberFormattedWithSymbol(value, settingService.getDbNumberGrouping(), settingService.getDbCurrency().getSymbol(), settingService.getDbCurrencySymbolPosition() == "p" );
+		return FormatterUtil.getCurrencyNumberFormattedWithSymbol(value, settingService.getDbNumberGrouping(client), settingService.getDbCurrency(client).getSymbol(), settingService.getDbCurrencySymbolPosition(client) == "p" );
 	}
 	
 	public String getDateFormat() {
-		return settingService.getDbDateFormat();
+		return settingService.getDbDateFormat(client);
 	}
 	
 	public String getCurrencySymbolPosition() {
-		return settingService.getDbCurrencySymbolPosition();
+		return settingService.getDbCurrencySymbolPosition(client);
+	}
+	
+	public Currency getCurrency() {
+		return settingService.getDbCurrency(client);
 	}
 	
 	public String getNumberThousandSepartor() {
-		return settingService.getDbNumberThousandSepartor();
+		return settingService.getDbNumberThousandSepartor(client);
 	}
 	
 	public String getNumberDigitSeparator() {
-		return settingService.getDbNumberDigitSeparator();
+		return settingService.getDbNumberDigitSeparator(client);
 	}
 
 ///
@@ -662,10 +675,6 @@ public class AccountView {
 
 	public void setSelectedTransaction(TransactionBaseViewModel selectedTransaction) {
 		this.selectedTransaction = selectedTransaction;
-	}
-
-	public SettingService getSettingService() {
-		return settingService;
 	}
 
 	public Integer getSelectedAccountId() {

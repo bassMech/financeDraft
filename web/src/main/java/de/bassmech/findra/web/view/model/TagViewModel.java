@@ -11,6 +11,7 @@ public class TagViewModel {
 	private String backgroundHexColor;
 	private String textHexColor;
 	private Instant deletedAt;
+	private Instant createdAt;
 
 	public boolean isDeleted() {
 		return deletedAt != null;
@@ -70,6 +71,14 @@ public class TagViewModel {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	@Override

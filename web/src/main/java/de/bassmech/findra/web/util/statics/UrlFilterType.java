@@ -5,11 +5,11 @@ public enum UrlFilterType {
 	LOGIN(UrlFilterType.PUBLIC, "login.xhtml"),
 	LOGGED_OUT(UrlFilterType.PUBLIC, "loggedOut.xhtml"),
 	
-	DASHBOARD(UrlFilterType.MEMBER, "dashboard.xhtml"),
+	DASHBOARD(UrlFilterType.CLIENT, "dashboard.xhtml"),
 	;
 	
 	private static final String PUBLIC = "/template/public/";
-	private static final String MEMBER = "/template/member/";
+	private static final String CLIENT = "/template/client/";
 	
 	private String permission;
 	private String url;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+<f:view locale="#{headerView.getCurrentLocale()}">
+	<ui:insert name="metadata" />
+
+	<h:head>
+		<h:outputStylesheet name="primeflex/node_modules/primeflex/primeflex.css" library="style" />
+		<h:outputStylesheet name="header.css" library="style" />
+		<h:outputStylesheet name="content.css" library="style" />
+		<h:outputStylesheet name="footer.css" library="style" />
+	</h:head>
+
+
+	<h:form id="mainForm">
+		<p:growl id="growlMessage" showDetail="true" />
+		<div id="wrapper">
+			<div id="header">
+				<ui:insert name="header">
+					<ui:include src="/WEB-INF/headerPublic.xhtml" />
+				</ui:insert>
+			</div>
+
+			<div id="content">
+				<ui:insert name="content">
+					<ui:include src="/WEB-INF/content.xhtml" />
+				</ui:insert>
+			</div>
+
+			<div id="footer">
+				<ui:insert name="footer">
+					<ui:include src="/WEB-INF/footer.xhtml" />
+				</ui:insert>
+			</div>
+		</div>
+	</h:form>
+</f:view>
+</html>

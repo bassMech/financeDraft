@@ -40,6 +40,10 @@ public class Account{
 	@Column(name = "starting_year", columnDefinition = "INTEGER")
 	private Integer startingYear;
 	
+	@Column(name = "created_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
+	private Instant createdAt;
+	
 	@Column(name = "deleted_at", columnDefinition = "Integer")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant deletedAt;
@@ -116,6 +120,14 @@ public class Account{
 
 	public void setClient(Client user) {
 		this.client = user;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 
 }

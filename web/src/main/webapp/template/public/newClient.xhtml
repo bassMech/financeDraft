@@ -1,0 +1,50 @@
+
+<ui:composition template="/WEB-INF/layoutPublic.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="metadata">
+		<f:metadata>
+
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+		<!--  <h:outputStylesheet name="login.css" library="style" />-->
+		<div class="card">
+			<div class="flex justify-content-center align-items-center view-height-wrapper">
+				<div id="input-wrapper" class="vertical-align-middle">
+					<div>
+						<h2>#{tags['client.new.create']}</h2>
+					</div>
+					<div class="field">
+						<p:outputLabel for="identifier" styleClass="block">${tags['name']}</p:outputLabel>
+						<p:inputText id="identifier" styleClass="block"
+							value="#{newClientView.name}" />
+					</div>
+					<div class="field">
+						<p:outputLabel for="password" styleClass="block">${tags['password']}</p:outputLabel>
+						<p:password id="password" styleClass="block"
+							value="#{newClientView.password}" />
+					</div>
+					<div class="field">
+						<p:outputLabel for="password_repeat" styleClass="block">${tags['password.repeat']}</p:outputLabel>
+						<p:password id="password_repeat" styleClass="block"
+							value="#{newClientView.passwordRepeat}" />
+					</div>
+					<div>
+						<p:commandButton update="@parent" value="#{tags['create']}"
+							action="#{newClientView.onCreate}" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ui:include
+			src="/template/public/dialog/showRecoveryCodeDialog.xhtml">
+		</ui:include>
+	</ui:define>
+</ui:composition>

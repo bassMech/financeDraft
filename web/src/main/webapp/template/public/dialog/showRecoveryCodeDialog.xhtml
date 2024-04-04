@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:dialog id="showRecoveryCodeDialog" header="#{tags['hint']}" width="auto" responsive="true" closable="false"
+		widgetVar="showRecoveryCodeDialog" showEffect="fade">
+		<p:panel>
+			<div class="grid">
+				<div class="col-12">
+					<h:outputLabel style="font-size:1.5em">#{messages['note.recovery.code.part.one']}</h:outputLabel>
+					<br/>
+					<h:outputLabel style="font-size:1.5em">#{messages['note.recovery.code.part.two']}</h:outputLabel>
+				</div>
+				<div class="col-12 flex justify-content-center">
+					<h:outputLabel style="font-size:2em">#{newClientView.recoveryCode}</h:outputLabel>
+				</div>
+			</div>
+		</p:panel>
+		<f:facet name="footer">
+			<div class="flex justify-content-end">
+				<p:commandButton icon="pi pi-save" value="#{tags['close']}" actionListener="#{newClientView.closeDialogAndRedirectToLogin}"
+					process="@this" styleClass="ui-button-success"></p:commandButton>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:composition>

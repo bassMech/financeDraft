@@ -2,7 +2,9 @@ package de.bassmech.findra.model.entity;
 
 import java.time.Instant;
 
+import de.bassmech.findra.model.converter.NumberToInstantConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,17 +19,36 @@ public class Client {
 	private Integer id;
 
 	@Column(name = "name", columnDefinition = "String")
-	private String title;
+	private String name;
 
 	@Column(name = "password_hash", columnDefinition = "String")
 	private String passwordHash;
 
+	@Column(name = "uuid", columnDefinition = "text")
+	private String uuid;
+	
+	@Column(name = "session", columnDefinition = "text")
+	private String session;
+
 	@Column(name = "recovery_code", columnDefinition = "String")
 	private String recoveryCode;
 	
+	@Column(name = "created_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
+	private Instant createdAt;
+	
 	@Column(name = "updated_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
 	private Instant updatedAt;
+	
+	@Column(name = "deleted_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
+	private Instant deletedAt;
 
+	@Column(name = "last_login_at", columnDefinition = "Integer")
+	@Convert(converter=NumberToInstantConverter.class)
+	private Instant lastLogin;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -36,12 +57,12 @@ public class Client {
 		this.id = id;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPasswordHash() {
@@ -66,6 +87,46 @@ public class Client {
 
 	public void setUpdatedAt(Instant updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+
+	public String getSession() {
+		return session;
+	}
+
+	public void setSession(String session) {
+		this.session = session;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Instant getDeletedAt() {
+		return deletedAt;
+	}
+
+	public void setDeletedAt(Instant deletedAt) {
+		this.deletedAt = deletedAt;
+	}
+
+	public Instant getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Instant lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 
 }
