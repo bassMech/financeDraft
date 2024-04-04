@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.primefaces.PrimeFaces;
-import org.primefaces.model.DialogFrameworkOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Component;
 import de.bassmech.findra.core.repository.ClientRepository;
 import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
-import de.bassmech.findra.web.service.exception.ClientFetchException;
 import de.bassmech.findra.web.util.CryptUtil;
-import de.bassmech.findra.web.util.LocalizationUtil;
-import de.bassmech.findra.web.util.statics.ClientFetchErrorCode;
 import de.bassmech.findra.web.util.statics.FormIds;
 import de.bassmech.findra.web.util.statics.UrlFilterType;
 import jakarta.annotation.PostConstruct;

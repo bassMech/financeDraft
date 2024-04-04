@@ -2,7 +2,6 @@ package de.bassmech.findra.web.view.model;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.Year;
 
 public class TagDetailDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -2,7 +2,6 @@ package de.bassmech.findra.model.entity;
 
 import java.time.Instant;
 
-import de.bassmech.findra.model.converter.ConfigurationCodeConverter;
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
 import de.bassmech.findra.model.converter.SettingCodeConverter;
 import de.bassmech.findra.model.statics.SettingCode;

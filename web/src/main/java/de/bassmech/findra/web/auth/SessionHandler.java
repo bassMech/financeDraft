@@ -28,7 +28,7 @@ public class SessionHandler {
 
 	@Autowired
 	ClientRepository clientRepository;
-	
+
 	@Autowired
 	private HttpSession session;
 
@@ -48,7 +48,7 @@ public class SessionHandler {
 			throw new LoginException(String.format(LoginErrorCode.LOGIN_001.getLoggerMessage(), name));
 		}
 
-		if (loginClient.getDeletedAt() != null ) {
+		if (loginClient.getDeletedAt() != null) {
 			throw new LoginException(String.format(LoginErrorCode.LOGIN_005.getLoggerMessage(), loginClient.getUuid()));
 		}
 
@@ -73,17 +73,19 @@ public class SessionHandler {
 	public Client getLoggedInClientWithSessionCheck() throws ClientFetchException {
 		Client client = clientRepository.findByUuid(clientUuid);
 		if (client == null) {
-			throw new ClientFetchException(String.format(ClientFetchErrorCode.CLIENT_001.getLoggerMessage(), clientUuid) );
+			throw new ClientFetchException(
+					String.format(ClientFetchErrorCode.CLIENT_001.getLoggerMessage(), clientUuid));
 		}
 
 		// TODO unify client check
 		if (!client.getSession().equals(session.getId())) {
-			throw new ClientFetchException(String.format(ClientFetchErrorCode.CLIENT_002.getLoggerMessage(), clientUuid) );
+			throw new ClientFetchException(
+					String.format(ClientFetchErrorCode.CLIENT_002.getLoggerMessage(), clientUuid));
 		}
-		
+
 		if (!client.getSession().equals(session.getId())) {
 			FacesMessageHandler.addMessage(FacesMessage.SEVERITY_ERROR, "error.client.not.found.or.wrong.password");
-			
+
 //			FacesContext facesContext = FacesContext.getCurrentInstance();
 //			facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error",
 //					"error.client.not.found.or.wrong.password", facesContext.getViewRoot().getLocale()));
@@ -115,6 +117,7 @@ public class SessionHandler {
 			Client tempClient = clientRepository.findByUuid(clientUuid);
 			tempClient.setUpdatedAt(Instant.now());
 			tempClient.setSession(null);
+			clientRepository.saveAndFlush(tempClient);
 //			
 		}
 		clientUuid = null;

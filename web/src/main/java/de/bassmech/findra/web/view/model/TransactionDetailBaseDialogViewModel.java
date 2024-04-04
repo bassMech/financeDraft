@@ -2,14 +2,10 @@ package de.bassmech.findra.web.view.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public abstract class TransactionDetailBaseDialogViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;

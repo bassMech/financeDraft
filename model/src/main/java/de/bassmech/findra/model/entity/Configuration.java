@@ -1,8 +1,6 @@
 package de.bassmech.findra.model.entity;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.bassmech.findra.model.converter.ConfigurationCodeConverter;
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
@@ -13,7 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity

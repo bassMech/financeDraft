@@ -2,7 +2,6 @@ package de.bassmech.findra.model.converter;
 
 import java.time.Instant;
 
-import de.bassmech.findra.model.statics.ConfigurationCode;
 import jakarta.persistence.AttributeConverter;
 
 public class NumberToInstantConverter implements AttributeConverter<Instant, Integer>{

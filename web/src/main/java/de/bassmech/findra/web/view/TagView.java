@@ -3,7 +3,6 @@ package de.bassmech.findra.web.view;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.primefaces.PrimeFaces;
 import org.slf4j.Logger;

@@ -1,19 +1,14 @@
 package de.bassmech.findra.model.entity;
 
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.bassmech.findra.model.converter.IntervalConverter;
 import de.bassmech.findra.model.converter.YearMonthDbConverter;
 import de.bassmech.findra.model.statics.Interval;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 

@@ -3,7 +3,6 @@ package de.bassmech.findra.web.view.model.converter;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.web.view.model.TagViewModel;
-import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
