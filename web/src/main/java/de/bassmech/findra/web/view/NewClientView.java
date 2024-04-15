@@ -32,10 +32,10 @@ public class NewClientView implements Serializable {
 	private String passwordRepeat;
 	private String recoveryCode;
 
-	protected Logger logger = LoggerFactory.getLogger(NewClientView.class);
+	private Logger logger = LoggerFactory.getLogger(NewClientView.class);
 	
 	@Autowired
-	ClientRepository clientRepository;
+	private ClientRepository clientRepository;
 
 	@PostConstruct
 	public void init() {
@@ -78,7 +78,6 @@ public class NewClientView implements Serializable {
 						, "user.with.name.already.exists");
 				result = false;
 			}
-			
 		}
 		
 		if (password.isBlank()) {
