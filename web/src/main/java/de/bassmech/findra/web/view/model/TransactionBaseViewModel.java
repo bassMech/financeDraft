@@ -26,6 +26,14 @@ public abstract class TransactionBaseViewModel implements Serializable {
 		dayForDisplay = LocalizationUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
 	}
 	
+	public String getIcon() {
+		if (isDraft()) {
+			return "pi-sync";
+		} else {
+			return executedAt == null ? "pi-question-circle" : "pi-check-circle";
+		}
+	}
+	
 	public abstract boolean isDraft();
 
 	public Integer getId() {

@@ -82,7 +82,7 @@
 		</p:column>
 		<p:column headerText="#{tags['date']}" sortBy="#{transaction.expectedDay}" sortOrder="asc">
 			<h:outputText value="#{transaction.dayForDisplay}" />
-			<i class="#{transaction.executedAt == null ? 'pi pi-question-circle': 'pi pi-check-circle'}" />
+			<i class="pi #{transaction.getIcon()} flex justify-content-center" />
 		</p:column>
 		<p:column headerText="#{tags['tags']}">
 			<ui:repeat value="${transaction.tags}" var="tag">
@@ -104,11 +104,6 @@
 				<p:commandButton icon="pi pi-pencil" action="#{accountView.onDraftEdit(transaction.id, accountingMonth)}" process="@this"
 					update="mainForm:transactionDetailDialog" rendered="#{transaction.isDraft()}"></p:commandButton>
 			</div>
-		</p:column>
-		<p:column style="width:1rem">
-			<h:outputLabel rendered="#{transaction.isDraft()}">
-				<i class="pi pi-compass"></i>
-			</h:outputLabel>
 		</p:column>
 
 		<p:rowExpansion>

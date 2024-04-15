@@ -379,6 +379,7 @@ public class AccountView {
 			transactionDialog.setTitle(vm.getTitle());
 			transactionDialog.setDescription(vm.getDescription());
 			transactionDialog.setValue(vm.getValue());
+			transactionDialog.setSelectedInterval(vm.getInterval().getDbValue());
 			
 			transactionDialog.setSelectedStartMonth(vm.getStartsAt().getMonthValue());
 			transactionDialog.setSelectedStartYear(vm.getStartsAt().getYear());

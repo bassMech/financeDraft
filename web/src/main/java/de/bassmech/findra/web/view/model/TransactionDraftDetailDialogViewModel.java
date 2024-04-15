@@ -25,6 +25,7 @@ public class TransactionDraftDetailDialogViewModel extends TransactionDetailBase
 		for (Interval interval : Interval.values()) {
 			selectableIntervals.put(interval.getDbValue(), LocalizationUtil.getTag(interval.getTagString()));
 		}
+		selectedInterval = Interval.EVERY_MONTH.getDbValue();
 	}
 
 	public int getSelectedStartMonth() {
