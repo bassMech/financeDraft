@@ -22,7 +22,7 @@
 	<properties>
 		<maven.compiler.release>17</maven.compiler.release>
 		<java.version>17</java.version>
-		<findra-version>2024.1</findra-version>
+		<findra-version>2024.1.0</findra-version>
 		<spring-boot-starter-version>3.1.5</spring-boot-starter-version>
 	</properties>
 

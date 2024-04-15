@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>de.bassmech.findra</groupId>
 			<artifactId>core</artifactId>
-			<version>2024.1</version>
+			<version>${findra-version}</version>
 		</dependency>
 
 		<dependency>
