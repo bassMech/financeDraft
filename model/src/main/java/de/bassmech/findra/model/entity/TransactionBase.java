@@ -33,7 +33,7 @@ public abstract class TransactionBase {
 	@Column(name = "expected_day", columnDefinition = "INTEGER")
 	private int expectedDay;
 	
-	@Column(name = "created_at", columnDefinition = "Integer")
+	@Column(name = "created_at", columnDefinition = "INTEGER")
 	private Instant createdAt;
 	
 	@ManyToMany(cascade = { CascadeType.ALL })

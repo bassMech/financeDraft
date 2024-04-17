@@ -18,34 +18,34 @@ public class Client {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Column(name = "name", columnDefinition = "String")
+	@Column(name = "name", columnDefinition = "TEXT")
 	private String name;
 
-	@Column(name = "password_hash", columnDefinition = "String")
+	@Column(name = "password_hash", columnDefinition = "TEXT")
 	private String passwordHash;
 
-	@Column(name = "uuid", columnDefinition = "text")
+	@Column(name = "uuid", columnDefinition = "TEXT")
 	private String uuid;
 	
-	@Column(name = "session", columnDefinition = "text")
+	@Column(name = "session", columnDefinition = "TEXT")
 	private String session;
 
-	@Column(name = "recovery_code", columnDefinition = "String")
+	@Column(name = "recovery_code", columnDefinition = "TEXT")
 	private String recoveryCode;
 	
-	@Column(name = "created_at", columnDefinition = "Integer")
+	@Column(name = "created_at", columnDefinition = "INTEGER")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant createdAt;
 	
-	@Column(name = "updated_at", columnDefinition = "Integer")
+	@Column(name = "updated_at", columnDefinition = "INTEGER")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant updatedAt;
 	
-	@Column(name = "deleted_at", columnDefinition = "Integer")
+	@Column(name = "deleted_at", columnDefinition = "INTEGER")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant deletedAt;
 
-	@Column(name = "last_login_at", columnDefinition = "Integer")
+	@Column(name = "last_login_at", columnDefinition = "INTEGER")
 	@Convert(converter=NumberToInstantConverter.class)
 	private Instant lastLogin;
 	

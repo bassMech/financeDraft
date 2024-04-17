@@ -22,22 +22,22 @@ public class Tag {
 	@JoinColumn(referencedColumnName = "id", name = "client_id")
 	private Client client;
 
-	@Column(name = "title", columnDefinition = "String")
+	@Column(name = "title", columnDefinition = "TEXT")
 	private String title;
 
-	@Column(name = "description", columnDefinition = "String")
+	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
 
-	@Column(name = "background_hex_color", columnDefinition = "String")
+	@Column(name = "background_hex_color", columnDefinition = "TEXT")
 	private String backgroundHexColor;
 
-	@Column(name = "text_hex_color", columnDefinition = "String")
+	@Column(name = "text_hex_color", columnDefinition = "TEXT")
 	private String textHexColor;
 	
-	@Column(name = "created_at", columnDefinition = "Integer")
+	@Column(name = "created_at", columnDefinition = "INTEGER")
 	private Instant createdAt;
 	
-	@Column(name = "deleted_at", columnDefinition = "Integer")
+	@Column(name = "deleted_at", columnDefinition = "INTEGER")
 	private Instant deletedAt;
 
 	public Integer getId() {
