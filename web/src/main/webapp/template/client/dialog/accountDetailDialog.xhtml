@@ -33,10 +33,10 @@
 						<div class="col-6">
 							<div>
 								<div>
-									<p:tag value="#{tags['account.type']}"></p:tag>
+									<p:tag value="#{tags['account.category']}"></p:tag>
 								</div>
 								<div>
-									<p:selectOneMenu id="accountDetailDialog_accountTypeSelection" value="#{accountView.accountDialog.type}">
+									<p:selectOneMenu id="accountDetailDialog_accountTypeSelection" value="#{accountView.accountDialog.category}">
 										<f:selectItems value="#{accountView.accountTypes.entrySet()}" var="accountType" itemLabel="#{accountType.value}"
 											itemValue="#{accountType.key}" />
 										<p:ajax></p:ajax>

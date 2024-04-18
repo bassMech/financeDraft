@@ -10,10 +10,10 @@ public class AccountDetailDialogViewModel implements Serializable {
 	private String title;
 	private String description;
 	private int startingYear;
-	private int type;	
-	
+	private int category;
+
 	private String dialogTitle;
-		
+
 	public AccountDetailDialogViewModel(String dialogTitle) {
 		startingYear = Year.now().getValue();
 		this.dialogTitle = dialogTitle;
@@ -47,14 +47,6 @@ public class AccountDetailDialogViewModel implements Serializable {
 		this.description = description;
 	}
 
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
 	public int getStartingYear() {
 		return startingYear;
 	}
@@ -69,6 +61,14 @@ public class AccountDetailDialogViewModel implements Serializable {
 
 	public void setDialogTitle(String dialogTitle) {
 		this.dialogTitle = dialogTitle;
+	}
+
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
 }

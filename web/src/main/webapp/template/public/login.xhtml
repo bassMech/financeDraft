@@ -15,8 +15,12 @@
 	<ui:define name="content">
 		<h:outputStylesheet name="login.css" library="style" />
 		<div class="card">
-			<div class="flex justify-content-center align-items-center view-height-wrapper">
+			<div
+				class="flex justify-content-center align-items-center view-height-wrapper">
 				<div id="input-wrapper" class="vertical-align-middle">
+					<div>
+						<h2>#{tags['login']}</h2>
+					</div>
 					<div class="field">
 						<p:outputLabel for="identifier" styleClass="block">${tags['name']}</p:outputLabel>
 						<p:inputText id="identifier" styleClass="block"

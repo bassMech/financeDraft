@@ -24,6 +24,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.auth.SessionHandler;
@@ -51,7 +52,6 @@ import de.bassmech.findra.web.view.model.TransactionDraftDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
 import de.bassmech.findra.web.view.model.type.AccountTransactionLayout;
-import de.bassmech.findra.web.view.model.type.AccountType;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -304,7 +304,7 @@ public class AccountView {
 		accountDialog.setId(selectedAccount.getId());
 		accountDialog.setTitle(selectedAccount.getTitle());
 		accountDialog.setDescription(selectedAccount.getDescription());
-		accountDialog.setType(AccountType.TRANSCATION.getDbValue());
+		accountDialog.setCategory(AccountCategory.CURRENT_ACCOUNT.getDbValue());
 		
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");

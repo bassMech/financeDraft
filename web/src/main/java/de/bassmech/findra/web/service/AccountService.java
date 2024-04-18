@@ -29,8 +29,11 @@ import de.bassmech.findra.model.entity.AccountTransactionDraft;
 import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.entity.AccountingYear;
 import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.model.entity.CurrentAccount;
+import de.bassmech.findra.model.entity.SavingsAccount;
 import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.model.entity.TransactionBase;
+import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.Interval;
 import de.bassmech.findra.web.service.exception.NotImplementedException;
 import de.bassmech.findra.web.util.CalculationUtil;
@@ -46,7 +49,6 @@ import de.bassmech.findra.web.view.model.TransactionBaseViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailBaseDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionDraftDetailDialogViewModel;
-import de.bassmech.findra.web.view.model.type.AccountType;
 
 @Service
 public class AccountService {
@@ -121,7 +123,7 @@ public class AccountService {
 		Map<Integer, String> result = accountTypesByLocale.get(locale);
 		if (result == null) {
 			result = new HashMap<>();
-			for (AccountType entry : AccountType.values()) {
+			for (AccountCategory entry : AccountCategory.values()) {
 				result.put(entry.getDbValue(), LocalizationUtil.getTag(entry.getTagKey(), locale));
 			}
 			accountTypesByLocale.put(locale, result);
@@ -132,7 +134,15 @@ public class AccountService {
 	public AccountViewModel saveAccount(Client client, AccountDetailDialogViewModel accountDialog) {
 		Account account;
 		if (accountDialog.getId() == null) {
-			account = new Account();
+			switch (accountDialog.getCategory()) {
+			case 0: 
+				account = new CurrentAccount();
+				break;
+			case 1: 
+				account = new SavingsAccount();
+				break;
+			default: throw new NotImplementedException("AccountCategory", Integer.toString(accountDialog.getCategory()));
+			}		
 		} else {
 			account = accountRepository.findById(accountDialog.getId().longValue()).get();
 		}
