@@ -18,12 +18,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.bassmech.findra.core.repository.AccountItemGroupRepository;
 import de.bassmech.findra.core.repository.AccountRepository;
 import de.bassmech.findra.core.repository.AccountTransactionDraftRepository;
 import de.bassmech.findra.core.repository.AccountTransactionRepository;
 import de.bassmech.findra.core.repository.AccountingMonthRepository;
 import de.bassmech.findra.core.repository.AccountingYearRepository;
 import de.bassmech.findra.model.entity.Account;
+import de.bassmech.findra.model.entity.AccountItemGroup;
 import de.bassmech.findra.model.entity.AccountTransaction;
 import de.bassmech.findra.model.entity.AccountTransactionDraft;
 import de.bassmech.findra.model.entity.AccountingMonth;
@@ -40,6 +42,7 @@ import de.bassmech.findra.web.util.CalculationUtil;
 import de.bassmech.findra.web.util.LocalizationUtil;
 import de.bassmech.findra.web.util.ToViewModelUtil;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountItemGroupViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -63,8 +66,8 @@ public class AccountService {
 	@Autowired
 	private AccountingMonthRepository accountingMonthRepository;
 
-//	@Autowired
-//	private AccountTransactionRepository tagRepository;
+	@Autowired
+	private AccountItemGroupRepository accountItemGroupRepository;
 
 	@Autowired
 	private AccountTransactionRepository transactionRepository;
@@ -75,6 +78,7 @@ public class AccountService {
 	private List<AccountViewModel> loadedAccounts = new ArrayList<>();
 	private Map<Integer, List<AccountingYearViewModel>> loadedAccountingYearsByAccountId = new HashMap<>();
 	private Map<Integer, List<DraftViewModel>> loadedDraftsByAccountId = new HashMap<>();
+	private Map<Integer, List<AccountItemGroupViewModel>> loadedItemGroupsByAccountId = new HashMap<>();
 	private Map<Locale, Map<Integer, String>> accountTypesByLocale = new HashMap<>();
 
 	public List<AccountViewModel> getAccountList() {
@@ -97,7 +101,7 @@ public class AccountService {
 		if (yearModel == null) {
 			AccountingYear entity = accountingYearRepository.findByAccountIdAndYear(accountId, year);
 			if (entity != null) {
-				yearModel = ToViewModelUtil.toViewModel(entity);
+				yearModel = ToViewModelUtil.toViewModel(entity, getAccountItemGroupsByAccountId(accountId));
 				if (!loadedAccountingYearsByAccountId.containsKey(accountId)) {
 					loadedAccountingYearsByAccountId.put(accountId, new ArrayList<>());
 				}
@@ -212,7 +216,7 @@ public class AccountService {
 
 				accountingYear = accountingYearRepository.save(accountingYear);
 			}
-			yearVm = ToViewModelUtil.toViewModel(accountingYear);
+			yearVm = ToViewModelUtil.toViewModel(accountingYear, getAccountItemGroupsByAccountId(accountId));
 			loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
 		}
 
@@ -233,7 +237,7 @@ public class AccountService {
 			newMonth = accountingYear.getMonths().stream().filter(monthX -> monthX.getMonth() == month).findFirst()
 					.orElse(null);
 
-			monthVm = ToViewModelUtil.toViewModel(newMonth);
+			monthVm = ToViewModelUtil.toViewModel(newMonth, getAccountItemGroupsByAccountId(accountId));
 			yearVm.getMonths().add(monthVm);
 		}
 
@@ -290,7 +294,7 @@ public class AccountService {
 
 		// TODO merge with "recalculateAndSaveAccountingYear" ?
 		accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId, year);
-		yearVm = ToViewModelUtil.toViewModel(accountingYear);
+		yearVm = ToViewModelUtil.toViewModel(accountingYear, getAccountItemGroupsByAccountId(accountId));
 
 		loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
 		loadedAccountingYearsByAccountId.get(accountId).add(yearVm);
@@ -340,7 +344,7 @@ public class AccountService {
 			}
 
 			accountingYear = accountingYearRepository.save(accountingYear);
-			yearVm = ToViewModelUtil.toViewModel(accountingYear);
+			yearVm = ToViewModelUtil.toViewModel(accountingYear, getAccountItemGroupsByAccountId(accountId));
 			// TODO add drafts ?
 
 			loadedAccountingYearsByAccountId.get(accountId).removeIf(yearX -> yearX.getYear() == year);
@@ -354,7 +358,7 @@ public class AccountService {
 
 		AccountingYear accountingYear = accountingYearRepository.findByAccountIdAndYear(accountId,
 				transaction.getAccountingMonth().getAccountingYear().getId());
-		AccountingYearViewModel yearVm = ToViewModelUtil.toViewModel(accountingYear);
+		AccountingYearViewModel yearVm = ToViewModelUtil.toViewModel(accountingYear, getAccountItemGroupsByAccountId(accountId));
 
 		transactionRepository.delete(transaction);
 
@@ -555,4 +559,12 @@ public class AccountService {
 				.orElse(null);
 	}
 
+	public List<AccountItemGroupViewModel> getAccountItemGroupsByAccountId(int accountId) {
+		if (!loadedItemGroupsByAccountId.containsKey(accountId)) {
+			List<AccountItemGroup> groups = accountItemGroupRepository.findByAccountId(accountId);
+			loadedItemGroupsByAccountId.put(accountId, ToViewModelUtil.toAccountItemGroupViewModelList(groups));
+		}
+		
+		return loadedItemGroupsByAccountId.get(accountId);
+	}
 }

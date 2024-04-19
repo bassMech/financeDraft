@@ -6,7 +6,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,22 +16,13 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.primefaces.PrimeFaces;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.model.statics.ExpectedDay;
-import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
-import de.bassmech.findra.web.service.AccountService;
-import de.bassmech.findra.web.service.ConfigurationService;
-import de.bassmech.findra.web.service.SettingService;
-import de.bassmech.findra.web.service.TagService;
 import de.bassmech.findra.web.util.FormatterUtil;
 import de.bassmech.findra.web.util.LocalizationUtil;
 import de.bassmech.findra.web.util.statics.CssReference;
@@ -58,51 +48,8 @@ import jakarta.faces.application.FacesMessage;
 
 @Component
 @SessionScoped
-public class AccountView {
-	private Logger logger = LoggerFactory.getLogger(AccountView.class);
+public class CurrentAccountView extends AccountViewBase {
 
-	@Autowired
-	private AccountService accountService;
-	
-	@Autowired
-	private SettingService settingService;
-	
-	@Autowired
-	private TagService tagService;
-	
-	@Autowired
-	private SessionHandler sessionHandler;
-	
-	@Autowired
-	private ConfigurationService configurationService;
-
-	private Client client;
-	private List<AccountViewModel> selectableAccounts = new ArrayList<>();
-	private AccountViewModel selectedAccount;
-	private Integer selectedAccountId;
-
-	private TransactionBaseViewModel selectedTransaction;
-
-	private TreeMap<Integer, String> selectableMonths = new TreeMap<>();
-	private int selectedMonth;
-
-	private List<Integer> selectableYears = new ArrayList<>();
-	private int selectedYear;
-	
-	private AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
-	private TransactionDetailBaseDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
-	private TransactionExecutedDialogViewModel transactionExecutedDialog = new TransactionExecutedDialogViewModel();
-	private DraftListDialogViewModel draftListDialog;
-	
-	private AccountingMonthViewModel firstAccountingMonth = null;
-	private AccountingMonthViewModel secondAccountingMonth = null;
-	private AccountingMonthViewModel thirdAccountingMonth = null;
-	
-	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
-	
-	private int[] yearRange = new int[2];
-	
-	private AccountTransactionLayout transactionLayout = AccountTransactionLayout.COLUMN_SINGLE;
 	
 	@PostConstruct
 	@DependsOn(value = { "SettingService", "AccountService"})
@@ -164,7 +111,10 @@ public class AccountView {
 			return null;
 		}
 	}
-	
+		
+	///
+	/// account related
+	///
 	public void onAccountChanged() {
 		logger.debug("onAccountChanged");
 		
@@ -173,121 +123,7 @@ public class AccountView {
 		if (selectedYear > selectedAccount.getStartingYear()) {
 			selectedYear = selectedAccount.getStartingYear();
 		}
-//		accountingYears.clear();
-//		accountingYears.add(accountService.getAccountYear(selectedAccountId, selectedYear));
-
 		updateMonthTransactions();
-	}
-	public void onNextYear() {
-		logger.debug("onNextYear");
-		if (selectedYear + 1 > yearRange[1]) {
-			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-					, "year.max.reached", yearRange[1]);
-			return;
-		}
-		selectedYear++;
-		updateMonthTransactions();
-	}
-	
-	public void onPreviousYear() {
-		logger.debug("onPreviousYear");
-		if (selectedYear - 1 < yearRange[0]) {
-			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-					, "year.min.reached", yearRange[0]);
-			return;
-		}
-		selectedYear--;
-		updateMonthTransactions();
-	}
-	
-	public void onYearChanged() {
-		logger.debug("Year was changed to: " + selectedYear);
-		updateMonthTransactions();
-	}
-
-	public void onMonthChanged() {
-		logger.debug("Month was changed to: " + selectedMonth);
-		updateMonthTransactions();
-	}
-
-	public void onNextMonthClick() {
-		logger.debug("onNextMonthClick: ");
-		if (selectedMonth == 12) {
-			if (selectedYear >= yearRange[1]) {
-				logger.debug("Max year reached");
-				FacesMessageHandler.addMessageFromKey (FacesMessage.SEVERITY_WARN
-						, "year.max.reached" , yearRange[1]);
-				return;
-			}
-			selectedYear++;
-			selectedMonth = 1;
-		} else {
-			selectedMonth++;
-		}
-		logger.debug("Month was changed to: " + selectedMonth);
-		updateMonthTransactions();
-	}
-	
-	public void onPreviousMonthClick() {
-		if (selectedMonth == 1) {
-			if (selectedYear <= yearRange[0]) {
-				logger.debug("Min year reached");
-				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-						, "year.min.reached", yearRange[0]);
-				return;
-			}
-			selectedYear--;
-			selectedMonth = 12;
-		} else {
-			selectedMonth--;
-		}
-		logger.debug("Month was changed to: " + selectedMonth);
-		updateMonthTransactions();
-	}
-	
-	private void updateMonthTransactions() {
-		logger.debug("updateMonthTransactions");
-		AccountingYearViewModel modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear);
-		
-		firstAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
-		
-		int secondMonthNumber = selectedMonth + 1;
-		if (selectedMonth + 1 == 13) {
-			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
-			secondMonthNumber = 1;
-		}
-		final int finalSecondMonthNumber = secondMonthNumber;
-		secondAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == finalSecondMonthNumber).findFirst().orElse(null);
-		if (secondAccountingMonth == null) {
-			secondAccountingMonth = new AccountingMonthViewModel();
-			secondAccountingMonth.setAccountYearId(selectedAccountId);
-			secondAccountingMonth.setMonth(finalSecondMonthNumber);
-			secondAccountingMonth.setYear(modelYear.getYear());
-		}
-		
-		int thirdMonthNumber = selectedMonth + 2;
-		if (selectedMonth + 2 == 13) {
-			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
-			thirdMonthNumber = 1;
-		} else if (selectedMonth + 2 == 14) {
-			thirdMonthNumber = 2;
-		}
-		final int finalThirdMonthNumber = thirdMonthNumber;
-		thirdAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == finalThirdMonthNumber).findFirst().orElse(null);
-		if (thirdAccountingMonth == null) {
-			thirdAccountingMonth = new AccountingMonthViewModel();
-			thirdAccountingMonth.setAccountYearId(selectedAccountId);
-			thirdAccountingMonth.setMonth(finalThirdMonthNumber);
-			thirdAccountingMonth.setYear(modelYear.getYear());
-		}
-	}
-	
-	public void onDeleteTransaction() {
-		logger.debug("onDeleteTransaction: " + transactionDialog.getId());
-		
-		accountService.deleteTransaction(transactionDialog.getId(), transactionDialog.getAccountId());
-		//reloadAccountingYear();
-		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 	
 	public void openAccountDetailDialogNew() {
@@ -423,6 +259,14 @@ public class AccountView {
 ///
 /// Transaction related
 ///
+	
+	public void onDeleteTransaction() {
+		logger.debug("onDeleteTransaction: " + transactionDialog.getId());
+		
+		accountService.deleteTransaction(transactionDialog.getId(), transactionDialog.getAccountId());
+	
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+	}
 	
 	private boolean isTransactionDialogValid() {
 		boolean isValid = true;
@@ -744,6 +588,10 @@ public class AccountView {
 
 	public void setDraftListDialog(DraftListDialogViewModel draftListDialogViewModel) {
 		this.draftListDialog = draftListDialogViewModel;
+	}
+
+	public AccountTransactionLayout getTransactionLayout() {
+		return transactionLayout;
 	}
 
 }

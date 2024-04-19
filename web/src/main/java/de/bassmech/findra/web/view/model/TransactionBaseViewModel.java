@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.bassmech.findra.model.entity.AccountItem;
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.util.LocalizationUtil;
 
@@ -18,6 +19,8 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	protected BigDecimal value;
 	protected Instant executedAt;
 	protected Instant createdAt;
+	protected AccountItemViewModel item;
+	protected AccountItemGroupViewModel group;
 	
 	protected List<TagViewModel> tags = new ArrayList<>();
 			
@@ -106,6 +109,22 @@ public abstract class TransactionBaseViewModel implements Serializable {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public AccountItemViewModel getItem() {
+		return item;
+	}
+
+	public void setItem(AccountItemViewModel item) {
+		this.item = item;
+	}
+
+	public AccountItemGroupViewModel getGroup() {
+		return group;
+	}
+
+	public void setGroup(AccountItemGroupViewModel group) {
+		this.group = group;
 	}
 
 }

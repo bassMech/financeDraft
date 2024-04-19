@@ -31,7 +31,7 @@ public class AccountItem implements Serializable {
 	@Column(name = "created_at", columnDefinition = "INTEGER")
 	private Instant createdAt;
 		
-	@ManyToOne(targetEntity = AccountTransactionDraft.class)
+	@ManyToOne(targetEntity = AccountItemGroup.class)
 	@JoinColumn(referencedColumnName = "id", name = "account_item_group_id")
 	private AccountItemGroup group;
 

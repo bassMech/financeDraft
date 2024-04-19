@@ -1,8 +1,14 @@
 # financeDraft
 
+## Profiles
+- dev &#8594; -Dspring.profiles.active=dev
+
 ToDo
 - important!
 	- error code revamp -> add display message to enum
+	- move dialogs folder to composite
+	- some code quality checker like black
+	- buttons overlay header on scrolling up
 - Account
 	- setting start values based on month before and after
 	- display settings, 1 / 2 or 3 transactionMonth displayed

@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
@@ -42,6 +43,10 @@ public abstract class TransactionBase {
         joinColumns = { @JoinColumn(name = "transaction_id") }, 
         inverseJoinColumns = { @JoinColumn(name = "tag_id") })
 	private List<Tag> tags = new ArrayList<>();
+	
+	@ManyToOne(targetEntity = AccountItem.class)
+	@JoinColumn(referencedColumnName = "id", name = "account_item_id")
+	private AccountItem item;
 
 	public Integer getId() {
 		return id;
@@ -98,6 +103,13 @@ public abstract class TransactionBase {
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
 	}
-	
-	
+
+	public AccountItem getItem() {
+		return item;
+	}
+
+	public void setItem(AccountItem item) {
+		this.item = item;
+	}
+		
 }

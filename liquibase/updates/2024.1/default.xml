@@ -397,7 +397,7 @@
 			<column name="account_item_group_id" type="int">
 				<constraints nullable="true"
 					foreignKeyName="FK_account_item_account_group_id"
-					referencedTableName="account_group" referencedColumnNames="id" />
+					referencedTableName="account_item_group" referencedColumnNames="id" />
 			</column>
 			<column name="title" type="TEXT">
 				<constraints nullable="false" />
@@ -411,5 +411,25 @@
 		</createTable>
 	</changeSet>
 
+	<changeSet id="#1-savings-account-transaction-columns"
+			author="bassmech" context="default">
+		<addColumn tableName="account_transaction">
+			<column name="account_item_id" type="int">
+				<constraints nullable="true"
+					foreignKeyName="FK_account_transaction_account_item_id"
+					referencedTableName="account_item" referencedColumnNames="id" />
+			</column>	
+		</addColumn>
+	</changeSet>
 
+	<changeSet id="#1-savings-account-draft-columns"
+			author="bassmech" context="default">
+		<addColumn tableName="account_transaction_draft">
+			<column name="account_item_id" type="int">
+				<constraints nullable="true"
+					foreignKeyName="FK_account_transaction_draft_account_item_id"
+					referencedTableName="account_item" referencedColumnNames="id" />
+			</column>	
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.bassmech.findra.web.util.statics.CssReference;
 
@@ -54,6 +55,11 @@ public class AccountingMonthViewModel implements Serializable {
 			return "";
 		} 
 		return transactionSumEval > 0 ? CssReference.TRANSCTION_SUM_POSITIVE.getValue() : CssReference.TRANSCTION_SUM_NEGATIVE.getValue();
+	}
+	
+	public List<TransactionBaseViewModel> findByGroupId(Integer groupId) {
+		return transactions.stream().filter(x -> x.group == null && groupId == null 
+				|| x.group != null && x.group.getId().equals(groupId)).collect(Collectors.toList());
 	}
 
 	public Integer getId() {

@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+import de.bassmech.findra.model.statics.AccountCategory;
+
 public class AccountViewModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private Integer userId;
 	private String title;
@@ -15,6 +17,7 @@ public class AccountViewModel implements Serializable {
 	private int startingYear;
 	private Instant createdAt;
 	private Instant deletedAt;
+	private AccountCategory category;
 
 	public Integer getId() {
 		return id;
@@ -47,7 +50,7 @@ public class AccountViewModel implements Serializable {
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
 	}
-	
+
 	public int getStartingYear() {
 		return startingYear;
 	}
@@ -70,6 +73,14 @@ public class AccountViewModel implements Serializable {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public AccountCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(AccountCategory category) {
+		this.category = category;
 	}
 
 	@Override

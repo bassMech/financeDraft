@@ -2,7 +2,10 @@ package de.bassmech.findra.model.entity;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -34,6 +38,9 @@ public class AccountItemGroup implements Serializable {
 	@ManyToOne(targetEntity = Account.class)
 	@JoinColumn(referencedColumnName = "id", name = "account_id")
 	private Account account;
+	
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+	private List<AccountItem> items = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -73,6 +80,14 @@ public class AccountItemGroup implements Serializable {
 
 	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public List<AccountItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<AccountItem> items) {
+		this.items = items;
 	}
 
 }
