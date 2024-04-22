@@ -479,7 +479,7 @@ public class AccountService {
 			loadedDraftsByAccountId.get(dialogVm.getAccountId()).removeIf(draftX -> draftX.getId() == dialogVm.getId());
 		}
 
-		DraftViewModel draftVm = ToViewModelUtil.toViewModel(draft);
+		DraftViewModel draftVm = ToViewModelUtil.toViewModel(draft, getAccountItemGroupsByAccountId(account.getId()));
 		loadedDraftsByAccountId.get(dialogVm.getAccountId()).add(draftVm);
 
 		replaceOrAddDraftOnLoadedYears(draftVm, account.getId());
@@ -488,7 +488,7 @@ public class AccountService {
 	private void reloadDraftsByAccountId(Integer accountId, boolean forced) {
 		if (forced || loadedDraftsByAccountId.get(accountId) == null) {
 			Account account = accountRepository.findById(accountId.longValue()).orElse(null);
-			loadedDraftsByAccountId.put(accountId, ToViewModelUtil.toDraftViewModelList(account.getDrafts()));
+			loadedDraftsByAccountId.put(accountId, ToViewModelUtil.toDraftViewModelList(account.getDrafts(), getAccountItemGroupsByAccountId(accountId)));
 			logger.debug(String.format("Loaded %d drafts for account with id: %d",
 					loadedDraftsByAccountId.get(accountId).size(), accountId));
 		}

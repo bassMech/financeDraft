@@ -57,9 +57,9 @@ public class AccountingMonthViewModel implements Serializable {
 		return transactionSumEval > 0 ? CssReference.TRANSCTION_SUM_POSITIVE.getValue() : CssReference.TRANSCTION_SUM_NEGATIVE.getValue();
 	}
 	
-	public List<TransactionBaseViewModel> findByGroupId(Integer groupId) {
-		return transactions.stream().filter(x -> x.group == null && groupId == null 
-				|| x.group != null && x.group.getId().equals(groupId)).collect(Collectors.toList());
+	public List<TransactionBaseViewModel> findByGroupIdAndItemId(Integer groupId, Integer itemId) {		
+		return transactions.stream().filter(x -> x.group.getId().equals(groupId)
+			&& x.item.getId().equals(itemId)).collect(Collectors.toList());
 	}
 
 	public Integer getId() {

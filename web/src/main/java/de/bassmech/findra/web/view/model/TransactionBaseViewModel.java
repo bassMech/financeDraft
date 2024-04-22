@@ -3,12 +3,21 @@ package de.bassmech.findra.web.view.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.primefaces.PrimeFaces;
 
 import de.bassmech.findra.model.entity.AccountItem;
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.util.LocalizationUtil;
+import de.bassmech.findra.web.util.statics.FormIds;
+import de.bassmech.findra.web.util.statics.TagName;
 
 public abstract class TransactionBaseViewModel implements Serializable {
 	protected Integer id;
@@ -23,6 +32,8 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	protected AccountItemGroupViewModel group;
 	
 	protected List<TagViewModel> tags = new ArrayList<>();
+	
+	
 			
 	public TransactionBaseViewModel() {
 		expectedDay = 0;
@@ -37,8 +48,39 @@ public abstract class TransactionBaseViewModel implements Serializable {
 		}
 	}
 	
-	public abstract boolean isDraft();
+	public void onAccountDisplayOptionsEdit() {
+		
+	}
+	
+	private void prepareAndOpenAccountDisplayOptionsDialog() {
+		AccountDisplayOptionsDialogViewModel transactionDialog = new AccountDisplayOptionsDialogViewModel();	
 
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
+	}
+		
+//	public void closeDialogAndSaveTransaction() {
+//		//logger.debug("Saving transaction");
+//		
+////		if (isTransactionDialogValid()) {
+////			transactionDialog.setAccountId(selectedAccountId);
+////			
+////			if (transactionDialog.isDraft()) {
+////				accountService.saveDraft((TransactionDraftDetailDialogViewModel) transactionDialog);
+////			} else {
+////				TransactionDetailDialogViewModel tempTransactionDialog = (TransactionDetailDialogViewModel) transactionDialog;
+////				accountService.saveTransaction(tempTransactionDialog);
+////			}
+////			
+////			updateMonthTransactions();
+//			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+//		}
+//	}
+
+	
+	public abstract boolean isDraft();
+	
 	public Integer getId() {
 		return id;
 	}

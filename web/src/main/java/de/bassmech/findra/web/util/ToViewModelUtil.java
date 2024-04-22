@@ -144,7 +144,7 @@ public class ToViewModelUtil {
 		return vm;
 	}
 	
-	public static DraftViewModel toViewModel(AccountTransactionDraft draft) {
+	public static DraftViewModel toViewModel(AccountTransactionDraft draft, List<AccountItemGroupViewModel> groups) {
 		DraftViewModel vm = new DraftViewModel();
 		vm.setAccountId(draft.getAccount().getId());
 		vm.setId(draft.getId());
@@ -158,6 +158,17 @@ public class ToViewModelUtil {
 		vm.setValue(draft.getValue());
 		vm.setCreatedAt(draft.getCreatedAt());
 		
+		if (draft.getItem() != null) {
+			AccountItemGroupViewModel group = groups.stream()
+					.filter(gr -> gr.getId().equals(draft.getItem().getGroup().getId())).findFirst().orElse(null);
+			if (group != null) {
+				vm.setItem(group.getItems().stream()
+						.filter(item -> item.getId().equals(draft.getItem().getId())).findFirst()
+						.orElse(null));
+				vm.setGroup(group);
+			}
+		}
+		
 		for (Tag tag : draft.getTags()) {
 			vm.getTags().add(toViewModel(tag));
 		}
@@ -165,10 +176,10 @@ public class ToViewModelUtil {
 		return vm;
 	}
 
-	public static List<DraftViewModel> toDraftViewModelList(List<AccountTransactionDraft> drafts) {
+	public static List<DraftViewModel> toDraftViewModelList(List<AccountTransactionDraft> drafts, List<AccountItemGroupViewModel> groups) {
 		List<DraftViewModel> result = new ArrayList<>(drafts.size());
 		for (AccountTransactionDraft draft : drafts) {
-			result.add(toViewModel(draft));
+			result.add(toViewModel(draft, groups));
 		}
 		return result;
 	}

@@ -85,7 +85,8 @@
 		</div>
 		<div class="col-4 flex justify-content-end">
 			<div class="flex align-self-center">
-				<p:commandButton icon="pi pi-bars" />
+				<p:commandButton icon="pi pi-bars" action="#{accountView.onAccountDisplayOptionsEdit}"
+				 disabled="#{noAccountExists}" />
 			</div>
 		</div>
 	</div>
