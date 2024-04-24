@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.bassmech.findra.web.util.statics.Statics;
+import de.bassmech.findra.web.util.statics.enums.Statics;
 
 public class LocalizationUtil {
 	private static Logger logger = LoggerFactory.getLogger(LocalizationUtil.class);

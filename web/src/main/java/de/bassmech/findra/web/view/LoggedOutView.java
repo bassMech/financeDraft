@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.util.LocalizationUtil;
-import de.bassmech.findra.web.util.statics.LogoutMessageKey;
+import de.bassmech.findra.web.util.statics.enums.LogoutMessageKey;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 

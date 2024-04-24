@@ -25,10 +25,11 @@ import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.util.FormatterUtil;
 import de.bassmech.findra.web.util.LocalizationUtil;
-import de.bassmech.findra.web.util.statics.CssReference;
-import de.bassmech.findra.web.util.statics.FormIds;
-import de.bassmech.findra.web.util.statics.TagName;
+import de.bassmech.findra.web.util.statics.enums.CssReference;
+import de.bassmech.findra.web.util.statics.enums.FormIds;
+import de.bassmech.findra.web.util.statics.enums.TagName;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountDisplayOptionsDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -86,6 +87,9 @@ public class CurrentAccountView extends AccountViewBase {
 		}
 		
 		setSelectableExpectedDay();
+		
+		groupList = accountService.getAccountItemGroupsByAccountId(selectedAccountId);
+
 	}
 	
 	private void setSelectableExpectedDay() {
@@ -182,6 +186,20 @@ public class CurrentAccountView extends AccountViewBase {
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
 
+///
+/// Account Display Options
+///	
+	public void onAccountDisplayOptionsEdit() {
+		logger.debug("onAccountDisplayOptionsEdit");
+		accountDisplayOptionsDialog = new AccountDisplayOptionsDialogViewModel();	
+		accountDisplayOptionsDialog.setAccount(selectedAccount);
+		
+		
+		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
+		PrimeFaces.current().executeScript("PF('accountDisplayOptionsDialog').show()");
+	}
+
+	
 ///
 /// Draft related
 ///

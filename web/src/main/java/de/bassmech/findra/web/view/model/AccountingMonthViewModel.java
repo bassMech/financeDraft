@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.bassmech.findra.web.util.statics.CssReference;
+import de.bassmech.findra.web.util.statics.enums.CssReference;
 
 public class AccountingMonthViewModel implements Serializable {
 	private Integer id;

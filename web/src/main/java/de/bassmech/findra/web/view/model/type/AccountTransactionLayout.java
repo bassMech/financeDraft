@@ -6,18 +6,18 @@ public enum AccountTransactionLayout {
 	COLUMN_TRIPLE("column.triple", "col-4", 3),
 	;
 			
-	private String dbValue;
+	private String tagKey;
 	private String flexColSpan;
 	private int renderColumnCount;
 	
-	private AccountTransactionLayout(String dbValue, String flexColSpan, int renderColumnCount) {
-		this.dbValue = dbValue;
+	private AccountTransactionLayout(String tagKey, String flexColSpan, int renderColumnCount) {
+		this.tagKey = tagKey;
 		this.flexColSpan = flexColSpan;
 		this.renderColumnCount = renderColumnCount;
 	}
 
-	public String getDbValue() {
-		return dbValue;
+	public String getTagKey() {
+		return tagKey;
 	}
 
 	public String getFlexColSpan() {

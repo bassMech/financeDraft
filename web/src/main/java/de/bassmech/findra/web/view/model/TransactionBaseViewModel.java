@@ -3,21 +3,14 @@ package de.bassmech.findra.web.view.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.primefaces.PrimeFaces;
 
-import de.bassmech.findra.model.entity.AccountItem;
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.util.LocalizationUtil;
-import de.bassmech.findra.web.util.statics.FormIds;
-import de.bassmech.findra.web.util.statics.TagName;
+import de.bassmech.findra.web.util.statics.enums.FormIds;
 
 public abstract class TransactionBaseViewModel implements Serializable {
 	protected Integer id;

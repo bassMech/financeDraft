@@ -4,7 +4,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.web.service.exception.LoginException;
-import de.bassmech.findra.web.util.statics.LoginErrorCode;
+import de.bassmech.findra.web.util.statics.enums.LoginErrorCode;
 
 public class CryptUtil {
 	private final static int rounds = 16;

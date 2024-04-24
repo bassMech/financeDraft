@@ -1,4 +1,4 @@
-package de.bassmech.findra.web.util.statics;
+package de.bassmech.findra.web.util.statics.enums;
 
 public enum LoginErrorCode implements FindraErrorCode {
 	/** Client not present*/

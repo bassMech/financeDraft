@@ -10,49 +10,49 @@
 
 	<ui:define name="content">
 		<h:outputStylesheet name="account.css" library="style" />
-		<ui:param name="noAccountExists" value="#{savingsAccountView.selectedAccount == null}"></ui:param>
+		<ui:param name="noAccountExists" value="#{currentAccountView.selectedAccount == null}"></ui:param>
 
 		<ui:include src="/template/client/composite/accountNavigation.xhtml">
-			<ui:param name="accountView" value="#{savingsAccountView}" />
+			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 
 		<p:panel id="transactions" rendered="#{!noAccountExists}">
 			<div class="grid">
-				<p:panel class="#{savingsAccountView.transactionLayout.flexColSpan}">
+				<p:panel class="#{currentAccountView.transactionLayout.flexColSpan}">
 					<ui:include
 						src="/template/client/composite/accountingMonthTransactionsGrouped.xhtml">
-						<ui:param name="accountView" value="#{savingsAccountView}" />
+						<ui:param name="accountView" value="#{currentAccountView}" />
 						<ui:param name="accountingMonth"
-							value="#{savingsAccountView.firstAccountingMonth}" />
+							value="#{currentAccountView.firstAccountingMonth}" />
 					</ui:include>
 				</p:panel>
-				<p:panel rendered="#{savingsAccountView.transactionLayout.renderColumnCount >= 2}"
-					class="#{savingsAccountView.transactionLayout.flexColSpan}">
+				<p:panel rendered="#{currentAccountView.transactionLayout.renderColumnCount >= 2}"
+					class="#{currentAccountView.transactionLayout.flexColSpan}">
 					<ui:include src="/template/client/composite/accountingMonthTransactionsGrouped.xhtml">
-						<ui:param name="accountView" value="#{savingsAccountView}" />
-						<ui:param name="accountingMonth" value="#{savingsAccountView.secondAccountingMonth}" />
+						<ui:param name="accountView" value="#{currentAccountView}" />
+						<ui:param name="accountingMonth" value="#{currentAccountView.secondAccountingMonth}" />
 					</ui:include>
 				</p:panel>
-				<p:panel rendered="savingsAccountView.transactionLayout.renderColumnCount == 3" class="savingsAccountView.transactionLayout.flexColSpan">
+				<p:panel rendered="currentAccountView.transactionLayout.renderColumnCount == 3" class="currentAccountView.transactionLayout.flexColSpan">
 					<ui:include src="/template/client/composite/accountingMonthTransactionsGrouped.xhtml">
-						<ui:param name="accountView" value="#{savingsAccountView}" />
-						<ui:param name="accountingMonth" value="#{savingsAccountView.thirdAccountingMonth}" />
+						<ui:param name="accountView" value="#{currentAccountView}" />
+						<ui:param name="accountingMonth" value="#{currentAccountView.thirdAccountingMonth}" />
 					</ui:include>
 				</p:panel>
 			</div>
 		</p:panel>
 
 		<ui:include src="/template/client/dialog/transactionDetailDialog.xhtml">
-			<ui:param name="accountView" value="#{savingsAccountView}" />
+			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 		<ui:include src="/template/client/dialog/accountDetailDialog.xhtml">
-			<ui:param name="accountView" value="#{savingsAccountView}" />
+			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 		<ui:include src="/template/client/dialog/transactionExecutedDialog.xhtml">
-			<ui:param name="accountView" value="#{savingsAccountView}" />
+			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 		<ui:include src="/template/client/dialog/draftListDialog.xhtml">
-			<ui:param name="accountView" value="#{savingsAccountView}" />
+			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 	</ui:define>
 </ui:composition>

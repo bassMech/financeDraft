@@ -3,7 +3,7 @@ package de.bassmech.findra.web.util;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import de.bassmech.findra.web.util.statics.Statics;
+import de.bassmech.findra.web.util.statics.enums.Statics;
 import jakarta.faces.application.FacesMessage;
 
 public class FacesMessageUtil {

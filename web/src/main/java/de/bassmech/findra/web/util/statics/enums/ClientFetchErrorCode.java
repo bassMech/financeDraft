@@ -1,4 +1,4 @@
-package de.bassmech.findra.web.util.statics;
+package de.bassmech.findra.web.util.statics.enums;
 
 public enum ClientFetchErrorCode implements FindraErrorCode {
 	/** Client not found*/

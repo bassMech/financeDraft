@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
-import de.bassmech.findra.web.util.statics.UrlFilterType;
+import de.bassmech.findra.web.util.statics.enums.UrlFilterType;
 //import jakarta.faces.bean.SessionScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.ExternalContext;

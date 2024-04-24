@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.exception.LoginException;
-import de.bassmech.findra.web.util.statics.UrlFilterType;
+import de.bassmech.findra.web.util.statics.enums.UrlFilterType;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;

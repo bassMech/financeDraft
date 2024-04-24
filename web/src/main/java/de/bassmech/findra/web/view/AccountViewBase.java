@@ -18,6 +18,8 @@ import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.service.TagService;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountDisplayOptionsDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountItemGroupViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -61,6 +63,7 @@ public abstract class AccountViewBase {
 	protected int selectedYear;
 	
 	protected AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
+	protected AccountDisplayOptionsDialogViewModel accountDisplayOptionsDialog = new AccountDisplayOptionsDialogViewModel();
 	protected TransactionDetailBaseDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
 	protected TransactionExecutedDialogViewModel transactionExecutedDialog = new TransactionExecutedDialogViewModel();
 	protected DraftListDialogViewModel draftListDialog;
@@ -75,7 +78,8 @@ public abstract class AccountViewBase {
 	
 	protected AccountTransactionLayout transactionLayout = AccountTransactionLayout.COLUMN_DOUBLE;
 
-
+	protected List<AccountItemGroupViewModel> groupList;
+	
 	///
 	/// Month and year navigation
 	////
@@ -183,6 +187,22 @@ public abstract class AccountViewBase {
 			thirdAccountingMonth.setMonth(finalThirdMonthNumber);
 			thirdAccountingMonth.setYear(modelYear.getYear());
 		}
+	}
+
+	public List<AccountItemGroupViewModel> getGroupList() {
+		return groupList;
+	}
+
+	public void setGroupList(List<AccountItemGroupViewModel> groupList) {
+		this.groupList = groupList;
+	}
+
+	public AccountDisplayOptionsDialogViewModel getAccountDisplayOptionsDialog() {
+		return accountDisplayOptionsDialog;
+	}
+
+	public void setAccountDisplayOptionsDialog(AccountDisplayOptionsDialogViewModel accountDisplayOptionsDialog) {
+		this.accountDisplayOptionsDialog = accountDisplayOptionsDialog;
 	}
 
 }

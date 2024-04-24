@@ -1,7 +1,7 @@
 package de.bassmech.findra.web.service.exception;
 
 import de.bassmech.findra.core.exception.FinDraException;
-import de.bassmech.findra.web.util.statics.LoginErrorCode;
+import de.bassmech.findra.web.util.statics.enums.LoginErrorCode;
 
 public class LoginException extends FinDraException {
 
