@@ -3,10 +3,7 @@ package de.bassmech.findra.web.util;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import de.bassmech.findra.model.entity.Account;
 import de.bassmech.findra.model.entity.AccountItem;
@@ -39,6 +36,9 @@ public class ToViewModelUtil {
 		vm.setDeletedAt(entity.getDeletedAt());
 		vm.setCreatedAt(entity.getCreatedAt());
 		vm.setCategory(entity.getCategory());
+		
+		vm.setDisplayOptionTransactionColumnLayout(entity.getTransactionColumnLayout());
+		vm.setDisplayOptionTransactionGrouping(entity.getTransactionGrouping());
 		
 		return vm;
 	}

@@ -6,11 +6,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.primefaces.PrimeFaces;
-
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.util.LocalizationUtil;
-import de.bassmech.findra.web.util.statics.enums.FormIds;
 
 public abstract class TransactionBaseViewModel implements Serializable {
 	protected Integer id;
@@ -44,34 +41,7 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	public void onAccountDisplayOptionsEdit() {
 		
 	}
-	
-	private void prepareAndOpenAccountDisplayOptionsDialog() {
-		AccountDisplayOptionsDialogViewModel transactionDialog = new AccountDisplayOptionsDialogViewModel();	
-
 		
-		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
-		PrimeFaces.current().executeScript("PF('transactionDetailDialog').show()");
-	}
-		
-//	public void closeDialogAndSaveTransaction() {
-//		//logger.debug("Saving transaction");
-//		
-////		if (isTransactionDialogValid()) {
-////			transactionDialog.setAccountId(selectedAccountId);
-////			
-////			if (transactionDialog.isDraft()) {
-////				accountService.saveDraft((TransactionDraftDetailDialogViewModel) transactionDialog);
-////			} else {
-////				TransactionDetailDialogViewModel tempTransactionDialog = (TransactionDetailDialogViewModel) transactionDialog;
-////				accountService.saveTransaction(tempTransactionDialog);
-////			}
-////			
-////			updateMonthTransactions();
-//			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
-//		}
-//	}
-
-	
 	public abstract boolean isDraft();
 	
 	public Integer getId() {

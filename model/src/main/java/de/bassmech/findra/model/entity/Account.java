@@ -6,7 +6,11 @@ import java.util.List;
 
 import de.bassmech.findra.model.converter.AccountCategoryConverter;
 import de.bassmech.findra.model.converter.NumberToInstantConverter;
+import de.bassmech.findra.model.converter.TransactionColumnLayoutConverter;
+import de.bassmech.findra.model.converter.TransactionGroupingConverter;
 import de.bassmech.findra.model.statics.AccountCategory;
+import de.bassmech.findra.model.statics.TransactionColumnLayout;
+import de.bassmech.findra.model.statics.TransactionGrouping;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -28,17 +32,13 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "account")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(
-    discriminatorType = DiscriminatorType.INTEGER,
-    name = "category",
-    columnDefinition = "INTEGER"
-)
-public abstract class Account{
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.INTEGER, name = "category", columnDefinition = "INTEGER")
+public abstract class Account {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@ManyToOne(targetEntity = Client.class)
 	@JoinColumn(referencedColumnName = "id", name = "client_id")
 	private Client client;
@@ -48,32 +48,38 @@ public abstract class Account{
 
 	@Column(name = "description", columnDefinition = "TEXT")
 	private String description;
-	
+
 	@Column(name = "starting_year", columnDefinition = "INTEGER")
 	private Integer startingYear;
-	
+
 	@Column(name = "created_at", columnDefinition = "Integer")
-	@Convert(converter=NumberToInstantConverter.class)
+	@Convert(converter = NumberToInstantConverter.class)
 	private Instant createdAt;
-	
+
 	@Column(name = "deleted_at", columnDefinition = "Integer")
-	@Convert(converter=NumberToInstantConverter.class)
+	@Convert(converter = NumberToInstantConverter.class)
 	private Instant deletedAt;
-	
+
 	@ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-        name = "account_tag", 
-        joinColumns = { @JoinColumn(name = "account_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+	@JoinTable(name = "account_tag", joinColumns = { @JoinColumn(name = "account_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "tag_id") })
 	private List<Tag> tags = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
 	private List<AccountTransactionDraft> drafts = new ArrayList<>();
-	
+
 	@Column(name = "category", columnDefinition = "Integer", updatable = false, insertable = false)
-	@Convert(converter=AccountCategoryConverter.class)
+	@Convert(converter = AccountCategoryConverter.class)
 	private AccountCategory category;
-	
+
+	@Column(name = "transaction_column_layout", columnDefinition = "Integer")
+	@Convert(converter = TransactionColumnLayoutConverter.class)
+	private TransactionColumnLayout transactionColumnLayout;
+
+	@Column(name = "transaction_grouping", columnDefinition = "Integer")
+	@Convert(converter = TransactionGroupingConverter.class)
+	private TransactionGrouping transactionGrouping;
+
 	public Integer getId() {
 		return id;
 	}
@@ -152,6 +158,22 @@ public abstract class Account{
 
 	public void setCategory(AccountCategory category) {
 		this.category = category;
+	}
+
+	public TransactionColumnLayout getTransactionColumnLayout() {
+		return transactionColumnLayout;
+	}
+
+	public void setTransactionColumnLayout(TransactionColumnLayout transactionColumnLayout) {
+		this.transactionColumnLayout = transactionColumnLayout;
+	}
+
+	public TransactionGrouping getTransactionGrouping() {
+		return transactionGrouping;
+	}
+
+	public void setTransactionGrouping(TransactionGrouping transactionGrouping) {
+		this.transactionGrouping = transactionGrouping;
 	}
 
 }

@@ -1,9 +1,6 @@
 package de.bassmech.findra.web.view.model;
 
 import java.time.Instant;
-import java.util.List;
-
-import org.primefaces.model.TreeNode;
 
 public class AccountItemViewModel {
 

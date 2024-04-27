@@ -1,7 +1,6 @@
 package de.bassmech.findra.model.converter;
 
 import de.bassmech.findra.model.statics.AccountCategory;
-import de.bassmech.findra.model.statics.ConfigurationCode;
 import jakarta.persistence.AttributeConverter;
 
 public class AccountCategoryConverter implements AttributeConverter<AccountCategory, Integer>{

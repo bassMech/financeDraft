@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import de.bassmech.findra.model.entity.AccountItemGroup;
-import de.bassmech.findra.model.entity.AccountingMonth;
 
 @Repository
 public interface AccountItemGroupRepository extends JpaRepository<AccountItemGroup, Integer> {

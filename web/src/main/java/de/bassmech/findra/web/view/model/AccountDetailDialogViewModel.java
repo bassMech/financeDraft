@@ -13,6 +13,9 @@ public class AccountDetailDialogViewModel implements Serializable {
 	private int category;
 
 	private String dialogTitle;
+	
+	private Integer selectedDisplayOptionTransactionGrouping = 0;
+	private Integer selectedDisplayOptionTransactionColumnLayout = 1;
 
 	public AccountDetailDialogViewModel(String dialogTitle) {
 		startingYear = Year.now().getValue();
@@ -69,6 +72,22 @@ public class AccountDetailDialogViewModel implements Serializable {
 
 	public void setCategory(int category) {
 		this.category = category;
+	}
+
+	public Integer getSelectedDisplayOptionTransactionGrouping() {
+		return selectedDisplayOptionTransactionGrouping;
+	}
+
+	public void setSelectedDisplayOptionTransactionGrouping(Integer selectedDisplayOptionTransactionGrouping) {
+		this.selectedDisplayOptionTransactionGrouping = selectedDisplayOptionTransactionGrouping;
+	}
+
+	public Integer getSelectedDisplayOptionTransactionColumnLayout() {
+		return selectedDisplayOptionTransactionColumnLayout;
+	}
+
+	public void setSelectedDisplayOptionTransactionColumnLayout(Integer selectedDisplayOptionTransactionColumnLayout) {
+		this.selectedDisplayOptionTransactionColumnLayout = selectedDisplayOptionTransactionColumnLayout;
 	}
 
 }

@@ -2,7 +2,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
 	<ui:define name="metadata">
-		<title>#{tags['accounts.current']}</title>
+		<title>#{tags['accounts']}</title>
 		<f:metadata>
 
 		</f:metadata>
@@ -18,20 +18,20 @@
 
 		<p:panel id="transactions" rendered="#{!noAccountExists}">
 			<div class="grid">
-				<p:panel class="#{currentAccountView.transactionLayout.flexColSpan}">
+				<p:panel class="#{currentAccountView.transactionColumnLayout.flexColSpan}">
 					<ui:include src="/template/client/composite/accountingMonthTransactions.xhtml">
 						<ui:param name="accountView" value="#{currentAccountView}" />
 						<ui:param name="accountingMonth" value="#{currentAccountView.firstAccountingMonth}" />
 					</ui:include>
 				</p:panel>
-				<p:panel rendered="#{currentAccountView.transactionLayout.renderColumnCount >= 2}"
-					class="#{currentAccountView.transactionLayout.flexColSpan}">
+				<p:panel rendered="#{currentAccountView.transactionColumnLayout.renderColumnCount >= 2}"
+					class="#{currentAccountView.transactionColumnLayout.flexColSpan}">
 					<ui:include src="/template/client/composite/accountingMonthTransactions.xhtml">
 						<ui:param name="accountView" value="#{currentAccountView}" />
 						<ui:param name="accountingMonth" value="#{currentAccountView.secondAccountingMonth}" />
 					</ui:include>
 				</p:panel>
-				<p:panel rendered="currentAccountView.transactionLayout.renderColumnCount == 3" class="currentAccountView.transactionLayout.flexColSpan">
+				<p:panel rendered="#{currentAccountView.transactionColumnLayout.renderColumnCount == 3}" class="#{currentAccountView.transactionColumnLayout.flexColSpan}">
 					<ui:include src="/template/client/composite/accountingMonthTransactions.xhtml">
 						<ui:param name="accountView" value="#{currentAccountView}" />
 						<ui:param name="accountingMonth" value="#{currentAccountView.thirdAccountingMonth}" />
@@ -50,9 +50,6 @@
 			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 		<ui:include src="/template/client/dialog/draftListDialog.xhtml">
-			<ui:param name="accountView" value="#{currentAccountView}" />
-		</ui:include>
-		<ui:include src="/template/client/dialog/accountDisplayOptionDialog.xhtml">
 			<ui:param name="accountView" value="#{currentAccountView}" />
 		</ui:include>
 	</ui:define>

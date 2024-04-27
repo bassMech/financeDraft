@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.model.statics.ExpectedDay;
+import de.bassmech.findra.model.statics.TransactionColumnLayout;
+import de.bassmech.findra.model.statics.TransactionGrouping;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.util.FormatterUtil;
 import de.bassmech.findra.web.util.LocalizationUtil;
@@ -29,7 +31,6 @@ import de.bassmech.findra.web.util.statics.enums.CssReference;
 import de.bassmech.findra.web.util.statics.enums.FormIds;
 import de.bassmech.findra.web.util.statics.enums.TagName;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
-import de.bassmech.findra.web.view.model.AccountDisplayOptionsDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -42,7 +43,6 @@ import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionDraftDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionViewModel;
-import de.bassmech.findra.web.view.model.type.AccountTransactionLayout;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -59,6 +59,8 @@ public class CurrentAccountView extends AccountViewBase {
 		
 		client = sessionHandler.getLoggedInClientWithSessionCheck();
 		
+		preFillMaps();
+		
 		reloadSelectableAccounts();
 
 		selectedMonth = YearMonth.now().getMonthValue();
@@ -73,10 +75,10 @@ public class CurrentAccountView extends AccountViewBase {
 			selectedAccount = selectableAccounts.get(0);
 			selectedAccountId = selectedAccount.getId();
 			updateMonthTransactions();
-		}
-		
-		for (int i = 1; i <= 12; i++) {
-			selectableMonths.put(i, java.time.Month.of(i).getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()));
+			
+			groupList = accountService.getAccountItemGroupsByAccountId(selectedAccountId);
+			
+			
 		}
 		
 		yearRange[0] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MIN));
@@ -86,13 +88,22 @@ public class CurrentAccountView extends AccountViewBase {
 			selectableYears.add(i);
 		}
 		
-		setSelectableExpectedDay();
-		
-		groupList = accountService.getAccountItemGroupsByAccountId(selectedAccountId);
-
 	}
 	
-	private void setSelectableExpectedDay() {
+	private void preFillMaps() {
+		for (int i = 1; i <= 12; i++) {
+			selectableMonths.put(i, java.time.Month.of(i).getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()));
+		}
+		
+		// account display options
+		for (TransactionColumnLayout mcd : TransactionColumnLayout.values()) {
+			selectableTransactionColumnDisplayOptions.put(mcd.getDbValue(), LocalizationUtil.getTag(mcd.getTagKey()));
+		}
+
+		for (TransactionGrouping grouping : TransactionGrouping.values()) {
+			selectableTransactionGroupingDisplayOptions.put(grouping.getDbValue(), LocalizationUtil.getTag(grouping.getTagKey()));
+		}
+		
 		selectableExpectedDay = new LinkedHashMap<>();
 		selectableExpectedDay.put(ExpectedDay.UNKNOWN.getDbValue(), LocalizationUtil.getTag(ExpectedDay.UNKNOWN.getTagString()));
 		selectableExpectedDay.put(ExpectedDay.ULTIMO.getDbValue(), LocalizationUtil.getTag(ExpectedDay.ULTIMO.getTagString()));
@@ -146,6 +157,9 @@ public class CurrentAccountView extends AccountViewBase {
 		accountDialog.setDescription(selectedAccount.getDescription());
 		accountDialog.setCategory(AccountCategory.CURRENT_ACCOUNT.getDbValue());
 		
+		accountDialog.setSelectedDisplayOptionTransactionColumnLayout(selectedAccount.getDisplayOptionTransactionColumnLayout().getDbValue());
+		accountDialog.setSelectedDisplayOptionTransactionGrouping(selectedAccount.getDisplayOptionTransactionGrouping().getDbValue());
+		
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		PrimeFaces.current().executeScript("PF('accountDetailDialog').show()");
 	}
@@ -174,6 +188,7 @@ public class CurrentAccountView extends AccountViewBase {
 			selectedAccount = selectableAccounts.stream().filter(acc -> acc.getId().equals(newAccount.getId())).findFirst().orElse(null);
 			selectedAccountId = selectedAccount.getId();
 			init();
+			transactionColumnLayout = selectedAccount.getDisplayOptionTransactionColumnLayout();
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 		}
 	}
@@ -185,20 +200,6 @@ public class CurrentAccountView extends AccountViewBase {
 		PrimeFaces.current().executeScript("PF('accountDetailDialog').hide()");
 		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 	}
-
-///
-/// Account Display Options
-///	
-	public void onAccountDisplayOptionsEdit() {
-		logger.debug("onAccountDisplayOptionsEdit");
-		accountDisplayOptionsDialog = new AccountDisplayOptionsDialogViewModel();	
-		accountDisplayOptionsDialog.setAccount(selectedAccount);
-		
-		
-		PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
-		PrimeFaces.current().executeScript("PF('accountDisplayOptionsDialog').show()");
-	}
-
 	
 ///
 /// Draft related
@@ -608,8 +609,8 @@ public class CurrentAccountView extends AccountViewBase {
 		this.draftListDialog = draftListDialogViewModel;
 	}
 
-	public AccountTransactionLayout getTransactionLayout() {
-		return transactionLayout;
+	public TransactionColumnLayout getTransactionColumnLayout() {
+		return transactionColumnLayout;
 	}
 
 }

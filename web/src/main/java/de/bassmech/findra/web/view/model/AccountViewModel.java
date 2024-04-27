@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.Objects;
 
 import de.bassmech.findra.model.statics.AccountCategory;
+import de.bassmech.findra.model.statics.TransactionColumnLayout;
+import de.bassmech.findra.model.statics.TransactionGrouping;
 
 public class AccountViewModel implements Serializable {
 
@@ -18,6 +20,8 @@ public class AccountViewModel implements Serializable {
 	private Instant createdAt;
 	private Instant deletedAt;
 	private AccountCategory category;
+	private TransactionGrouping displayOptionTransactionGrouping;
+	private TransactionColumnLayout displayOptionTransactionColumnLayout;
 
 	public Integer getId() {
 		return id;
@@ -81,6 +85,22 @@ public class AccountViewModel implements Serializable {
 
 	public void setCategory(AccountCategory category) {
 		this.category = category;
+	}
+
+	public TransactionGrouping getDisplayOptionTransactionGrouping() {
+		return displayOptionTransactionGrouping;
+	}
+
+	public void setDisplayOptionTransactionGrouping(TransactionGrouping displayOptionTransactionGrouping) {
+		this.displayOptionTransactionGrouping = displayOptionTransactionGrouping;
+	}
+
+	public TransactionColumnLayout getDisplayOptionTransactionColumnLayout() {
+		return displayOptionTransactionColumnLayout;
+	}
+
+	public void setDisplayOptionTransactionColumnLayout(TransactionColumnLayout displayOptionTransactionColumnLayout) {
+		this.displayOptionTransactionColumnLayout = displayOptionTransactionColumnLayout;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.bassmech.findra.model.entity.Client;
+import de.bassmech.findra.model.statics.TransactionColumnLayout;
 import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
@@ -18,7 +19,6 @@ import de.bassmech.findra.web.service.ConfigurationService;
 import de.bassmech.findra.web.service.SettingService;
 import de.bassmech.findra.web.service.TagService;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
-import de.bassmech.findra.web.view.model.AccountDisplayOptionsDialogViewModel;
 import de.bassmech.findra.web.view.model.AccountItemGroupViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
@@ -28,24 +28,23 @@ import de.bassmech.findra.web.view.model.TransactionBaseViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailBaseDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionDetailDialogViewModel;
 import de.bassmech.findra.web.view.model.TransactionExecutedDialogViewModel;
-import de.bassmech.findra.web.view.model.type.AccountTransactionLayout;
 import jakarta.faces.application.FacesMessage;
 
 public abstract class AccountViewBase {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	protected AccountService accountService;
-	
+
 	@Autowired
 	protected SettingService settingService;
-	
+
 	@Autowired
 	protected TagService tagService;
-	
+
 	@Autowired
 	protected SessionHandler sessionHandler;
-	
+
 	@Autowired
 	protected ConfigurationService configurationService;
 
@@ -61,51 +60,51 @@ public abstract class AccountViewBase {
 
 	protected List<Integer> selectableYears = new ArrayList<>();
 	protected int selectedYear;
-	
+
 	protected AccountDetailDialogViewModel accountDialog = new AccountDetailDialogViewModel("");
-	protected AccountDisplayOptionsDialogViewModel accountDisplayOptionsDialog = new AccountDisplayOptionsDialogViewModel();
 	protected TransactionDetailBaseDialogViewModel transactionDialog = new TransactionDetailDialogViewModel("", false);
 	protected TransactionExecutedDialogViewModel transactionExecutedDialog = new TransactionExecutedDialogViewModel();
 	protected DraftListDialogViewModel draftListDialog;
-	
+
 	protected AccountingMonthViewModel firstAccountingMonth = null;
 	protected AccountingMonthViewModel secondAccountingMonth = null;
 	protected AccountingMonthViewModel thirdAccountingMonth = null;
-	
+
 	protected HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
-	
+
 	protected int[] yearRange = new int[2];
-	
-	protected AccountTransactionLayout transactionLayout = AccountTransactionLayout.COLUMN_DOUBLE;
+
+	protected TransactionColumnLayout transactionColumnLayout = TransactionColumnLayout.DOUBLE;
 
 	protected List<AccountItemGroupViewModel> groupList;
-	
+
+	protected HashMap<Integer, String> selectableTransactionColumnDisplayOptions = new LinkedHashMap<>();
+	protected HashMap<Integer, String> selectableTransactionGroupingDisplayOptions = new LinkedHashMap<>();
+
 	///
 	/// Month and year navigation
 	////
-	
+
 	public void onNextYear() {
 		logger.debug("onNextYear");
 		if (selectedYear + 1 > yearRange[1]) {
-			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-					, "year.max.reached", yearRange[1]);
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN, "year.max.reached", yearRange[1]);
 			return;
 		}
 		selectedYear++;
 		updateMonthTransactions();
 	}
-	
+
 	public void onPreviousYear() {
 		logger.debug("onPreviousYear");
 		if (selectedYear - 1 < yearRange[0]) {
-			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-					, "year.min.reached", yearRange[0]);
+			FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN, "year.min.reached", yearRange[0]);
 			return;
 		}
 		selectedYear--;
 		updateMonthTransactions();
 	}
-	
+
 	public void onYearChanged() {
 		logger.debug("Year was changed to: " + selectedYear);
 		updateMonthTransactions();
@@ -121,8 +120,7 @@ public abstract class AccountViewBase {
 		if (selectedMonth == 12) {
 			if (selectedYear >= yearRange[1]) {
 				logger.debug("Max year reached");
-				FacesMessageHandler.addMessageFromKey (FacesMessage.SEVERITY_WARN
-						, "year.max.reached" , yearRange[1]);
+				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN, "year.max.reached", yearRange[1]);
 				return;
 			}
 			selectedYear++;
@@ -133,13 +131,12 @@ public abstract class AccountViewBase {
 		logger.debug("Month was changed to: " + selectedMonth);
 		updateMonthTransactions();
 	}
-	
+
 	public void onPreviousMonthClick() {
 		if (selectedMonth == 1) {
 			if (selectedYear <= yearRange[0]) {
 				logger.debug("Min year reached");
-				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN
-						, "year.min.reached", yearRange[0]);
+				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_WARN, "year.min.reached", yearRange[0]);
 				return;
 			}
 			selectedYear--;
@@ -150,28 +147,30 @@ public abstract class AccountViewBase {
 		logger.debug("Month was changed to: " + selectedMonth);
 		updateMonthTransactions();
 	}
-	
+
 	protected void updateMonthTransactions() {
 		logger.debug("updateMonthTransactions");
-		// TODO add  layout check and load only necessary 
+		// TODO add layout check and load only necessary
 		AccountingYearViewModel modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear);
-		
-		firstAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == selectedMonth).findFirst().orElse(null);
-		
+
+		firstAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == selectedMonth)
+				.findFirst().orElse(null);
+
 		int secondMonthNumber = selectedMonth + 1;
 		if (selectedMonth + 1 == 13) {
 			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
 			secondMonthNumber = 1;
 		}
 		final int finalSecondMonthNumber = secondMonthNumber;
-		secondAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == finalSecondMonthNumber).findFirst().orElse(null);
+		secondAccountingMonth = modelYear.getMonths().stream()
+				.filter(month -> month.getMonth() == finalSecondMonthNumber).findFirst().orElse(null);
 		if (secondAccountingMonth == null) {
 			secondAccountingMonth = new AccountingMonthViewModel();
 			secondAccountingMonth.setAccountYearId(selectedAccountId);
 			secondAccountingMonth.setMonth(finalSecondMonthNumber);
 			secondAccountingMonth.setYear(modelYear.getYear());
 		}
-		
+
 		int thirdMonthNumber = selectedMonth + 2;
 		if (selectedMonth + 2 == 13) {
 			modelYear = accountService.getOrCreateAccountingYear(selectedAccountId, selectedYear + 1);
@@ -180,7 +179,8 @@ public abstract class AccountViewBase {
 			thirdMonthNumber = 2;
 		}
 		final int finalThirdMonthNumber = thirdMonthNumber;
-		thirdAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == finalThirdMonthNumber).findFirst().orElse(null);
+		thirdAccountingMonth = modelYear.getMonths().stream().filter(month -> month.getMonth() == finalThirdMonthNumber)
+				.findFirst().orElse(null);
 		if (thirdAccountingMonth == null) {
 			thirdAccountingMonth = new AccountingMonthViewModel();
 			thirdAccountingMonth.setAccountYearId(selectedAccountId);
@@ -197,12 +197,22 @@ public abstract class AccountViewBase {
 		this.groupList = groupList;
 	}
 
-	public AccountDisplayOptionsDialogViewModel getAccountDisplayOptionsDialog() {
-		return accountDisplayOptionsDialog;
+	public HashMap<Integer, String> getSelectableTransactionColumnDisplayOptions() {
+		return selectableTransactionColumnDisplayOptions;
 	}
 
-	public void setAccountDisplayOptionsDialog(AccountDisplayOptionsDialogViewModel accountDisplayOptionsDialog) {
-		this.accountDisplayOptionsDialog = accountDisplayOptionsDialog;
+	public void setSelectableTransactionColumnDisplayOptions(
+			HashMap<Integer, String> selectableTransactionColumnDisplayOptions) {
+		this.selectableTransactionColumnDisplayOptions = selectableTransactionColumnDisplayOptions;
+	}
+
+	public HashMap<Integer, String> getSelectableTransactionGroupingDisplayOptions() {
+		return selectableTransactionGroupingDisplayOptions;
+	}
+
+	public void setSelectableTransactionGroupingDisplayOptions(
+			HashMap<Integer, String> selectableTransactionGroupingDisplayOptions) {
+		this.selectableTransactionGroupingDisplayOptions = selectableTransactionGroupingDisplayOptions;
 	}
 
 }

@@ -37,6 +37,8 @@ import de.bassmech.findra.model.entity.Tag;
 import de.bassmech.findra.model.entity.TransactionBase;
 import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.Interval;
+import de.bassmech.findra.model.statics.TransactionColumnLayout;
+import de.bassmech.findra.model.statics.TransactionGrouping;
 import de.bassmech.findra.web.service.exception.NotImplementedException;
 import de.bassmech.findra.web.util.CalculationUtil;
 import de.bassmech.findra.web.util.LocalizationUtil;
@@ -146,7 +148,8 @@ public class AccountService {
 				account = new SavingsAccount();
 				break;
 			default: throw new NotImplementedException("AccountCategory", Integer.toString(accountDialog.getCategory()));
-			}		
+			}	
+			account.setCreatedAt(Instant.now());
 		} else {
 			account = accountRepository.findById(accountDialog.getId().longValue()).get();
 		}
@@ -154,7 +157,9 @@ public class AccountService {
 		account.setDescription(accountDialog.getDescription());
 		account.setStartingYear(accountDialog.getStartingYear());
 		account.setClient(client);
-		account.setCreatedAt(Instant.now());
+		account.setTransactionColumnLayout(TransactionColumnLayout.fromDbValue(accountDialog.getSelectedDisplayOptionTransactionColumnLayout()));
+		account.setTransactionGrouping(TransactionGrouping.fromDbValue(accountDialog.getSelectedDisplayOptionTransactionGrouping()));
+		
 		account = accountRepository.save(account);
 
 		if (accountDialog.getId() == null) {
