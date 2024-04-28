@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:outputStylesheet name="accountGroupedTransactions.css"
+		library="style" />
+	<ui:include
+		src="/template/client/composite/accountingMonthTransactionsHeader.xhtml">
+		<ui:param name="accountView" value="#{accountView}" />
+		<ui:param name="accountingMonth" value="#{accountingMonth}" />
+	</ui:include>
+
+	<c:forEach items="#{group.items}" var="item">
+		<div class="group-item-indend">
+			<p:panel>
+				<h:outputText value="#{item.title}" class="group-item-top-bottom" />
+			</p:panel>
+			<div class="group-item-indend">
+				<p:dataTable var="transaction" lazy="false"
+					value="#{accountingMonth.findByGroupIdAndItemId(group.id, item.id)}"
+					rowKey="#{transaction.id}"
+					rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}"
+					allowUnsorting="true" sortMode="single" size="small"
+					class="table-layout: auto !important">
+
+					<p:column style="width:1rem">
+						<p:rowToggler />
+					</p:column>
+					<p:column headerText="#{tags['name']}">
+						<h:outputText value="#{transaction.title}" />
+					</p:column>
+					<p:column headerText="#{tags['value']}"
+						sortBy="#{transaction.value}">
+						<h:outputText
+							value="#{accountView.getCurrencyFormatted(transaction.value)}">
+						</h:outputText>
+					</p:column>
+					<p:column headerText="#{tags['date']}"
+						sortBy="#{transaction.expectedDay}" sortOrder="asc">
+						<h:outputText value="#{transaction.dayForDisplay}" />
+						<i class="pi #{transaction.getIcon()} flex justify-content-center" />
+					</p:column>
+					<p:column headerText="#{tags['tags']}">
+						<ui:repeat value="${transaction.tags}" var="tag">
+							<li><p:tooltip for="@next" value="#{tag.description}"
+									position="top" /> <p:chip label="#{tag.title}"
+									style="background-color:#{tag.backgroundHexColor}!important; color:#{tag.textHexColor}!important;" /></li>
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<div class="flex justify-content-center">
+							<p:commandButton icon="pi pi-clock"
+								action="#{accountView.onTransactionBaseExecuted(transaction.id, transaction.isDraft(), accountingMonth)}"
+								process="@this" update="mainForm:transactionDetailDialog"
+								rendered="#{transaction.executedAt == null}"></p:commandButton>
+						</div>
+					</p:column>
+					<p:column>
+						<div class="flex justify-content-center">
+							<p:commandButton icon="pi pi-pencil"
+								action="#{accountView.onTransactionEdit(transaction.id, accountingMonth)}"
+								process="@this" update="mainForm:transactionDetailDialog"
+								rendered="#{!transaction.isDraft()}"></p:commandButton>
+							<p:commandButton icon="pi pi-pencil"
+								action="#{accountView.onDraftEdit(transaction.id, accountingMonth)}"
+								process="@this" update="mainForm:transactionDetailDialog"
+								rendered="#{transaction.isDraft()}"></p:commandButton>
+						</div>
+					</p:column>
+					<p:rowExpansion>
+						<div class="product">
+							<p:column>
+								<h:outputText styleClass="ml-2" value="#{transaction.id}" />
+							</p:column>
+						</div>
+					</p:rowExpansion>
+
+
+				</p:dataTable>
+			</div>
+		</div>
+	</c:forEach>
+
+
+</ui:composition>

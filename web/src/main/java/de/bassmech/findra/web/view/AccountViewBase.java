@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.bassmech.findra.model.entity.Client;
 import de.bassmech.findra.model.statics.TransactionColumnLayout;
+import de.bassmech.findra.model.statics.TransactionGrouping;
 import de.bassmech.findra.web.auth.SessionHandler;
 import de.bassmech.findra.web.handler.FacesMessageHandler;
 import de.bassmech.findra.web.service.AccountService;
@@ -75,6 +76,7 @@ public abstract class AccountViewBase {
 	protected int[] yearRange = new int[2];
 
 	protected TransactionColumnLayout transactionColumnLayout = TransactionColumnLayout.DOUBLE;
+	protected TransactionGrouping transactionGrouping = TransactionGrouping.NONE;
 
 	protected List<AccountItemGroupViewModel> groupList;
 
@@ -213,6 +215,14 @@ public abstract class AccountViewBase {
 	public void setSelectableTransactionGroupingDisplayOptions(
 			HashMap<Integer, String> selectableTransactionGroupingDisplayOptions) {
 		this.selectableTransactionGroupingDisplayOptions = selectableTransactionGroupingDisplayOptions;
+	}
+
+	public TransactionGrouping getTransactionGrouping() {
+		return transactionGrouping;
+	}
+
+	public void setTransactionGrouping(TransactionGrouping transactionGrouping) {
+		this.transactionGrouping = transactionGrouping;
 	}
 
 }
