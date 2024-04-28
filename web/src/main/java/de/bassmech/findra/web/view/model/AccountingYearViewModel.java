@@ -1,12 +1,11 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class AccountingYearViewModel implements Serializable {
+public class AccountingYearViewModel {
 	private Integer id;
 	private Integer accountId;
 	private int year;
@@ -19,7 +18,8 @@ public class AccountingYearViewModel implements Serializable {
 			BigDecimal monthStartValue = startValue;
 			for (int iMonth = 1; iMonth <= 12; iMonth++) {
 				final int finalMonth = iMonth;
-				AccountingMonthViewModel month = months.stream().filter(monthX -> monthX.getMonth() == finalMonth).findFirst().orElse(null);
+				AccountingMonthViewModel month = months.stream().filter(monthX -> monthX.getMonth() == finalMonth)
+						.findFirst().orElse(null);
 				if (month == null) {
 					month = new AccountingMonthViewModel();
 					month.setAccountYearId(id);
@@ -34,14 +34,15 @@ public class AccountingYearViewModel implements Serializable {
 			months.sort(Comparator.comparing(AccountingMonthViewModel::getMonth));
 		}
 	}
-	
+
 	public void recalculateTransactionSum() {
 		transactionSum = startValue;
 		BigDecimal lastMonthClosing = startValue;
 		for (AccountingMonthViewModel month : months) {
 			month.setStartValue(lastMonthClosing);
 			month.recalculateTransactions();
-			transactionSum = transactionSum.add(month.getTransactionValueExecuted().add(month.getTransactionValueExpected()));
+			transactionSum = transactionSum
+					.add(month.getTransactionValueExecuted().add(month.getTransactionValueExpected()));
 			lastMonthClosing = month.getClosingValue();
 		}
 	}

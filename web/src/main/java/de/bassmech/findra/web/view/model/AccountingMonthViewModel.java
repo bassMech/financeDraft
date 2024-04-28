@@ -1,6 +1,5 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.stream.Collectors;
 
 import de.bassmech.findra.web.util.statics.enums.CssReference;
 
-public class AccountingMonthViewModel implements Serializable {
+public class AccountingMonthViewModel {
 	private Integer id;
 	private Integer accountYearId;
 	private int year;
@@ -27,7 +26,8 @@ public class AccountingMonthViewModel implements Serializable {
 		transactionCountExecuted = 0;
 
 		for (TransactionBaseViewModel transactionBase : transactions) {
-			if (transactionBase instanceof TransactionViewModel && ((TransactionViewModel) transactionBase).getExecutedAt() != null) {
+			if (transactionBase instanceof TransactionViewModel
+					&& ((TransactionViewModel) transactionBase).getExecutedAt() != null) {
 				transactionValueExecuted = transactionValueExecuted.add(transactionBase.getValue());
 				transactionCountExecuted++;
 			} else {
@@ -36,7 +36,7 @@ public class AccountingMonthViewModel implements Serializable {
 			}
 		}
 	}
-	
+
 	public BigDecimal getCurrentValue() {
 		return startValue.add(transactionValueExecuted);
 	}
@@ -44,22 +44,23 @@ public class AccountingMonthViewModel implements Serializable {
 	public BigDecimal getClosingValue() {
 		return startValue.add(getTransactionSum());
 	}
-	
+
 	public BigDecimal getTransactionSum() {
 		return transactionValueExecuted.add(transactionValueExpected);
 	}
-	
+
 	public String getTransactionSumColorCssClass() {
 		int transactionSumEval = getTransactionSum().compareTo(BigDecimal.ZERO);
 		if (transactionSumEval == 0) {
 			return "";
-		} 
-		return transactionSumEval > 0 ? CssReference.TRANSCTION_SUM_POSITIVE.getValue() : CssReference.TRANSCTION_SUM_NEGATIVE.getValue();
+		}
+		return transactionSumEval > 0 ? CssReference.TRANSCTION_SUM_POSITIVE.getValue()
+				: CssReference.TRANSCTION_SUM_NEGATIVE.getValue();
 	}
-	
-	public List<TransactionBaseViewModel> findByGroupIdAndItemId(Integer groupId, Integer itemId) {		
-		return transactions.stream().filter(x -> x.group.getId().equals(groupId)
-			&& x.item.getId().equals(itemId)).collect(Collectors.toList());
+
+	public List<TransactionBaseViewModel> findByGroupIdAndItemId(Integer groupId, Integer itemId) {
+		return transactions.stream().filter(x -> x.group.getId().equals(groupId) && x.item.getId().equals(itemId))
+				.collect(Collectors.toList());
 	}
 
 	public Integer getId() {

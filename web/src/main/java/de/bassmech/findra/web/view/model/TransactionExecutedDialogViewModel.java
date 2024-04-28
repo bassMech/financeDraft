@@ -1,11 +1,8 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-public class TransactionExecutedDialogViewModel implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+public class TransactionExecutedDialogViewModel {
 	private Integer id;
 	private Integer accountId;
 	private LocalDate executedAt;

@@ -1,6 +1,5 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -8,9 +7,7 @@ import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.TransactionColumnLayout;
 import de.bassmech.findra.model.statics.TransactionGrouping;
 
-public class AccountViewModel implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class AccountViewModel {
 
 	private Integer id;
 	private Integer userId;

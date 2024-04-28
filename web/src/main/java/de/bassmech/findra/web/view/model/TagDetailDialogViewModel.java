@@ -1,10 +1,8 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.time.Instant;
 
-public class TagDetailDialogViewModel implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class TagDetailDialogViewModel {
 
 	private Integer id;
 	private String title;
@@ -12,9 +10,9 @@ public class TagDetailDialogViewModel implements Serializable {
 	private String backgroundHexColor = "#ffffff";
 	private String textHexColor = "#000000";
 	private Instant deletedAt;
-	
+
 	private String dialogTitle;
-		
+
 	public TagDetailDialogViewModel(String dialogTitle) {
 		this.dialogTitle = dialogTitle;
 	}
@@ -22,7 +20,7 @@ public class TagDetailDialogViewModel implements Serializable {
 	public boolean isDeleteButtonRendered() {
 		return id != null && deletedAt == null;
 	}
-	
+
 	public boolean isUndeleteButtonRendered() {
 		return id != null && deletedAt != null;
 	}
@@ -82,7 +80,5 @@ public class TagDetailDialogViewModel implements Serializable {
 	public void setDeletedAt(Instant deletedAt) {
 		this.deletedAt = deletedAt;
 	}
-
-
 
 }

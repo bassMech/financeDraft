@@ -1,8 +1,6 @@
 package de.bassmech.findra.web.view;
 
-
 import java.io.IOException;
-import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,42 +19,43 @@ import jakarta.inject.Inject;
 
 @Component
 @SessionScoped
-public class LoginView implements Serializable {
+public class LoginView {
 	private String name;
 	private String password;
-	
+
 	protected Logger logger = LoggerFactory.getLogger(LoginView.class);
-	
+
 	@Inject
 	private SessionHandler sessionHandler;
-		
+
 	@PostConstruct
 	public void init() {
 		name = "";
 		password = "";
 	}
-	
+
 	public void process() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
-		
+
 		try {
 			if (sessionHandler.create(name, password)) {
 				try {
-					externalContext.redirect(externalContext.getRequestContextPath() + UrlFilterType.DASHBOARD.getFullUrl());
+					externalContext
+							.redirect(externalContext.getRequestContextPath() + UrlFilterType.DASHBOARD.getFullUrl());
 				} catch (IOException e) {
-					//TODO errorpage
+					// TODO errorpage
 					logger.error("error on redirection", e);
 				}
 				return;
-			} 
-			
+			}
+
 		} catch (LoginException e) {
 			logger.error("error on login", e);
-			
+
 		}
 		FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR, "error.client.not.found.or.wrong.password");
-		
+
 //		facesContext.addMessage(null, FacesMessageUtil.getFacesMessage(FacesMessage.SEVERITY_ERROR, "error", "error.client.not.found.or.wrong.password"
 //				, facesContext.getViewRoot().getLocale()));
 	}
@@ -76,5 +75,5 @@ public class LoginView implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 }

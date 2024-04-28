@@ -1,11 +1,9 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DraftListDialogViewModel implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class DraftListDialogViewModel {
 
 	private List<DraftViewModel> draftList = new ArrayList<>();
 

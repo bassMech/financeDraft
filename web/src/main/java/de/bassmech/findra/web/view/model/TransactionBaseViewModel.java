@@ -1,6 +1,5 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.List;
 import de.bassmech.findra.model.statics.ExpectedDay;
 import de.bassmech.findra.web.util.LocalizationUtil;
 
-public abstract class TransactionBaseViewModel implements Serializable {
+public abstract class TransactionBaseViewModel {
 	protected Integer id;
 	protected String title;
 	protected String description;
@@ -20,16 +19,14 @@ public abstract class TransactionBaseViewModel implements Serializable {
 	protected Instant createdAt;
 	protected AccountItemViewModel item;
 	protected AccountItemGroupViewModel group;
-	
+
 	protected List<TagViewModel> tags = new ArrayList<>();
-	
-	
-			
+
 	public TransactionBaseViewModel() {
 		expectedDay = 0;
 		dayForDisplay = LocalizationUtil.getTag(ExpectedDay.UNKNOWN.getTagString());
 	}
-	
+
 	public String getIcon() {
 		if (isDraft()) {
 			return "pi-sync";
@@ -37,13 +34,13 @@ public abstract class TransactionBaseViewModel implements Serializable {
 			return executedAt == null ? "pi-question-circle" : "pi-check-circle";
 		}
 	}
-	
+
 	public void onAccountDisplayOptionsEdit() {
-		
+
 	}
-		
+
 	public abstract boolean isDraft();
-	
+
 	public Integer getId() {
 		return id;
 	}

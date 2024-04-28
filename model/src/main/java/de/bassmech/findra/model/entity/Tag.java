@@ -17,7 +17,7 @@ public class Tag {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@ManyToOne(targetEntity = Client.class)
 	@JoinColumn(referencedColumnName = "id", name = "client_id")
 	private Client client;
@@ -33,17 +33,17 @@ public class Tag {
 
 	@Column(name = "text_hex_color", columnDefinition = "TEXT")
 	private String textHexColor;
-	
+
 	@Column(name = "created_at", columnDefinition = "INTEGER")
 	private Instant createdAt;
-	
+
 	@Column(name = "deleted_at", columnDefinition = "INTEGER")
 	private Instant deletedAt;
 
 	public Integer getId() {
 		return id;
 	}
-	
+
 	public void setId(Integer id) {
 		this.id = id;
 	}

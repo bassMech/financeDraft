@@ -1,30 +1,27 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public abstract class TransactionDetailBaseDialogViewModel implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+public abstract class TransactionDetailBaseDialogViewModel {
 	private Integer id;
 	private Integer accountId;
 	private String title;
 	private String description;
 	private BigDecimal value = BigDecimal.ZERO;
 	private Integer expectedDay = 0;
-	
+
 	private String dialogTitle = "";
 	private boolean isDraft;
-	
+
 	private List<TagViewModel> tagsAvailable = new ArrayList<>();
 	private List<TagViewModel> tagsAssigned = new ArrayList<>();
-	
+
 	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
-		
+
 	public TransactionDetailBaseDialogViewModel(String dialogTitle, boolean isDraft) {
 		this.dialogTitle = dialogTitle;
 		this.isDraft = isDraft;
@@ -35,27 +32,27 @@ public abstract class TransactionDetailBaseDialogViewModel implements Serializab
 		tagsAvailable.remove(vm);
 		tagsAssigned.add(vm);
 	}
-	
+
 	public void onTagRemove(int tagId) {
 		TagViewModel vm = tagsAssigned.stream().filter(tag -> tag.getId().equals(tagId)).findFirst().orElse(null);
 		tagsAssigned.remove(vm);
 		tagsAvailable.add(vm);
 	}
-	
+
 	public void onAllTagAssign() {
 		tagsAssigned.addAll(tagsAvailable);
 		tagsAvailable.clear();
 	}
-	
+
 	public void onAllTagRemove() {
 		tagsAvailable.addAll(tagsAssigned);
 		tagsAssigned.clear();
 	}
-	
+
 	public boolean isDeleteButtonRendered() {
 		return id != null;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}

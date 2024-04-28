@@ -1,7 +1,6 @@
 package de.bassmech.findra.web.view;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -26,14 +25,14 @@ import jakarta.faces.view.ViewScoped;
 
 @Component
 @ViewScoped
-public class NewClientView implements Serializable {
+public class NewClientView {
 	private String name;
 	private String password;
 	private String passwordRepeat;
 	private String recoveryCode;
 
 	private Logger logger = LoggerFactory.getLogger(NewClientView.class);
-	
+
 	@Autowired
 	private ClientRepository clientRepository;
 
@@ -43,7 +42,7 @@ public class NewClientView implements Serializable {
 		password = "";
 		passwordRepeat = "";
 	}
-	
+
 	public void onCreate() {
 		logger.debug("onCreate");
 		if (isInputValid()) {
@@ -56,45 +55,44 @@ public class NewClientView implements Serializable {
 			client.setPasswordHash(CryptUtil.toPasswordHash(password));
 			recoveryCode = RandomStringUtils.randomAlphanumeric(8);
 			client.setRecoveryCode(recoveryCode);
-			
+
 			client = clientRepository.save(client);
-			
+
 			PrimeFaces.current().ajax().update(FormIds.MAIN_FORM.getValue());
 			PrimeFaces.current().executeScript("PF('showRecoveryCodeDialog').show()");
 
 		}
 	}
-		
+
 	private boolean isInputValid() {
 		boolean result = true;
-		
+
 		if (name.isBlank()) {
-			FacesMessageHandler.addMessageFromKeyWithTagArguments (FacesMessage.SEVERITY_ERROR
-					, "must.not.be.empty", "name");
+			FacesMessageHandler.addMessageFromKeyWithTagArguments(FacesMessage.SEVERITY_ERROR, "must.not.be.empty",
+					"name");
 			result = false;
 		} else {
 			if (clientRepository.findByName(name) != null) {
-				FacesMessageHandler.addMessageFromKeyWithTagArguments (FacesMessage.SEVERITY_ERROR
-						, "user.with.name.already.exists");
+				FacesMessageHandler.addMessageFromKeyWithTagArguments(FacesMessage.SEVERITY_ERROR,
+						"user.with.name.already.exists");
 				result = false;
 			}
 		}
-		
+
 		if (password.isBlank()) {
-			FacesMessageHandler.addMessageFromKeyWithTagArguments(FacesMessage.SEVERITY_ERROR
-				, "must.not.be.empty", "password");
+			FacesMessageHandler.addMessageFromKeyWithTagArguments(FacesMessage.SEVERITY_ERROR, "must.not.be.empty",
+					"password");
 			result = false;
 		} else {
 			if (!password.equals(passwordRepeat)) {
-				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR
-						, "password.input.not.equal");
+				FacesMessageHandler.addMessageFromKey(FacesMessage.SEVERITY_ERROR, "password.input.not.equal");
 				result = false;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public void closeDialogAndRedirectToLogin() throws IOException {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		externalContext.redirect(externalContext.getRequestContextPath() + UrlFilterType.LOGIN.getFullUrl());

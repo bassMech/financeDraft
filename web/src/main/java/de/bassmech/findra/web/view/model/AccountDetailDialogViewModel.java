@@ -1,10 +1,8 @@
 package de.bassmech.findra.web.view.model;
 
-import java.io.Serializable;
 import java.time.Year;
 
-public class AccountDetailDialogViewModel implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class AccountDetailDialogViewModel {
 
 	private Integer id;
 	private String title;
@@ -13,7 +11,7 @@ public class AccountDetailDialogViewModel implements Serializable {
 	private int category;
 
 	private String dialogTitle;
-	
+
 	private Integer selectedDisplayOptionTransactionGrouping = 0;
 	private Integer selectedDisplayOptionTransactionColumnLayout = 1;
 
