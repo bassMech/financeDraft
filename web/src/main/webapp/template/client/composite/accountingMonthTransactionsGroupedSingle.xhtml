@@ -13,14 +13,25 @@
 		<ui:param name="accountingMonth" value="#{accountingMonth}" />
 	</ui:include>
 
-	<c:forEach items="#{group.items}" var="item">
+	<c:forEach items="#{accountView.selectableItemGroups.values()}"
+		var="group">
 		<div class="group-item-indend">
 			<p:panel>
-				<h:outputText value="#{item.title}" class="group-item-top-bottom" />
+				<div class="flex justify-content-between flex-wrap">
+					<div class="flex">
+						<h:outputText value="#{group.title}"
+							class="group-item-top-bottom flex" />
+					</div>
+					<div class="flex">
+						<h:outputText
+							value="#{accountingMonth.getAccountGroupItemOrItemTotal(group.id, null)}"
+							class="group-item-top-bottom" />
+					</div>
+				</div>
 			</p:panel>
 			<div class="group-item-indend">
 				<p:dataTable var="transaction" lazy="false"
-					value="#{accountingMonth.findByGroupIdAndItemId(group.id, item.id)}"
+					value="#{accountingMonth.findByGroupId(group.id)}"
 					rowKey="#{transaction.id}"
 					rowStyleClass="#{accountView.getTransactionRowColorString(transaction)}"
 					allowUnsorting="true" sortMode="single" size="small"

@@ -22,6 +22,8 @@ public abstract class TransactionDetailBaseDialogViewModel {
 
 	private HashMap<Integer, String> selectableExpectedDay = new LinkedHashMap<>();
 
+	private Integer selectedItemGroupId;
+
 	public TransactionDetailBaseDialogViewModel(String dialogTitle, boolean isDraft) {
 		this.dialogTitle = dialogTitle;
 		this.isDraft = isDraft;
@@ -139,6 +141,14 @@ public abstract class TransactionDetailBaseDialogViewModel {
 
 	public void setDraft(boolean isDraft) {
 		this.isDraft = isDraft;
+	}
+
+	public Integer getSelectedItemGroupId() {
+		return selectedItemGroupId;
+	}
+
+	public void setSelectedItemGroupId(Integer selectedItemGroupId) {
+		this.selectedItemGroupId = selectedItemGroupId;
 	}
 
 	@Override

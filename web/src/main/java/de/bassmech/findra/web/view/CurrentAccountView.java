@@ -19,6 +19,7 @@ import org.primefaces.PrimeFaces;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
+import de.bassmech.findra.model.entity.AccountingMonth;
 import de.bassmech.findra.model.statics.AccountCategory;
 import de.bassmech.findra.model.statics.ConfigurationCode;
 import de.bassmech.findra.model.statics.ExpectedDay;
@@ -31,6 +32,8 @@ import de.bassmech.findra.web.util.statics.enums.CssReference;
 import de.bassmech.findra.web.util.statics.enums.FormIds;
 import de.bassmech.findra.web.util.statics.enums.TagName;
 import de.bassmech.findra.web.view.model.AccountDetailDialogViewModel;
+import de.bassmech.findra.web.view.model.AccountItemGroupViewModel;
+import de.bassmech.findra.web.view.model.AccountItemViewModel;
 import de.bassmech.findra.web.view.model.AccountViewModel;
 import de.bassmech.findra.web.view.model.AccountingMonthViewModel;
 import de.bassmech.findra.web.view.model.AccountingYearViewModel;
@@ -72,12 +75,8 @@ public class CurrentAccountView extends AccountViewBase {
 
 			selectedAccount = selectableAccounts.get(0);
 			selectedAccountId = selectedAccount.getId();
-			updateMonthTransactions();
 
-			groupList = accountService.getAccountItemGroupsByAccountId(selectedAccountId);
-
-			this.transactionColumnLayout = selectedAccount.getDisplayOptionTransactionColumnLayout();
-			this.transactionGrouping = selectedAccount.getDisplayOptionTransactionGrouping();
+			reloadAccountSpecific();
 		}
 
 		yearRange[0] = Integer.parseInt(configurationService.getByCode(ConfigurationCode.YEAR_RANGE_MIN));
@@ -114,6 +113,23 @@ public class CurrentAccountView extends AccountViewBase {
 		for (int i = 1; i <= maxDayInMonth; i++) {
 			selectableExpectedDay.put(i, String.valueOf(i));
 		}
+	}
+
+	private void reloadAccountSpecific() {
+		updateMonthTransactions();
+
+		List<AccountItemGroupViewModel> itemGroups = accountService.getAccountItemGroupsByAccountId(selectedAccountId);
+		selectableItemGroups = new HashMap<>();
+		for (AccountItemGroupViewModel group : itemGroups) {
+			selectableItemGroups.put(group.getId(), group);
+ 
+			for (AccountItemViewModel item : group.getItems()) {
+
+			}
+		}
+		this.transactionColumnLayout = selectedAccount.getDisplayOptionTransactionColumnLayout();
+		this.transactionGrouping = selectedAccount.getDisplayOptionTransactionGrouping();
+
 	}
 
 	private void reloadSelectableAccounts() {
@@ -511,7 +527,7 @@ public class CurrentAccountView extends AccountViewBase {
 	public String getNumberDigitSeparator() {
 		return settingService.getDbNumberDigitSeparator(client);
 	}
-
+		
 ///
 /// getters / setter
 ///

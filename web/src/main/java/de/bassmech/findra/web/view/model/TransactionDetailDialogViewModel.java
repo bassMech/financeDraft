@@ -3,7 +3,6 @@ package de.bassmech.findra.web.view.model;
 import java.time.LocalDate;
 
 public class TransactionDetailDialogViewModel extends TransactionDetailBaseDialogViewModel {
-	private static final long serialVersionUID = 1L;
 
 	private LocalDate executedAt;
 	private int selectedAccountingYear;

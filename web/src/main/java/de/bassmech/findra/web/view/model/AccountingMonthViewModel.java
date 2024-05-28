@@ -2,7 +2,10 @@ package de.bassmech.findra.web.view.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import de.bassmech.findra.web.util.statics.enums.CssReference;
@@ -18,6 +21,15 @@ public class AccountingMonthViewModel {
 	private int transactionCountExpected = 0;
 	private int transactionCountExecuted = 0;
 	private List<TransactionBaseViewModel> transactions = new ArrayList<>();
+	
+	private Map<Integer, BigDecimal> executedAccountGroupItemValuesById = new HashMap<>();
+	private Map<Integer, BigDecimal> expecteddAccountGroupItemValuesById = new HashMap<>();
+	private Map<Integer, BigDecimal> accountGroupItemTotalsById = new HashMap<>();
+
+	private Map<Integer, BigDecimal> executedAccountItemValuesById = new HashMap<>();
+	private Map<Integer, BigDecimal> expecteddAccountItemValuesById = new HashMap<>();
+	private Map<Integer, BigDecimal> accountItemTotalsById = new HashMap<>();
+
 
 	public void recalculateTransactions() {
 		transactionValueExpected = BigDecimal.ZERO;
@@ -35,6 +47,23 @@ public class AccountingMonthViewModel {
 				transactionCountExpected++;
 			}
 		}
+	}
+
+	public BigDecimal getAccountGroupItemOrItemTotal(int itemGroupId, Integer itemId) {
+		BigDecimal total = BigDecimal.ZERO;
+		
+		Entry<Integer, BigDecimal> entryy = null;
+		if (itemId == null ) {
+			entryy = accountGroupItemTotalsById.entrySet().stream().filter(entry -> entry.getKey().equals(itemGroupId)).findFirst().orElse(null);
+			
+		} else {
+			entryy = accountItemTotalsById.entrySet().stream().filter(entry -> entry.getKey().equals(itemId)).findFirst().orElse(null);
+		}
+		if (entryy != null) {
+			total = entryy.getValue();
+		}
+		
+		return total;
 	}
 
 	public BigDecimal getCurrentValue() {
@@ -59,8 +88,13 @@ public class AccountingMonthViewModel {
 	}
 
 	public List<TransactionBaseViewModel> findByGroupIdAndItemId(Integer groupId, Integer itemId) {
-		return transactions.stream().filter(x -> x.group.getId().equals(groupId) && x.item.getId().equals(itemId))
+		return transactions.stream().filter(x -> x.group.getId().equals(groupId) && 
+				(itemId == null || x.item.getId().equals(itemId)))
 				.collect(Collectors.toList());
+	}
+	public List<TransactionBaseViewModel> findByGroupId(Integer groupId) {
+		return findByGroupIdAndItemId(groupId, null);
+	
 	}
 
 	public Integer getId() {

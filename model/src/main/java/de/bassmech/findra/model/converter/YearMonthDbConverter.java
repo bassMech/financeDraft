@@ -8,7 +8,7 @@ public class YearMonthDbConverter implements AttributeConverter<YearMonth, Strin
 
 	@Override
 	public String convertToDatabaseColumn(YearMonth attribute) {
-		return attribute == null ? null : attribute.getYear() + "_" + attribute.getMonthValue();
+		return attribute == null ? null : attribute.getYear() + "-" + attribute.getMonthValue();
 	}
 
 	@Override
@@ -16,7 +16,7 @@ public class YearMonthDbConverter implements AttributeConverter<YearMonth, Strin
 		if (dbData == null) {
 			return null;
 		}
-		String[] split = dbData.split("_");
+		String[] split = dbData.split("-");
 		return YearMonth.of(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
 	}
 	

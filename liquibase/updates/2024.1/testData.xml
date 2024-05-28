@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
 	xmlns:pro="http://www.liquibase.org/xml/ns/pro"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
@@ -8,14 +10,104 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
 
-	<changeSet id="test-client" author="bassmech" context="test-data">
+	<changeSet id="test-client" author="bassmech"
+		context="test-data">
 		<insert tableName="client">
 			<column name="name" value="test"></column>
-			<column name="password_hash" value="$2a$16$FOWevm7qbmiDKeBor/b8Wud4RUhiaNbXv0f/FydLPXjZhMgH.jF5a"></column>
-			<column name="uuid" value="c83de624-3c99-43e3-9be1-56b4ac866b81"></column>
+			<column name="password_hash"
+				value="$2a$16$FOWevm7qbmiDKeBor/b8Wud4RUhiaNbXv0f/FydLPXjZhMgH.jF5a"></column>
+			<column name="uuid"
+				value="c83de624-3c99-43e3-9be1-56b4ac866b81"></column>
 			<column name="recovery_code" value="zT5S6Gms"></column>
 			<column name="created_at" valueComputed="unixepoch()"></column>
 			<column name="updated_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="account-giro" author="bassmech"
+		context="test-data">
+		<insert tableName="account">
+			<column name="client_id" value="1"></column>
+			<column name="category" value="0"></column>
+			<column name="starting_year"
+				valueComputed="strftime('%Y','now')"></column>
+			<column name="title" value="Giro"></column>
+			<column name="description" value="Giro Konto"></column>
+			<column name="created_at" valueComputed="unixepoch()"></column>
+			<column name="transaction_column_layout" value="2"></column>
+			<column name="transaction_grouping" value="2"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="account-item-group-fixed-cost"
+		author="bassmech" context="test-data">
+		<insert tableName="account_item_group">
+			<column name="account_id" value="1"></column>
+			<column name="title" value="Fixed-Cost"></column>
+			<column name="description" value="Monthly cost that are fixed"></column>
+			<column name="created_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="account-item-housing-cost" author="bassmech"
+		context="test-data">
+		<insert tableName="account_item">
+			<column name="account_item_group_id" value="1"></column>
+			<column name="title" value="Housing-Cost"></column>
+			<column name="description" value="Housing related costs"></column>
+			<column name="created_at" valueComputed="unixepoch()"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="accounting-year-now" author="bassmech"
+		context="test-data">
+		<insert tableName="accounting_year">
+			<column name="account_id" value="1"></column>
+			<column name="year" valueComputed="strftime('%Y','now')"></column>
+			<column name="start_value" value="0"></column>
+			<column name="closing_value" value="0"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="accounting-month-now" author="bassmech"
+		context="test-data">
+		<insert tableName="accounting_month">
+			<column name="accounting_year_id" value="1"></column>
+			<column name="month" valueComputed="strftime('%m','now')"></column>
+			<column name="start_value" value="0"></column>
+			<column name="closing_value" value="0"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="draft-rent" author="bassmech"
+		context="test-data">
+		<insert tableName="account_transaction_draft">
+			<column name="account_id" value="1"></column>
+			<column name="predecessor_id" value="null"></column>
+			<column name="title" value="Rent"></column>
+			<column name="description" value="Monthly rent"></column>
+			<column name="value" value="500"></column>
+			<column name="created_at" valueComputed="unixepoch()"></column>
+			<column name="expected_day" value="32"></column>
+			<column name="starts_at"
+				valueComputed="strftime('%Y-%m','now')"></column>
+			<column name="interval" value="1"></column>
+			<column name="account_item_id" value="1"></column>
+		</insert>
+	</changeSet>
+
+	<changeSet id="transaction-water" author="bassmech"
+		context="test-data">
+		<insert tableName="account_transaction">
+			<column name="accounting_month_id" value="1"></column>
+			<column name="draft_id" value="null"></column>
+			<column name="title" value="Water"></column>
+			<column name="description" value="Monthly water"></column>
+			<column name="value" value="50"></column>
+			<column name="created_at" valueComputed="unixepoch()"></column>
+			<column name="expected_day" value="14"></column>
+			<column name="executed_at" valueComputed="unixepoch()"></column>
+			<column name="account_item_id" value="1"></column>
 		</insert>
 	</changeSet>
 

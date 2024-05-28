@@ -2,6 +2,10 @@
 ToDo
 - important!
 	- accountview restructure init -> do not rebuild maps
+	- redo setting init
+	- on recalculating accounting month, do also calculate item and group item
+	- ssettings as singleton
+	- rename item to sub-item -> item group to item
 	- error code revamp -> add display message to enum
 	- move dialogs folder to composite
 	- some code quality checker like black

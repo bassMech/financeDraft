@@ -78,11 +78,10 @@ public abstract class AccountViewBase {
 	protected TransactionColumnLayout transactionColumnLayout = TransactionColumnLayout.DOUBLE;
 	protected TransactionGrouping transactionGrouping = TransactionGrouping.NONE;
 
-	protected List<AccountItemGroupViewModel> groupList;
-
 	protected HashMap<Integer, String> selectableTransactionColumnDisplayOptions = new LinkedHashMap<>();
 	protected HashMap<Integer, String> selectableTransactionGroupingDisplayOptions = new LinkedHashMap<>();
 
+	protected HashMap<Integer, AccountItemGroupViewModel> selectableItemGroups = new LinkedHashMap<>();
 	///
 	/// Month and year navigation
 	////
@@ -191,14 +190,6 @@ public abstract class AccountViewBase {
 		}
 	}
 
-	public List<AccountItemGroupViewModel> getGroupList() {
-		return groupList;
-	}
-
-	public void setGroupList(List<AccountItemGroupViewModel> groupList) {
-		this.groupList = groupList;
-	}
-
 	public HashMap<Integer, String> getSelectableTransactionColumnDisplayOptions() {
 		return selectableTransactionColumnDisplayOptions;
 	}
@@ -223,6 +214,14 @@ public abstract class AccountViewBase {
 
 	public void setTransactionGrouping(TransactionGrouping transactionGrouping) {
 		this.transactionGrouping = transactionGrouping;
+	}
+
+	public HashMap<Integer, AccountItemGroupViewModel> getSelectableItemGroups() {
+		return selectableItemGroups;
+	}
+
+	public void setSelectableItemGroups(HashMap<Integer, AccountItemGroupViewModel> selectableItemGroups) {
+		this.selectableItemGroups = selectableItemGroups;
 	}
 
 }
